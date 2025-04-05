@@ -8,22 +8,25 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.trailblazercombi.haventide.game.UniversalColorizer.*
 import app.trailblazercombi.haventide.res.Palette
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlin.math.abs
-import kotlin.math.roundToInt
-import kotlin.math.sqrt
+import kotlin.math.*
 
 val tileSize = 128.dp
 val tilePadding = 22.dp
 val tileCornerRounding = 4.dp
 val tileOutlineThickness = 2.dp
+val previewArrowThickness = 8.dp
+val previewArrowTipSize = 32.dp
 
 /**
  * Keep track of click states and the associated tile colors.
@@ -70,6 +73,18 @@ data class Position(val x: Int, val y: Int) {
         return true
     }
 
+    override fun toString(): String {
+        return "Position [$x, $y]"
+    }
+
+    fun toDpX(position: Position = this): Dp {
+        return tileSize * position.x
+    }
+
+    fun toDpY(position: Position = this): Dp {
+        return tileSize * position.y
+    }
+
     /**
      * Calculates the distance from this position to another.
      * This distance is in [tiles][TileData], not pixels.
@@ -81,7 +96,7 @@ data class Position(val x: Int, val y: Int) {
     fun distanceTo(other: Position): Double {
         val distX = abs(this.x - other.x)
         val distY = abs(this.y - other.y)
-        return sqrt(((distX * distX) + (distY * distY)).toDouble())
+        return hypot(distX.toDouble(), distY.toDouble())
     }
 
     /**
@@ -98,7 +113,8 @@ data class Position(val x: Int, val y: Int) {
      * __excluding__ [this][Position] and [other][Position].
      */
     fun trajectoryTo(other: Position): List<Position> {
-        /* With help from ChatGPT. Here is the prompt:
+        /* With help from ChatGPT.
+         * Prompt:
          *     This will be maths + Kotlin.
          *     I need an algorithm that will
          *     1. eat a start and end position, defined as Position(x, y).
@@ -141,26 +157,41 @@ data class Position(val x: Int, val y: Int) {
     }
 
     /**
-     * Returns the immidate surroundings of this [position][Position].
+     * Returns the surroundings of this [position][Position] within a circle.
+     * @param radius How far to look for the result. Default value is sqrt(2).
      * @return A [Set] of the positions immidiately surrounding [this][Position],
      * __excluding__ [this][Position].
      */
-    fun surroundings(): Set<Position> {
-        return setOf(
-            Position(x-1, y-1), Position(x+0, y-1), Position(x+1, y-1),
-            Position(x-1, y+0),                           Position(x+1, y+0),
-            Position(x-1, y+1), Position(x+0, y+1), Position(x+1, y+1),
-        )
+    fun surroundings(radius: Double = sqrt(2.toDouble())): Set<Position> {
+        if (radius < 1.toDouble()) return emptySet()
+        val result = mutableSetOf<Position>()
+
+        val search = round(radius).toInt()
+        for (y in -search .. search) {
+            val realY = this.y + y
+            for (x in -search .. search) {
+                val realX = this.x + x
+                val other = Position(realX, realY)
+                if (distanceTo(other) <= radius) {
+                    result.add(other)
+                }
+            }
+        }
+
+        return result.toSet()
     }
 }
 
 class TileMapData() {
 
     // FIXME Size is not supposed to be a property, but there is stuff still referencing it.
+    // TODO Read from file!!!
     val columns = 13; val rows = 14
     val backdropColor = Palette.FullBlack
 
-    // TILE DEFINITION AND SELECTION HANDLING
+    private val tiles: java.util.HashMap<Position, TileData?> = HashMap()
+
+// TILE HIGHLIGHT HANDLING
     /**
      * Describes the primary selected tile (yellow).
      * If the yellow tile had an outline before selection (was in availableTiles1),
@@ -185,24 +216,33 @@ class TileMapData() {
             field?.updateClickState(CLICKED_SECONDARY)
         }
 
-    // TILE HIGHLIGHT HANDLING
+    /**
+     * A [MutableSet] containing all [tiles][TileData] valid for primary highlight.
+     */
     private val availableTiles1 = mutableSetOf<TileData>()
+
+    /**
+     * A [MutableSet] containing all [tiles][TileData] valid for secondary highlight.
+     */
     private val availableTiles2 = mutableSetOf<TileData>()
 
     private fun addToAvailableTiles1(tileData: TileData) {
         this.availableTiles1.add(tileData)
         tileData.updateHighlightState(HIGHLIGHT_PRIMARY)
     }
+
     private fun addToAvailableTiles2(tileData: TileData) {
         this.availableTiles2.add(tileData)
         tileData.updateHighlightState(HIGHLIGHT_SECONDARY)
     }
+
     private fun clearAvailableTiles1() {
         for (tileData in availableTiles1) {
             tileData.updateHighlightState(NO_INTERACTIONS)
         }
         this.availableTiles1.clear()
     }
+
     private fun clearAvailableTiles2() {
         for (tileData in availableTiles2) {
             tileData.updateHighlightState(NO_INTERACTIONS)
@@ -225,7 +265,7 @@ class TileMapData() {
 
         if (selectedTile1 != null) {
             // TODO: Here goes the algorithm for highlighting secondary positions based on selected Phoenix.
-            for (positionNearby in selectedTile1!!.position.surroundings()) {
+            for (positionNearby in selectedTile1!!.position.surroundings(2.3)) {
                 val tileNearby = get(positionNearby)
                 if (tileNearby != null) {
                     this.addToAvailableTiles2(tileNearby)
@@ -233,11 +273,6 @@ class TileMapData() {
             }
         }
     }
-
-    /**
-     * The map definition itself.
-     */
-    private val tiles = HashMap<Position, TileData?>()
 
     /**
      * Get [a tile][TileData] from the map definition.
