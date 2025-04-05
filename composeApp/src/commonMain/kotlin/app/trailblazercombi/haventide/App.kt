@@ -10,6 +10,6 @@ import app.trailblazercombi.haventide.game.TileMapData
 @Preview
 fun App() {
     MaterialTheme {
-        ComposableTileMap(TileMapData(12, 12))
+        ComposableTileMap(TileMapData())
     }
 }

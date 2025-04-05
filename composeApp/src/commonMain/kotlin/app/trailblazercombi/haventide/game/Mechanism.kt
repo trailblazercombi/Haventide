@@ -49,3 +49,8 @@ abstract class Mechanism(var parentTile: TileData) {
 fun ComposableMechanism(modifier: Modifier = Modifier, mechanismData: Mechanism) {
 
 }
+
+@Composable
+fun ComposableMechanismStack(modifier: Modifier = Modifier, mechanismData: Set<Mechanism>) {
+
+}
