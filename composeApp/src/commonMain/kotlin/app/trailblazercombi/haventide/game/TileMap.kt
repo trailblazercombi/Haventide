@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package app.trailblazercombi.haventide.game
 
 import androidx.compose.foundation.*
@@ -8,9 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
@@ -21,12 +21,10 @@ import app.trailblazercombi.haventide.res.Palette
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.math.*
 
-val tileSize = 128.dp
-val tilePadding = 22.dp
+val tileSize = 80.dp
+val tilePadding = 16.dp
 val tileCornerRounding = 4.dp
 val tileOutlineThickness = 2.dp
-val previewArrowThickness = 8.dp
-val previewArrowTipSize = 32.dp
 
 /**
  * Keep track of click states and the associated tile colors.
@@ -93,7 +91,7 @@ data class Position(val x: Int, val y: Int) {
      * @return The exact distance of a direct straight line
      * between the two positions, in [tiles][TileData].
      */
-    fun distanceTo(other: Position): Double {
+    private fun distanceTo(other: Position): Double {
         val distX = abs(this.x - other.x)
         val distY = abs(this.y - other.y)
         return hypot(distX.toDouble(), distY.toDouble())
@@ -178,11 +176,12 @@ data class Position(val x: Int, val y: Int) {
             }
         }
 
+        result.remove(this)
         return result.toSet()
     }
 }
 
-class TileMapData() {
+class TileMapData {
 
     // FIXME Size is not supposed to be a property, but there is stuff still referencing it.
     // TODO Read from file!!!
@@ -313,24 +312,6 @@ class TileMapData() {
             else selectedTile1 = tile
         } else selectedTile1 = tile
         this.updateAvailableTiles()
-
-        /*
-            if (selectedTile1 == null && selectedTile2 == null) {
-                selectedTile1 = tile
-            } else if (selectedTile1 != null && selectedTile2 == null) {
-                selectedTile2 = tile
-            } else {
-                selectedTile1 = null
-                selectedTile2 = null
-                tileClickEvent(tile)
-            }
-            if (selectedTile1 != null && selectedTile2 != null) {
-                val trajectory = selectedTile1!!.position.trajectoryTo(selectedTile2!!.position)
-                for (position in trajectory) {
-                    this.tiles[position]?.updateHighlightState(HIGHLIGHT_PRIMARY)
-                }
-            }
-        */
     }
 }
 
@@ -373,6 +354,7 @@ class TileData(
      * `false` if the [mechanism][Mechanism] is a duplicate of one already on this tile,
      * or if any of the [mechanisms][Mechanism] on this tile veto the operation.
      */
+    @Suppress("MemberVisibilityCanBePrivate")
     fun canAddMechanism(mechanism: Mechanism): Boolean {
         // 1: Check if it's duplicate
         if (mechanisms.contains(mechanism)) return false
@@ -404,6 +386,7 @@ class TileData(
      * `false` if the [mechanism][Mechanism] doesn't exist on this tile,
      * or if any of the other [mechanisms][Mechanism] on this tile veto the operation.
      */
+    @Suppress("MemberVisibilityCanBePrivate")
     fun canRemoveMechanism(mechanism: Mechanism): Boolean {
         // 1: Check if it's here
         if (!mechanisms.contains(mechanism)) return false
@@ -483,7 +466,6 @@ fun ComposableTileMap(mapData: TileMapData, modifier: Modifier = Modifier) {
 
 @Composable
 fun ComposableTile(tileData: TileData? = null, modifier: Modifier = Modifier) {
-    // FIXME
     if (tileData != null) {
         val clickState by tileData.clickStateColorizer.collectAsState()
         val highlightState by tileData.highlightStateColorizer.collectAsState()
@@ -524,7 +506,7 @@ fun ComposableTile(tileData: TileData? = null, modifier: Modifier = Modifier) {
                         .compositeOver(clickState.fillColor)
                     )
             )
-            // ComposableMechanism() // The mechanisms
+            // TODO ComposableMechanism() // The mechanisms
         }
     } else {
         Spacer(modifier.width(tileSize).height(tileSize))

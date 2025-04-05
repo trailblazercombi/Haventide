@@ -2,6 +2,7 @@ package app.trailblazercombi.haventide.res
 
 import androidx.compose.ui.graphics.Color
 
+@Suppress("unused")
 object Palette {
 
     // Transparent
