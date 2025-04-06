@@ -11,7 +11,8 @@ import androidx.compose.ui.Modifier
  *
  * @constructor Builds a mechanism with a specified [parent Tile][TileData].
  */
-abstract class Mechanism(var parentTile: TileData) {
+open class Mechanism(var parentTile: TileData) {
+    // FIXME make abstract
     /**
      * Denies the specified Mechanism the right to move
      * to the same [Tile][TileData] as this one.
@@ -20,7 +21,7 @@ abstract class Mechanism(var parentTile: TileData) {
      * By default, always returns FALSE.
      */
     open fun vetoTilemateAddition(tilemate: Mechanism): Boolean {
-        return false
+        return true
     }
 
     /**

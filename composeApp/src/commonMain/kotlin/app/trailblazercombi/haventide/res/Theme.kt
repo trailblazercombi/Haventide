@@ -1,8 +1,8 @@
 package app.trailblazercombi.haventide.res
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 
-@Suppress("unused")
 object Palette {
 
     // Transparent
@@ -93,3 +93,32 @@ object Palette {
     val FullGrey = Color(0xFF808080)
     val FullWhite = Color(0xFFFFFFFF)
 }
+
+object TileStyle {
+    val TileSize = 128.dp
+    val TileCornerRounding = 8.dp
+    val TileOutlineThickness = 2.dp
+    val TileGridPadding = 24.dp
+}
+
+/**
+ * Keep track of click states and the associated tile colors.
+ * This enum exists for the purposes of highlighting tiles.
+ *
+ * Please refer to the game rules to find out what each of these highlights mean.
+ * @property NO_INTERACTIONS_WITH_OUTLINE The [tile][TileData] should not be highlighted unless hovered over by mouse.
+ * @property CLICKED_PRIMARY The [tile][TileData] should be highlighed with yellow fill and outline.
+ * @property CLICKED_SECONDARY The [tile][TileData] should be highlighted with white fill and outline.
+ * @property HIGHLIGHT_PRIMARY The [tile][TileData] should be highlighted with yellow outline.
+ * @property HIGHLIGHT_SECONDARY The [tile][TileData] should be highlighted with white outline.
+ */
+enum class UniversalColorizer(
+    val fillColor: Color = Palette.Glass00,
+    val outlineColor: Color = Palette.Glass00,
+) {NO_INTERACTIONS,
+    NO_INTERACTIONS_WITH_OUTLINE(outlineColor = Palette.Glass20),
+    CLICKED_PRIMARY(Palette.FillYellow, Palette.FillYellow),
+    CLICKED_SECONDARY(Palette.FillLightPrimary, Palette.FillLightPrimary),
+    HIGHLIGHT_PRIMARY(outlineColor = Palette.FillYellow),
+    HIGHLIGHT_SECONDARY(outlineColor = Palette.FillLightPrimary),
+    HOVER_GLASS(Palette.Glass10, Palette.Glass20)}

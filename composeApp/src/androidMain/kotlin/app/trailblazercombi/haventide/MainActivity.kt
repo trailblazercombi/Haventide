@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.app.NotificationManagerCompat
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -12,6 +13,21 @@ class MainActivity : ComponentActivity() {
         setContent {
             App()
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // Send a notification that the game is still running
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Dismiss the notification
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Hell do I know what kind of cleanup will I need to perform
     }
 }
 
