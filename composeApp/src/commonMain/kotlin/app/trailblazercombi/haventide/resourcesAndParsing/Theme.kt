@@ -1,8 +1,11 @@
-package app.trailblazercombi.haventide.res
+package app.trailblazercombi.haventide.resourcesAndParsing
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
+/**
+ * Defines the colors used within the app
+ */
 object Palette {
 
     // Transparent
@@ -94,6 +97,10 @@ object Palette {
     val FullWhite = Color(0xFFFFFFFF)
 }
 
+/**
+ * Defines the style of [tiles][app.trailblazercombi.haventide.game.ComposableTile]
+ * and [the tile map][app.trailblazercombi.haventide.game.ComposableTileMap].
+ */
 object TileStyle {
     val TileSize = 128.dp
     val TileCornerRounding = 8.dp
@@ -115,10 +122,12 @@ object TileStyle {
 enum class UniversalColorizer(
     val fillColor: Color = Palette.Glass00,
     val outlineColor: Color = Palette.Glass00,
-) {NO_INTERACTIONS,
+) {
+    NO_INTERACTIONS,
     NO_INTERACTIONS_WITH_OUTLINE(outlineColor = Palette.Glass20),
     CLICKED_PRIMARY(Palette.FillYellow, Palette.FillYellow),
     CLICKED_SECONDARY(Palette.FillLightPrimary, Palette.FillLightPrimary),
     HIGHLIGHT_PRIMARY(outlineColor = Palette.FillYellow),
     HIGHLIGHT_SECONDARY(outlineColor = Palette.FillLightPrimary),
-    HOVER_GLASS(Palette.Glass10, Palette.Glass20)}
+    HOVER_GLASS(Palette.Glass10, Palette.Glass20)
+}

@@ -46,6 +46,12 @@ open class Mechanism(var parentTile: TileData) {
     }
 }
 
+enum class MechanismType {
+    PHOENIX,
+    ABILITY_AOE,
+    ABILITY_IMMIDIATE
+}
+
 @Composable
 fun ComposableMechanism(modifier: Modifier = Modifier, mechanismData: Mechanism) {
 

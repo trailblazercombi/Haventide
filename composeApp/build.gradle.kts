@@ -74,6 +74,7 @@ dependencies {
     implementation(libs.androidx.foundation.layout.android)
     implementation(libs.androidx.ui.graphics.android)
     implementation(libs.androidx.ui.geometry.android)
+    implementation(libs.androidx.runtime.android)
     debugImplementation(compose.uiTooling)
 }
 
