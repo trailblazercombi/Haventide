@@ -1,4 +1,4 @@
-package app.trailblazercombi.haventide.resourcesAndParsing
+package app.trailblazercombi.haventide.resources
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -7,6 +7,8 @@ import androidx.compose.ui.unit.dp
  * Defines the colors used within the app
  */
 object Palette {
+    // TODO Remove unused colours from the Palette.
+    //  The Palette got reduced since I first planned it... huh
 
     // Transparent
     val Glass00 = Color(0x00000000)
@@ -103,9 +105,18 @@ object Palette {
  */
 object TileStyle {
     val TileSize = 128.dp
-    val TileCornerRounding = 8.dp
-    val TileOutlineThickness = 2.dp
-    val TileGridPadding = 24.dp
+    val CornerRounding = 8.dp
+    val OutlineThickness = 2.dp
+    val Padding = 24.dp
+}
+
+/**
+ * Defines the style of
+ * [ComposablePhoenixMechanismBall][app.trailblazercombi.haventide.game.mechanisms.ComposablePhoenixMechanismBall].
+ */
+object PhoenixBallStyle {
+    val OutlineThickness = 6.dp
+    val Padding = 16.dp
 }
 
 /**

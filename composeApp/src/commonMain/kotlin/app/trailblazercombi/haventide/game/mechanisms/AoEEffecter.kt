@@ -8,7 +8,10 @@ abstract class AoEEffecter(parentTile: TileData) : Mechanism(parentTile, Mechani
     }
 }
 
-class AoEModificatorInvoker(override val invokable: ModificatorFactory, parentTile: TileData) : AoEEffecter(parentTile), ModificatorInvoker
+class AoEModificatorInvoker(
+    override val invokable: ModificatorFactory,
+    parentTile: TileData
+) : AoEEffecter(parentTile), ModificatorInvoker
 
 class AoEDamageInvoker(parentTile: TileData) : AoEEffecter(parentTile), DamageInvoker
 

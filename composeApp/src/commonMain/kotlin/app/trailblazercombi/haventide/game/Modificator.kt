@@ -1,5 +1,7 @@
 package app.trailblazercombi.haventide.game
 
+import app.trailblazercombi.haventide.game.modificators.TitanShield
+
 /**
  * This enum representing various types of [modificators][Modificator].
  * Good for categorization, and not much else.
@@ -11,14 +13,16 @@ enum class ModificatorType {
 }
 
 enum class ModificatorFactory {
-    NOTHING;
+    TITAN_SHIELD;
 
-    // TODO Implement this beast based on Modificators that we'll need...
-
-    fun new(): Modificator {
-        TODO("Not implemented yet")
+    fun new(parent: ModificatorHandler): Modificator = when (this) {
+            TITAN_SHIELD -> TitanShield(parent)
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// MODIFICATOR CLASSES
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
  * Modificator is a buff or debuff applied to a [Mechanism].
@@ -114,6 +118,10 @@ abstract class Modificator(val modificatorType: ModificatorType, private val par
     open fun onHealingRecieved(healing: Int): Int = healing
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// MFEIs IMPLEMENTING MODIFICATORS
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 /**
  * Designates that a [Mechanism] can recieve [modificators][Modificator].
  * Also allows updating all [modificators][Modificator] based on conditions.
@@ -134,8 +142,7 @@ interface ModificatorHandler {
      * for each [Modificator] currently on the [Mechanism].
      * @param modificator The [Modificator] to be added.
      */
-    // FIXME Too much processing: canAddModificator() is checked twice:
-    //  once here, and once in ModificatorInvoker.
+    // canAddModificator() is checked twice: once here, and once in ModificatorInvoker.
     fun addModificator(modificator: Modificator) {
         if (canAddModificator(modificator)) {
             modificators.add(modificator)
@@ -197,7 +204,7 @@ interface ModificatorInvoker {
         stack.forEach {
             // 1. Checks. Two of checks.
             if (it !is ModificatorHandler) return@forEach
-            val modificator = invokable.new()
+            val modificator = invokable.new(it)
             if (!canInvokeModificator(modificator, it)) return@forEach
 
             // 2. Invokation!

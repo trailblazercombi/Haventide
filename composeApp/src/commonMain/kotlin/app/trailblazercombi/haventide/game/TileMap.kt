@@ -3,7 +3,6 @@
 package app.trailblazercombi.haventide.game
 
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,19 +12,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.input.pointer.PointerEventType
-import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntOffset
-import app.trailblazercombi.haventide.resourcesAndParsing.UniversalColorizer.*
-import app.trailblazercombi.haventide.resourcesAndParsing.Palette
-import app.trailblazercombi.haventide.resourcesAndParsing.UniversalColorizer
+import app.trailblazercombi.haventide.game.mechanisms.ImmidiateEffecter
+import app.trailblazercombi.haventide.game.mechanisms.Phoenix
+import app.trailblazercombi.haventide.game.mechanisms.PhoenixInfo
+import app.trailblazercombi.haventide.game.mechanisms.Phoenixes
+import app.trailblazercombi.haventide.resources.UniversalColorizer.*
+import app.trailblazercombi.haventide.resources.Palette
+import app.trailblazercombi.haventide.resources.UniversalColorizer
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.math.*
-import app.trailblazercombi.haventide.resourcesAndParsing.TileStyle.TileSize as tileSize
-import app.trailblazercombi.haventide.resourcesAndParsing.TileStyle.TileGridPadding as tilePadding
-import app.trailblazercombi.haventide.resourcesAndParsing.TileStyle.TileCornerRounding as tileCornerRounding
-import app.trailblazercombi.haventide.resourcesAndParsing.TileStyle.TileOutlineThickness as tileOutlineThickness
+import app.trailblazercombi.haventide.resources.TileStyle.TileSize as tileSize
+import app.trailblazercombi.haventide.resources.TileStyle.Padding as tilePadding
+import app.trailblazercombi.haventide.resources.TileStyle.CornerRounding as tileCornerRounding
+import app.trailblazercombi.haventide.resources.TileStyle.OutlineThickness as tileOutlineThickness
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // POSITION
@@ -230,6 +231,11 @@ class TileMapData {
 
     private val tiles: MutableMap<Position, TileData?> = mutableMapOf()
 
+    // The question: Will this even need to handle Mechanism movement?
+    // The answer:   It does not need to handle Mechanism movement.
+    //               The Mechanism will directly communicate with the Tiles in question.
+    // TODO The checking system for figuring out which moves are valid and for whom and what
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // TILE HIGHLIGHT HANDLING (TileMapData)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -302,13 +308,17 @@ class TileMapData {
         this.clearAvailableTiles1()
         this.clearAvailableTiles2()
 
-        // TODO: Here goes the algorithm for highlighting primary tiles with allied Phoenixes.
+        // TODO: Here goes A BETTER algorithm for highlighting primary tiles with ALLIED Phoenixes.
+        tiles.forEach {
+            val tile = it.value ?: return@forEach
+            if (tile.getPhoenix() == null) return@forEach
+            addToAvailableTiles1(tile)
+        }
 
         if (selectedTile1 != null) {
             // TODO: Here goes the algorithm for highlighting secondary positions based on selected Phoenix.
-            for (positionNearby in selectedTile1!!.position.traversableSurroundings(
-                this,
-                selectedTile1!!.getPhoenix(), // TODO: Radius of the Ability goes here!
+            for (positionNearby in selectedTile1!!.position.traversableSurroundings(this, selectedTile1!!.getPhoenix()!!
+                // TODO: Radius of the Ability goes here!
             )) {
                 val tileNearby = get(positionNearby)
                 if (tileNearby != null) {
@@ -344,18 +354,46 @@ class TileMapData {
         for (y in 0 until rows) {
             for (x in 0 until columns) {
                 val position = Position(x, y)
-                if (x % 2 == 0 && y % 4 == 0) tiles[position] = null
-                else tiles[position] = TileData(this, position)
+//                if (x % 2 == 0 && y % 4 == 0) tiles[position] = null
+                tiles[position] = TileData(this, position)
             }
         }
+        val tile = tiles[Position(4, 4)]
+        tile?.addMechanism(Phoenix(
+            info = Phoenixes.AYUNA.info,
+            parentTile = tile
+        ))
+        updateAvailableTiles()
     }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// TILE CLICK EVENTS AND PROPAGATION - Start here!
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // This clicks when a Tile is clicked
     internal fun tileClickEvent(tile: TileData) {
+        // If a yellow tile is selected...
         if (selectedTile1 != null) {
+            // ...and you click it, deselect it
             if (tile == selectedTile1) selectedTile1 = null
+            // ...and you click a white outlined tile, select that tile too + preview move
             else if (this.availableTiles2.contains(tile)) selectedTile2 = tile
-            else selectedTile1 = tile
-        } else selectedTile1 = tile
+            // TODO Preview move...
+            // ..and you click an unrelated tile, deselect both tiles and see what happens
+            else {
+                selectedTile1 = null
+                selectedTile2 = null
+                tileClickEvent(tile)
+            }
+        // Else, if no tile is selected, and you click a yellow outlined tile
+        } else if (availableTiles1.contains(tile)) {
+            selectedTile1 = tile
+            selectedTile2 = null
+        // Else, if not tile is selected and you click an unmarked tile
+        } else {
+            selectedTile1 = null
+            selectedTile2 = tile
+        }
         this.updateAvailableTiles()
     }
 }
@@ -370,15 +408,31 @@ class TileData(
     internal val position: Position,
     private val mechanismStack: MutableSet<Mechanism> = mutableSetOf(),
 
-    // STATE COLORIZERS
+    // COMPOSE STATES: COLORIZERS
     internal var clickStateColorizer: MutableStateFlow<UniversalColorizer> = MutableStateFlow(NO_INTERACTIONS_WITH_OUTLINE),
     internal var highlightStateColorizer: MutableStateFlow<UniversalColorizer> = MutableStateFlow(NO_INTERACTIONS),
     internal var hoverStateColorizer: MutableStateFlow<UniversalColorizer> = MutableStateFlow(NO_INTERACTIONS)
     // TODO Mechanism stack colorizer(s)
 ) {
+    // COMPOSE STATES: MECHANISM STACK
+    val mechanismStackState = MutableStateFlow(mechanismStack.toSet())
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // MECHANISM ADDITION, REMOVAL AND CHECKS (TileData)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // FIXME Maybe remove the checks...?
+    //  Figure out the checkflow, but in general this seems like...
+    //  Tile:    All calls for mechanism operations check themselves
+    //  TileMap: All calls for mechanism operations check themselves
+    //  Mechanism:
+    //      Invokers:   "Check, cast, call" on TileMap MechanismStack
+    //      Handlers:   Do not perform any checking themselves
+    //      destruct(): Performs a full check for destruction
+    //                  but thorws an exception if the check failed
+    //      move():     Performs a check for "is MovementEnabled",
+    //                  and throws an exception if the check failed
+    //                  (performs no other checks)
+
     /**
      * Runs [checks][canAddMechanism] on the specified [mechanism][Mechanism].
      * If [all checks][canAddMechanism] are passed, adds the [mechanism][Mechanism] to this tile.
@@ -386,7 +440,10 @@ class TileData(
      * @param mechanism The [mechanism][Mechanism] in question.
      */
     fun addMechanism(mechanism: Mechanism) {
-        if (canAddMechanism(mechanism)) mechanismStack.add(mechanism)
+        if (canAddMechanism(mechanism)) {
+            mechanismStack.add(mechanism)
+            updateMechanismStackState()
+        }
     }
 
     /**
@@ -396,7 +453,10 @@ class TileData(
      * @param mechanism The [mechanism][Mechanism] in question.
      */
     fun removeMechanism(mechanism: Mechanism) {
-        if (canRemoveMechanism(mechanism)) mechanismStack.remove(mechanism)
+        if (canRemoveMechanism(mechanism)) {
+            mechanismStack.remove(mechanism)
+            updateMechanismStackState()
+        }
     }
 
     /**
@@ -442,20 +502,28 @@ class TileData(
     fun canRemoveMechanism(mechanism: Mechanism): Boolean {
         // 1: Check if it's here
         if (!mechanismStack.contains(mechanism)) return false
+
         // 2: Check if it's not necessary for another mechanism to exist
         for (mechie in mechanismStack) {
+            if (mechie is ImmidiateEffecter) return true // Special case, these need to be always destructed
             if (mechie.vetoTilemateRemoval(mechanism)) return false
         }
+
         // All checks passed: Can remove mechanism
         return true
     }
 
-    fun getPhoenix(): Mechanism {
-        TODO("What even is this? Why even is this here? Hello?!")
+    fun getPhoenix(): Mechanism? {
+        this.mechanismStack.forEach { if (it is Phoenix) return it }
+        return null
     }
 
     fun getMechanismStack(): Set<Mechanism> {
         return mechanismStack.toSet()
+    }
+
+    private fun updateMechanismStackState() {
+        mechanismStackState.value = mechanismStack.toSet()
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -577,10 +645,28 @@ private fun ComposableTile(tileData: TileData? = null, modifier: Modifier = Modi
                         .compositeOver(clickState.fillColor)
                     )
             )
-            // TODO ComposableMechanism() // The mechanisms
+            ComposableMechanismStack(tileData, modifier.align(Alignment.Center))
         }
     } else {
         Spacer(modifier.width(tileSize).height(tileSize))
+    }
+}
+
+/**
+ * The [tile][TileData]'s current [Mechanism Stack][TileData.mechanismStack].
+ */
+@Composable
+fun ComposableMechanismStack(tileData: TileData, modifier: Modifier = Modifier) {
+    val stackState by tileData.mechanismStackState.collectAsState()
+
+    Box (
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+        .size(tileSize)
+    ) {
+        stackState.forEach {
+            ComposableMechanism(it, Modifier.align(Alignment.Center))
+        }
     }
 }
 
@@ -611,4 +697,5 @@ private fun Modifier.scrolling(scrollStateX: ScrollState, scrollStateY: ScrollSt
     return this
         .horizontalScroll(scrollStateX)
         .verticalScroll(scrollStateY)
+    // TODO smooth diagonal scrolling (low priority)
 }

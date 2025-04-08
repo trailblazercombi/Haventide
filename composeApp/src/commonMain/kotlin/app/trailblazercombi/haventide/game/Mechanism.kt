@@ -1,9 +1,12 @@
 package app.trailblazercombi.haventide.game
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-
-import app.trailblazercombi.haventide.game.mechanisms.ImmidiateEffecter
+import app.trailblazercombi.haventide.game.mechanisms.ComposablePhoenixMechanismBall
+import app.trailblazercombi.haventide.game.mechanisms.Phoenix
+import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
  * A Mechanism that resides on [a Tile][TileData].
@@ -13,8 +16,24 @@ import app.trailblazercombi.haventide.game.mechanisms.ImmidiateEffecter
  *
  * @constructor Builds a mechanism with a specified [parent Tile][TileData].
  */
-abstract class Mechanism(var parentTile: TileData, val type: MechanismType) {
+abstract class Mechanism(parentTile: TileData, val type: MechanismType) {
     // TODO Add team affiliation
+    /**
+     * The parent tile of this Mechanism.
+     *
+     * __NOTE:__ This `var` is immutable (acts as `val`)
+     * unless this [Mechanism] also implements [MovementEnabled].
+     * @see MovementEnabled
+     * @throws UnsupportedOperationException when attempting to modify it
+     * on a [Mechanism] that doesn't implement [MovementEnabled]
+     */
+    var parentTile: TileData = parentTile
+        set(value) {
+        if (this !is MovementEnabled) throw UnsupportedOperationException(
+            "Cannot change Parent Tile of a Mechanism that does not implement Movable"
+        ) else field = value
+    }
+
     /**
      * Denies the specified Mechanism the right to move
      * to the same [Tile][TileData] as this one.
@@ -46,6 +65,50 @@ abstract class Mechanism(var parentTile: TileData, val type: MechanismType) {
     open fun vetoTilemateRemoval(tilemate: Mechanism): Boolean {
         return false
     }
+
+    /**
+     * Destructs this Mechanism.
+     *
+     * Destruction means detaching this Mechanism from all its references
+     * and (hopefully) having the garbage collector throw it away.
+     *
+     * @throws UnsupportedOperationException When trying to call this upon a Mechanism
+     * that cannot be destructed due to external consequences.
+     */
+    open fun destruct() {
+        if (!canDestruct())
+            throw UnsupportedOperationException("Cannot destruct Mechanism: canDestruct() check returned false")
+        this.parentTile.removeMechanism(this)
+        // TODO More detaching once this needs to be detached elsewhere
+    }
+
+    /**
+     * Checks if this Mechanism can be destructed.
+     */
+    @Suppress("RedundantIf")
+    open fun canDestruct(): Boolean {
+        if (!this.parentTile.canRemoveMechanism(this)) return false
+        // TODO More checks once this needs to be detached elsewhere
+        return true
+    }
+
+    /**
+     * Moves this Mechanism.
+     *
+     * Movement means untying and retying this Mechanism to a [new parent tile][TileData].
+     * @param to The [new parent tile][TileData] in question.
+     * @throws UnsupportedOperationException When trying to call this upon
+     * a Mechanism that doesn't implement [MovementEnabled].
+     */
+    open fun move(to: TileData) {
+        if (this !is MovementEnabled)
+            throw UnsupportedOperationException("Cannot move Mechanism: Mechanism does not implement MovementEnabler")
+    }
+
+    open fun canMove(to: TileData): Boolean {
+        return this.parentTile.canRemoveMechanism(this)
+                && to.canAddMechanism(this)
+    }
 }
 
 /**
@@ -62,7 +125,7 @@ enum class MechanismType {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// INTERFACES : Extending Mechanism Functionality
+// MECHANISM FUNCTIONALITY EXTENSION INTERFACES (MFEIs)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /**
@@ -164,8 +227,10 @@ interface HitPointsHandler {
  * Invoke damage upon the target [tile][TileData].
  */
 interface DamageInvoker {
+
     /**
      * Damage all [mechanisms][Mechanism] on the target [tile][TileData].
+     * Also checks if damage can be invoked
      */
     fun invokeDamage(damage: Int, target: TileData) {
         target.getMechanismStack().forEach {
@@ -191,6 +256,7 @@ interface DamageInvoker {
 interface HealingInvoker {
     /**
      * Heal all or selected [mechanisms][Mechanism] on the target [tile][TileData].
+     * Also checks if healing can be invoked.
      */
     fun invokeHealing(healing: Int, target: TileData) {
         target.getMechanismStack().forEach {
@@ -211,31 +277,19 @@ interface HealingInvoker {
 }
 
 /**
- * Special case intended for [ImmidiateEffecter] to ensure its proper destruction
- * right after use.
+ * Designates that a [Mechanism] can change its [parent Tile][TileData].
+ *
+ * The methods enabled by [MovementEnabled] are already implemented in [Mechanism] as they
  */
-interface DestructImmidiately {
-    fun destructImmidiately()
-}
+interface MovementEnabled
+
+// See also: Modificator.kt
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // COMPOSABLES
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 @Composable
-fun ComposableMechanism(modifier: Modifier = Modifier, mechanismData: Mechanism) {
-    TODO(
-        "Figure out how a single Mechanism should be displayed, based on the input Mechanism data." +
-                "This will be slightly different from calling an entire Stack, in that it's just the lone Mechanism." +
-                "It might not even be displayed this way on the finlal Mechanism Stack. But oh well, BOOBCAKE."
-    )
-}
-
-@Composable
-fun ComposableMechanismStack(modifier: Modifier = Modifier, mechanismData: Set<Mechanism>) {
-    TODO(
-        "Figure out how all the Mechanisms should be displayed, based on the input Mechanism Stack." +
-                "TileData will be calling this with its Mechanism Stack." +
-                "I guess you can make use of Universal Colorizer."
-    )
+fun ComposableMechanism(mechanism: Mechanism, modifier: Modifier = Modifier) {
+    if (mechanism is Phoenix) ComposablePhoenixMechanismBall(mechanism)
 }
