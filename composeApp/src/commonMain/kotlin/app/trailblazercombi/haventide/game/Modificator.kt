@@ -1,0 +1,214 @@
+package app.trailblazercombi.haventide.game
+
+/**
+ * This enum representing various types of [modificators][Modificator].
+ * Good for categorization, and not much else.
+ */
+enum class ModificatorType {
+    BUFF,
+    DEBUFF,
+    OTHER
+}
+
+enum class ModificatorFactory {
+    NOTHING;
+
+    // TODO Implement this beast based on Modificators that we'll need...
+
+    fun new(): Modificator {
+        TODO("Not implemented yet")
+    }
+}
+
+/**
+ * Modificator is a buff or debuff applied to a [Mechanism].
+ * When a [condition][fireCondition] is fulfilled, Modificator [fires][onFire].
+ * When a [different condition][destructCondition] is fulfilled, Modificator [self-destructs][onDestruct].
+ *
+ * __NOTE__: Methods for [onFire] and [onDestruct] and their affiliated
+ * condition checks ([1][fireCondition], [2][destructCondition]) and ALREADY HANDLED by [ModificatorHandler].
+ * Do NOT implement additional checks!
+ */
+abstract class Modificator(val modificatorType: ModificatorType, private val parent: ModificatorHandler) {
+    /**
+     * Fire the modificator.
+     * This is a self-contained action, meaning the modificator
+     * simply "does something" when a condition is fulfilled
+     * (e.g. "heal 20 HP at the end of round")
+     */
+    open fun onFire() {}
+
+    /**
+     * Destruct the modificator.
+     * This is a self-contained action, meaning the modificator
+     * simply "does something" when a condition is fulfilled
+     * (e.g. "heal 20 HP at the end of round").
+     *
+     * After this action, the modificator is destroyed.
+     *
+     * __NOTE:__ Destruction itself is ALREADY HANDLED by [ModificatorHandler].
+     * Implement only the conseuqences of destructing this modificator here!
+     */
+    open fun onDestruct() {}
+
+    /**
+     * The conditions needing to be fulfilled
+     * for [ModificatorHandler] to [fire][onFire] the [Modificator].
+     * @return `false` by default. Override the method in subclasses to change this behaviour.
+     */
+    open fun fireCondition(): Boolean = false
+
+    /**
+     * The conditions needing to be fulfilled
+     * for [ModificatorHandler] to [destruct][onDestruct] the [Modificator].
+     * @return `false` by default. Override the method in subclasses to change this behaviour.
+     */
+    open fun destructCondition(): Boolean = false
+
+    /**
+     * Called by [ModificatorHandler] when new modificatos are added to the [Mechanism].
+     */
+    open fun onModificatorsAdded() {}
+
+    /**
+     * Called by [ModificatorHandler] when modificators are removed from the [Mechanism]
+     */
+    open fun onModificatorsRemoved() {}
+
+    /**
+     * Called by [HitPointsHandler] when the [Mechanism] takes damage.
+     *
+     * Use of this method requires the [Mechanism] to implement both [ModificatorHandler] AND [HitPointsHandler].
+     *
+     * __NOTE__: Respect [damage == 0][damage].
+     * There are modificators that will nullify all damage, but it cannot be guaranteed that it'll be the first
+     * or the last to modify the input. Hence, if input is [0][Int], the output should also be [0][Int].
+     * @see HitPointsHandler.takeDamage
+     * @param damage Damage input by the caller ([HitPointsHandler.takeDamage]).
+     * @return Damage output by the [Modificator] after it has been modified.
+     *
+     * This will be either passed onto more [modificators][Modificator] to modify further,
+     * or onto the target to take in its full power.
+     *
+     * By default, always returns the [input][damage].
+     */
+    open fun onDamageTaken(damage: Int): Int = damage
+
+    /**
+     * Called by [HitPointsHandler] when the [Mechanism] recieves healing.
+     *
+     * Use of this method requires the [Mechanism] to implement both [ModificatorHandler] AND [HitPointsHandler].
+     *
+     * __NOTE__: Respect [healing == 0][healing].
+     * There are modificators that will nullify all healing, but it cannot be guaranteed that it'll be the first
+     * or the last to modify the input. Hence, if input is [0][Int], the output should also be [0][Int].
+     * @see HitPointsHandler.recieveHealing
+     * @param healing Healing input by the called ([HitPointsHandler.recieveHealing])
+     * @return Healing output by the [Modificator] after it has been modified.
+     *
+     * This will be either passed onto more [modificators][Modificator] to modify further,
+     * or onto the target to take in its full power.
+     *
+     * By default, always returns the [input][healing].
+     */
+    open fun onHealingRecieved(healing: Int): Int = healing
+}
+
+/**
+ * Designates that a [Mechanism] can recieve [modificators][Modificator].
+ * Also allows updating all [modificators][Modificator] based on conditions.
+ */
+interface ModificatorHandler {
+    /**
+     * The set that contains all present modificators.
+     *
+     * __NOTE__: Do NOT modify this list directly.
+     * To add a modificator, use the extension method [addModificator].
+     * To remove a modificator, use [updateModificators] and fulfill a condition for its removal.
+     */
+    val modificators: MutableList<Modificator>
+
+    /**
+     * This is basically a fancy [MutableList.add] that also checks if the [Modificator]
+     * can be added to this [Mechanism], and _then_ also also calls [Modificator.onModificatorsAdded]
+     * for each [Modificator] currently on the [Mechanism].
+     * @param modificator The [Modificator] to be added.
+     */
+    // FIXME Too much processing: canAddModificator() is checked twice:
+    //  once here, and once in ModificatorInvoker.
+    fun addModificator(modificator: Modificator) {
+        if (canAddModificator(modificator)) {
+            modificators.add(modificator)
+            modificators.forEach { it.onModificatorsAdded() }
+        }
+    }
+
+    /**
+     * Calls [Modificator.onFire] and [Modificator.onDestruct] on every [Modificator]
+     * currently on this [Mechanism], while checking for [Modificator.fireCondition]
+     * and [Modificator.destructCondition]. If the latter check returns `true`, also handles
+     * removal from the [MutableList] of [modificators].
+     */
+    // TODO Call this in the Game Loop... literally all the time
+    fun updateModificators() {
+        // 0. This will be used in step 2
+        val junkModificators = mutableSetOf<Modificator>()
+        // 1. Update modificators and collect junk
+        modificators.forEach {
+            if (it.fireCondition()) it.onFire()
+            if (it.destructCondition()) {
+                it.onDestruct()
+                junkModificators.add(it)
+            }
+        }
+        // 2. Clear out junk
+        if (junkModificators.isNotEmpty()) {
+            modificators.removeAll(junkModificators)
+            modificators.forEach { it.onModificatorsRemoved() }
+        }
+    }
+
+    /**
+     * Checks if the specified [Modificator] would be happy to reside on this [Mechanism].
+     *
+     * Override this method in subclasses to achieve good results.
+     * @param modificator The specified [Modificator]
+     * @return `true` by default, but overriding this method
+     * and denying this right to [modificators][Modificator] is very encouraged :)
+     */
+    fun canAddModificator(modificator: Modificator): Boolean = true
+}
+
+/**
+ * Invoke a [Modificator] upon the target [tile][TileData].
+ */
+interface ModificatorInvoker {
+
+    /**
+     * Specifies the Modificator pattern used for creation of this Modificator.
+     */
+    val invokable: ModificatorFactory
+
+    /**
+     * Add the [Modificator] to all [mechanisms][Mechanism] on the target [tile][TileData].
+     */
+    fun invokeModificator(invokable: ModificatorFactory = this.invokable, target: TileData) {
+        val stack = target.getMechanismStack()
+        stack.forEach {
+            // 1. Checks. Two of checks.
+            if (it !is ModificatorHandler) return@forEach
+            val modificator = invokable.new()
+            if (!canInvokeModificator(modificator, it)) return@forEach
+
+            // 2. Invokation!
+            it.addModificator(modificator)
+        }
+    }
+
+    /**
+     * (Optional) Check if the [Modificator] can be added to the desired [targets][Mechanism].
+     */
+    fun canInvokeModificator(modificator: Modificator, target: Mechanism): Boolean {
+        return target is ModificatorHandler && target.canAddModificator(modificator)
+    }
+}

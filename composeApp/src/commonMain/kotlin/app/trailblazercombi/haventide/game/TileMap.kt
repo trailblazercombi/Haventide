@@ -3,22 +3,20 @@
 package app.trailblazercombi.haventide.game
 
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.input.pointer.PointerEventType
+import androidx.compose.ui.input.pointer.PointerInputScope
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.IntOffset
 import app.trailblazercombi.haventide.resourcesAndParsing.UniversalColorizer.*
 import app.trailblazercombi.haventide.resourcesAndParsing.Palette
 import app.trailblazercombi.haventide.resourcesAndParsing.UniversalColorizer
@@ -29,6 +27,9 @@ import app.trailblazercombi.haventide.resourcesAndParsing.TileStyle.TileGridPadd
 import app.trailblazercombi.haventide.resourcesAndParsing.TileStyle.TileCornerRounding as tileCornerRounding
 import app.trailblazercombi.haventide.resourcesAndParsing.TileStyle.TileOutlineThickness as tileOutlineThickness
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// POSITION
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
  * This is a position on the map, represented by x and y coordinates.
  */
@@ -80,7 +81,7 @@ data class Position(val x: Int, val y: Int) {
      * Takes the direct line between the two positions.
      * Returns every position the line intersects.
      *
-     * Note: A position here is takes as a [tile][TileData],
+     * __NOTE__: A position here is a [tile][TileData],
      * meaning a square that's __1 tile × 1 tile__ in size,
      * where the position is defined as the center of the tile[TileData]
      * and then spreads __0.5 tiles__ in either direction.
@@ -214,6 +215,9 @@ data class Position(val x: Int, val y: Int) {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// TILES AND TILE MAP
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
  * This is the map data class in all its glory.
  */
@@ -226,7 +230,9 @@ class TileMapData {
 
     private val tiles: MutableMap<Position, TileData?> = mutableMapOf()
 
-// TILE HIGHLIGHT HANDLING
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// TILE HIGHLIGHT HANDLING (TileMapData)
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * Describes the primary selected tile (yellow).
      * If the yellow tile had an outline before selection (was in availableTiles1),
@@ -370,7 +376,9 @@ class TileData(
     internal var hoverStateColorizer: MutableStateFlow<UniversalColorizer> = MutableStateFlow(NO_INTERACTIONS)
     // TODO Mechanism stack colorizer(s)
 ) {
-// MECHANISM ADDITION, REMOVAL AND CHECKS>
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// MECHANISM ADDITION, REMOVAL AND CHECKS (TileData)
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * Runs [checks][canAddMechanism] on the specified [mechanism][Mechanism].
      * If [all checks][canAddMechanism] are passed, adds the [mechanism][Mechanism] to this tile.
@@ -443,10 +451,16 @@ class TileData(
     }
 
     fun getPhoenix(): Mechanism {
-        return Mechanism(parentTile = this) // TODO
+        TODO("What even is this? Why even is this here? Hello?!")
     }
 
-// CLICK PROPAGATION AND STATE HANDLING
+    fun getMechanismStack(): Set<Mechanism> {
+        return mechanismStack.toSet()
+    }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// CLICK STATE PROPAGATION AND HANDLING (TileData)
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * Send the click event from [the user][ComposableTile] upwards, to the parent [map][TileMapData].
      * The [map][TileMapData] handles the rest.
@@ -483,6 +497,10 @@ class TileData(
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// COMPOSABLES
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 /**
  * This is the UI layer of [TileMapData].
  */
@@ -497,9 +515,8 @@ fun ComposableTileMap(mapData: TileMapData, modifier: Modifier = Modifier) {
         contentAlignment = Alignment.Center,
         modifier = modifier
             .fillMaxSize()
-            .horizontalScroll(scrollStateX, true)
-            .verticalScroll(scrollStateY, true)
             .background(mapData.backdropColor)
+            .scrolling(scrollStateX, scrollStateY)
     ) {
         Column {
             for (y in 0 until mapData.rows) {
@@ -518,7 +535,7 @@ fun ComposableTileMap(mapData: TileMapData, modifier: Modifier = Modifier) {
  * This is the UI layer of [TileData].
  */
 @Composable
-fun ComposableTile(tileData: TileData? = null, modifier: Modifier = Modifier) {
+private fun ComposableTile(tileData: TileData? = null, modifier: Modifier = Modifier) {
     if (tileData != null) {
         val clickState by tileData.clickStateColorizer.collectAsState()
         val highlightState by tileData.highlightStateColorizer.collectAsState()
@@ -572,7 +589,7 @@ fun ComposableTile(tileData: TileData? = null, modifier: Modifier = Modifier) {
  * It is used to handle hover inputs when a pointer is used, such as a mouse or stylus hover.
  */
 @Composable
-fun Modifier.handleHover(onEnter: () -> Unit = {}, onExit: () -> Unit = {}): Modifier = pointerInput(Unit) {
+private fun Modifier.handleHover(onEnter: () -> Unit = {}, onExit: () -> Unit = {}): Modifier = pointerInput(Unit) {
     awaitPointerEventScope {
         while (true) {
             val event = awaitPointerEvent()
@@ -583,4 +600,15 @@ fun Modifier.handleHover(onEnter: () -> Unit = {}, onExit: () -> Unit = {}): Mod
             }
         }
     }
+}
+
+/**
+ * An extension function that could, presumably, in the future, hanlde smooth scrolling,
+ * including diagonal.
+ */
+@Composable
+private fun Modifier.scrolling(scrollStateX: ScrollState, scrollStateY: ScrollState): Modifier {
+    return this
+        .horizontalScroll(scrollStateX)
+        .verticalScroll(scrollStateY)
 }
