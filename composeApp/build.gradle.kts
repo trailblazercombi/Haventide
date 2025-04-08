@@ -75,6 +75,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics.android)
     implementation(libs.androidx.ui.geometry.android)
     implementation(libs.androidx.runtime.android)
+    implementation(libs.androidx.ui.android)
     debugImplementation(compose.uiTooling)
 }
 
@@ -88,4 +89,10 @@ compose.desktop {
             packageVersion = "1.0.0"
         }
     }
+}
+
+compose.resources {
+    publicResClass = true
+    packageOfResClass = "app.trailblazercombi.haventide.resources"
+    generateResClass = auto
 }

@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Haventide</string>
+
+    <string name="phoenix_finnian_short_name">Finnian</string>
+    <string name="phoenix_finnian_long_name">Finnian</string>
+
+    <string name="phoenix_ayuna_short_name">Ayuna</string>
+    <string name="phoenix_ayuna_long_name">Kaminami Ayuna</string>
+
+    <string name="phoenix_ayumi_short_name">Ayumi</string>
+    <string name="phoenix_ayumi_long_name">Kaminami Ayumi</string>
+
+    <string name="phoenix_yumio_short_name">Yumio</string>
+    <string name="phoenix_yumio_long_name">Tanaka Yumio</string>
+
+    <string name="phoenix_malachai_short_name">Malachai</string>
+    <string name="phoenix_malachai_long_name">Malachai Vakuumin</string>
+
+    <string name="phoenix_sylvia_short_name">Sylvia</string>
+    <string name="phoenix_sylvia_long_name">Sylvia</string>
+
+    <string name="phoenix_torrent_short_name">"Torrent"</string>
+    <string name="phoenix_torrent_long_name">"Torrent"</string>
+</resources>
