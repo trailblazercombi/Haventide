@@ -2,7 +2,7 @@ package app.trailblazercombi.haventide.game.mechanisms
 
 import app.trailblazercombi.haventide.game.*
 
-abstract class ImmidiateEffecter(parentTile: TileData) : Mechanism(parentTile, MechanismType.EFFECTER_IMMIDIATE) {
+abstract class ImmidiateEffecter(parentTile: TileData) : Mechanism(parentTile, MechanismType.EFFECTER_IMMIDIATE, null) {
     override fun vetoTilemateAddition(tilemate: Mechanism): Boolean {
         return false
     }

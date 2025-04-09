@@ -1,12 +1,9 @@
 package app.trailblazercombi.haventide.game
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import app.trailblazercombi.haventide.game.mechanisms.ComposablePhoenixMechanismBall
-import app.trailblazercombi.haventide.game.mechanisms.Phoenix
-import kotlinx.coroutines.flow.MutableStateFlow
+import app.trailblazercombi.haventide.game.mechanisms.PhoenixMechanism
 
 /**
  * A Mechanism that resides on [a Tile][TileData].
@@ -15,9 +12,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
  * Extend this class to build your own Mechanisms.
  *
  * @constructor Builds a mechanism with a specified [parent Tile][TileData].
+ * @param parentTile The initial [tile][TileData]this Mechanism will reside on.
+ * @param type The type of the Mechanism (deprecated, use `Mechanism is Subclass/Interface` instead)
+ * @param teamAffiliation The [Team] this Mechanism belongs to. Managed automatically, if a Team is passed.
+ *                        Pass `null` to create an independent mechanism. Such mechanisms will affect everyone
+ *                        regardless of the [recipient][Mechanism]'s [Team].
  */
-abstract class Mechanism(parentTile: TileData, val type: MechanismType) {
-    // TODO Add team affiliation
+abstract class Mechanism(parentTile: TileData, private val type: MechanismType = MechanismType.ANY, val teamAffiliation: Team?) {
+    init { postConstruct() } // Defers assigning team affiliation to prevent leaking this before subclasses are instantiatied
+    private fun postConstruct() = teamAffiliation?.members?.add(this)
     /**
      * The parent tile of this Mechanism.
      *
@@ -118,10 +121,9 @@ abstract class Mechanism(parentTile: TileData, val type: MechanismType) {
 enum class MechanismType {
     PHOENIX,
     EFFECTER_AOE,
-    EFFECTER_IMMIDIATE
-    // TODO I'm sure this enum will be useful, but
-    //  in case I end up doing all checks via "is"/"!is" (instaneof),
-    //  DELETE THIS BOOBCAKE
+    EFFECTER_IMMIDIATE,
+    ANY
+    // TODO If this is not used for any checking, DELETE THIS BOOBCAKE
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -291,5 +293,5 @@ interface MovementEnabled
 
 @Composable
 fun ComposableMechanism(mechanism: Mechanism, modifier: Modifier = Modifier) {
-    if (mechanism is Phoenix) ComposablePhoenixMechanismBall(mechanism)
+    if (mechanism is PhoenixMechanism) ComposablePhoenixMechanismBall(mechanism)
 }

@@ -23,46 +23,47 @@ object Palette {
     val Glass90 = Color(0xE6FFFFFF)
 
     // Dark Primary
-    val FillDarkPrimary = Color(0xFF102538)
-    val LightDarkPrimary = Color(0xFF16334D)
-    val ShadeDarkPrimary = Color(0xFF0B1E2E)
+//    val FillDarkPrimary = Color(0xFF102538)
+//    val LightDarkPrimary = Color(0xFF16334D)
+//    val ShadeDarkPrimary = Color(0xFF0B1E2E)
 
     // Dark Alternative
-    val FillDarkAlternative = Color(0xFF091622)
-    val LightDarkAlternative = Color(0xFF0D1E2E)
-    val ShadeDarkAlternative = Color(0xFF060D14)
+//    val FillDarkAlternative = Color(0xFF091622)
+//    val LightDarkAlternative = Color(0xFF0D1E2E)
+//    val ShadeDarkAlternative = Color(0xFF060D14)
 
     // Light Primary
     val FillLightPrimary = Color(0xFFCBDCEC)
-    val LightLightPrimary = Color(0xFFC4D3E2)
-    val ShadeLightPrimary = Color(0xFFA7B5C2)
+//    val LightLightPrimary = Color(0xFFC4D3E2)
+//    val ShadeLightPrimary = Color(0xFFA7B5C2)
 
     // Light Alternative
-    val FillLightAlternative = Color(0xFF747D85)
-    val LightLightAlternative = Color(0xFF828D96)
-    val ShadeLightAlternative = Color(0xFF61686F)
+//    val FillLightAlternative = Color(0xFF747D85)
+//    val LightLightAlternative = Color(0xFF828D96)
+//    val ShadeLightAlternative = Color(0xFF61686F)
 
     // Yellow Content
     val FillYellow = Color(0xFFC48C00)
-    val LightYellow = Color(0xFFFFD428)
-    val ShadeYellow = Color(0xFFD5A000)
+//    val LightYellow = Color(0xFFFFD428)
+//    val ShadeYellow = Color(0xFFD5A000)
 
     // Blue Content
-    val FillBlue = Color(0xFF273265)
-    val LightBlue = Color(0xFF3B4B98)
-    val ShadeBlue = Color(0xFF1E264D)
+//    val FillBlue = Color(0xFF273265)
+//    val LightBlue = Color(0xFF3B4B98)
+//    val ShadeBlue = Color(0xFF1E264D)
 
     // Red Content
     val FillRed = Color(0xFFEE0000)
-    val LightRed = Color(0xFFFF3122)
-    val ShadeRed = Color(0xFFBE1601)
+//    val LightRed = Color(0xFFFF3122)
+//    val ShadeRed = Color(0xFFBE1601)
 
     // Green Content
     val FillGreen = Color(0xFF2FAA6B)
-    val LightGreen = Color(0xFF56CC84)
-    val ShadeGreen = Color(0xFF228A55)
+//    val LightGreen = Color(0xFF56CC84)
+//    val ShadeGreen = Color(0xFF228A55)
 
-    // TODO Move these to the Character Definition itself
+    /*
+    // Moved these to the Character Definition itself
     // Character: Ayuna
     val FillAyuna = Color(0xFFD91410)
     val LightAyuna = Color(0xFFFF1813)
@@ -92,6 +93,7 @@ object Palette {
     val FillYumio = Color(0xFF2169AD)
     val LightYumio = Color(0xFF337FC8)
     val ShadeYumio = Color(0xFF1B5993)
+    */
 
     // Basic Colors
     val FullBlack = Color(0xFF000000)
@@ -115,8 +117,8 @@ object TileStyle {
  * [ComposablePhoenixMechanismBall][app.trailblazercombi.haventide.game.mechanisms.ComposablePhoenixMechanismBall].
  */
 object PhoenixBallStyle {
-    val OutlineThickness = 6.dp
-    val Padding = 16.dp
+    val OutlineThickness = 2.dp
+    val Padding = 32.dp
 }
 
 /**

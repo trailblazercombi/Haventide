@@ -58,6 +58,10 @@ abstract class Modificator(val modificatorType: ModificatorType, private val par
     /**
      * The conditions needing to be fulfilled
      * for [ModificatorHandler] to [fire][onFire] the [Modificator].
+     *
+     * __NOTE__ Do not even consider making this method `return true` unconditionally.
+     * This method is called in []
+     *
      * @return `false` by default. Override the method in subclasses to change this behaviour.
      */
     open fun fireCondition(): Boolean = false

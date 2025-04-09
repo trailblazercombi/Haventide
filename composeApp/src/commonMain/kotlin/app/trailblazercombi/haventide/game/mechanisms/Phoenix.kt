@@ -21,11 +21,12 @@ import app.trailblazercombi.haventide.resources.PhoenixBallStyle.Padding as ball
 import app.trailblazercombi.haventide.resources.TileStyle.Padding as tilePadding
 import app.trailblazercombi.haventide.resources.TileStyle.TileSize as tileSize
 
-class Phoenix(
+class PhoenixMechanism(
     parentTile: TileData,
     val info: PhoenixInfo,
     override val modificators: MutableList<Modificator> = mutableListOf(),
-) : Mechanism(parentTile, MechanismType.PHOENIX), ModificatorHandler, HitPointsHandler {
+    teamAffiliation: Team
+) : Mechanism(parentTile, MechanismType.PHOENIX, teamAffiliation), ModificatorHandler, HitPointsHandler {
     override val maxHitPoints = info.maxHitPoints
     override var currentHitPoints = maxHitPoints
 
@@ -44,7 +45,7 @@ class Phoenix(
 /**
  * This is a data blob that contians all data
  * a Phoenix needs to function.
- * @see Phoenix
+ * @see PhoenixMechanism
  */
 data class PhoenixInfo(
     val fullName: StringResource,
@@ -59,7 +60,7 @@ data class PhoenixInfo(
 
 /**
  * This is a definition of all the Phoenixes' data blobs.
- * Use to create new instances of [Phoenix].
+ * Use to create new instances of [PhoenixMechanism].
  */
 enum class Phoenixes(val info: PhoenixInfo) {
     AYUNA(PhoenixInfo(
@@ -105,13 +106,13 @@ enum class Phoenixes(val info: PhoenixInfo) {
         profilePhoto = Res.drawable.Torrent
     )),
 
-    ; fun toPhoenix(parent: TileData): Phoenix {
-        return Phoenix(parent, this.info)
+    ; fun toPhoenix(parent: TileData, team: Team): PhoenixMechanism {
+        return PhoenixMechanism(parentTile = parent, info = this.info, teamAffiliation = team)
     }
 }
 
 @Composable
-fun ComposablePhoenixMechanismBall(phoenix: Phoenix, modifier: Modifier = Modifier) {
+fun ComposablePhoenixMechanismBall(phoenix: PhoenixMechanism, modifier: Modifier = Modifier) {
     val painter: Painter = painterResource(phoenix.info.profilePhoto)
 
     Box (modifier = modifier

@@ -15,8 +15,7 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
 import app.trailblazercombi.haventide.game.mechanisms.ImmidiateEffecter
-import app.trailblazercombi.haventide.game.mechanisms.Phoenix
-import app.trailblazercombi.haventide.game.mechanisms.PhoenixInfo
+import app.trailblazercombi.haventide.game.mechanisms.PhoenixMechanism
 import app.trailblazercombi.haventide.game.mechanisms.Phoenixes
 import app.trailblazercombi.haventide.resources.UniversalColorizer.*
 import app.trailblazercombi.haventide.resources.Palette
@@ -222,19 +221,28 @@ data class Position(val x: Int, val y: Int) {
 /**
  * This is the map data class in all its glory.
  */
-class TileMapData {
+class TileMapData(player1: PlayerProfile, player2: PlayerProfile) {
 
     // TODO Size does not need to be a property,
     //  and also, read this from file, including the backdrop color.
     val columns = 10; val rows = 10
     val backdropColor = Palette.FullBlack
 
+    // FIXME Bodged to make this work at least somehow.
+    //  This won't allow for more than 2 players though...
+    private val localPIG = player1.toLocalPIG()
+    private val remotePIG = player2.toRemotePIG()
+
     private val tiles: MutableMap<Position, TileData?> = mutableMapOf()
+    private val teams: Map<PlayerInGame, Team> = mapOf(
+        localPIG to Team(), // Local player, the one playing the game on the device
+        remotePIG to Team() // Remote player, the enemy playing on another device
+    )
 
     // The question: Will this even need to handle Mechanism movement?
     // The answer:   It does not need to handle Mechanism movement.
     //               The Mechanism will directly communicate with the Tiles in question.
-    // TODO The checking system for figuring out which moves are valid and for whom and what
+    // TODO The checking system for figuring out which moves are valid and for whom and whatč
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // TILE HIGHLIGHT HANDLING (TileMapData)
@@ -304,25 +312,34 @@ class TileMapData {
          * That is, of course, if the ally is targetable (within range and the Phoenix has an ability for that).
          */
 
+    private fun localPIG(): LocalPlayerInGame {
+        teams.forEach {
+            val player = it.key
+            if (player is LocalPlayerInGame) return player
+        }
+        throw NullPointerException("There is no local player playing")
+    }
+
     private fun updateAvailableTiles() {
+        // 0. Clear the current highlights
         this.clearAvailableTiles1()
         this.clearAvailableTiles2()
 
-        // TODO: Here goes A BETTER algorithm for highlighting primary tiles with ALLIED Phoenixes.
-        tiles.forEach {
-            val tile = it.value ?: return@forEach
-            if (tile.getPhoenix() == null) return@forEach
-            addToAvailableTiles1(tile)
+        // 1.
+        teams[localPIG]!!.members.forEach {
+            if (it !is PhoenixMechanism) return@forEach
+            addToAvailableTiles1(it.parentTile)
         }
 
         if (selectedTile1 != null) {
-            // TODO: Here goes the algorithm for highlighting secondary positions based on selected Phoenix.
+            // TODO: Here goes the algorithm for highlighting secondary positions based on selected Phoenix
+            //  Prerequisites: The aforementioned AbilityStack
             for (positionNearby in selectedTile1!!.position.traversableSurroundings(this, selectedTile1!!.getPhoenix()!!
                 // TODO: Radius of the Ability goes here!
             )) {
                 val tileNearby = get(positionNearby)
                 if (tileNearby != null) {
-                    this.addToAvailableTiles2(tileNearby)
+                    this.addToAvailableTiles2(tileData = tileNearby)
                 }
             }
         }
@@ -347,23 +364,6 @@ class TileMapData {
      */
     operator fun get(position: Position): TileData? {
         return tiles[position]
-    }
-
-    init {
-        // TODO Read from a file instead
-        for (y in 0 until rows) {
-            for (x in 0 until columns) {
-                val position = Position(x, y)
-//                if (x % 2 == 0 && y % 4 == 0) tiles[position] = null
-                tiles[position] = TileData(this, position)
-            }
-        }
-        val tile = tiles[Position(4, 4)]
-        tile?.addMechanism(Phoenix(
-            info = Phoenixes.AYUNA.info,
-            parentTile = tile
-        ))
-        updateAvailableTiles()
     }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -395,6 +395,34 @@ class TileMapData {
             selectedTile2 = tile
         }
         this.updateAvailableTiles()
+    }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// THE FORSAKEN INIT BLOCK
+// Moved here because NullPointerException when trying to call fields below it...
+// Ghhhhhhh...
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    init {
+        // TODO Read from a file instead
+        for (y in 0 until rows) {
+            for (x in 0 until columns) {
+                val position = Position(x, y)
+//                if (x % 2 == 0 && y % 4 == 0) tiles[position] = null
+                tiles[position] = TileData(this, position)
+            }
+        }
+        var tile = tiles[Position(3, 1)]
+        tile?.addMechanism(Phoenixes.AYUNA.toPhoenix(
+            tile,
+            this.teams[localPIG] ?: throw NullPointerException("Player 1 is null")
+        ))
+        tile = tiles[Position(4, 2)]
+        tile?.addMechanism(Phoenixes.FINNIAN.toPhoenix(
+            tile,
+            this.teams[remotePIG] ?: throw NullPointerException("Player 2 is null")
+        ))
+        updateAvailableTiles()
     }
 }
 
@@ -514,7 +542,7 @@ class TileData(
     }
 
     fun getPhoenix(): Mechanism? {
-        this.mechanismStack.forEach { if (it is Phoenix) return it }
+        this.mechanismStack.forEach { if (it is PhoenixMechanism) return it }
         return null
     }
 
