@@ -37,8 +37,9 @@ class PhoenixMechanism(
     }
 
     override fun vetoTraversal(mechanism: Mechanism): Boolean {
-        // TODO Team affiliation, allow movements for team members
-        return super.vetoTraversal(mechanism)
+        if (mechanism !is PhoenixMechanism) return true
+        if (mechanism.teamAffiliation != teamAffiliation) return true
+        return false
     }
 }
 
