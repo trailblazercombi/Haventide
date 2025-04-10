@@ -23,7 +23,7 @@ import app.trailblazercombi.haventide.resources.TileStyle.TileSize as tileSize
 
 class PhoenixMechanism(
     parentTile: TileData,
-    val info: PhoenixInfo,
+    val info: MechanismTemplate.Phoenix,
     override val modificators: MutableList<Modificator> = mutableListOf(),
     teamAffiliation: Team
 ) : Mechanism(parentTile, MechanismType.PHOENIX, teamAffiliation), ModificatorHandler, HitPointsHandler {
@@ -43,6 +43,7 @@ class PhoenixMechanism(
     }
 }
 
+/*
 /**
  * This is a data blob that contians all data
  * a Phoenix needs to function.
@@ -58,49 +59,50 @@ data class PhoenixInfo(
     //  Lore pages
     //  Et cetera
 )
+*/
 
 /**
  * This is a definition of all the Phoenixes' data blobs.
  * Use to create new instances of [PhoenixMechanism].
  */
-enum class Phoenixes(val info: PhoenixInfo) {
-    AYUNA(PhoenixInfo(
+enum class Phoenixes(val info: MechanismTemplate.Phoenix) {
+    AYUNA(MechanismTemplate.Phoenix(
         fullName = Res.string.phoenix_ayuna_long_name,
         shortName = Res.string.phoenix_ayuna_short_name,
         accentColor = Color(0xFFD91410),
         profilePhoto = Res.drawable.Ayuna
     )),
-    AYUMI(PhoenixInfo(
+    AYUMI(MechanismTemplate.Phoenix(
         fullName = Res.string.phoenix_ayumi_long_name,
         shortName = Res.string.phoenix_ayumi_short_name,
         accentColor = Color(0xFF098432),
         profilePhoto = Res.drawable.Ayumi
     )),
-    SYLVIA(PhoenixInfo(
+    SYLVIA(MechanismTemplate.Phoenix(
         fullName = Res.string.phoenix_sylvia_long_name,
         shortName = Res.string.phoenix_sylvia_short_name,
         accentColor = Color(0xFF67406D),
         profilePhoto = Res.drawable.Sylvia
     )),
-    MALACHAI(PhoenixInfo(
+    MALACHAI(MechanismTemplate.Phoenix(
         fullName = Res.string.phoenix_malachai_long_name,
         shortName = Res.string.phoenix_malachai_short_name,
         accentColor = Color(0xFF3B3B93),
         profilePhoto = Res.drawable.Malachai
     )),
-    FINNIAN(PhoenixInfo(
+    FINNIAN(MechanismTemplate.Phoenix(
         fullName = Res.string.phoenix_finnian_long_name,
         shortName = Res.string.phoenix_finnian_short_name,
         accentColor = Color(0xFF25B97F),
         profilePhoto = Res.drawable.Finnian
     )),
-    YUMIO(PhoenixInfo(
+    YUMIO(MechanismTemplate.Phoenix(
         fullName = Res.string.phoenix_yumio_long_name,
         shortName = Res.string.phoenix_yumio_short_name,
         accentColor = Color(0xFF2169AD),
         profilePhoto = Res.drawable.Yumio
     )),
-    TORRENT(PhoenixInfo(
+    TORRENT(MechanismTemplate.Phoenix(
         fullName = Res.string.phoenix_torrent_long_name,
         shortName = Res.string.phoenix_torrent_short_name,
         accentColor = Color(0xFF465376),

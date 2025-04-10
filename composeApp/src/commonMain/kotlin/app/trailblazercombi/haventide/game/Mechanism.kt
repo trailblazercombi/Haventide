@@ -380,6 +380,13 @@ interface ModificatorInvoker {
 }
 
 /**
+ * Invoke a new [Mechanism] using [MechanismTemplate].
+ */
+interface MechanismSummonInvoker {
+    val invokable: MechanismTemplate
+}
+
+/**
  * Designates that a [Mechanism] can change its [parent Tile][TileData].
  *
  * The methods enabled by [MovementEnabled] are already implemented in [Mechanism] as they
@@ -387,6 +394,23 @@ interface ModificatorInvoker {
 interface MovementEnabled
 
 // See also: Modificator.kt
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// MECHANISM TEMPLATE
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+sealed class MechanismTemplate {
+    data class Phoenix(
+        val fullName: StringResource,
+        val shortName: StringResource,
+        val accentColor: Color,
+        val profilePhoto: DrawableResource,
+        val maxHitPoints: Int = 120,
+        // TODO Abilities
+        //  Lore pages
+        //  Et cetera
+    ) : MechanismTemplate()
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // COMPOSABLES
