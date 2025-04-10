@@ -58,6 +58,23 @@ fun ComposablePhoenixMechanismBall(phoenix: PhoenixMechanism, modifier: Modifier
                 .border(ballOutline, Palette.FullWhite, CircleShape)
                 .size(tileSize - tilePadding - ballPadding)
         )
-        // TODO Team affiliation icon, actual health points, actual energy (ally only)
+        // Affiliation icon
+        Box (
+            modifier = modifier
+                .align(Alignment.BottomEnd)
+                .size(teamIconSize + (teamIconPadding * 2))
+                .padding(teamIconPadding)
+                .background(Palette.FullWhite, CircleShape)
+        ) {
+            Image(
+                painter = teamIcon,
+                contentDescription = null,
+                colorFilter = ColorFilter.tint(Palette.FullBlack),
+                modifier = modifier
+                    .size(teamIconSize + (teamIconPadding * 2))
+                    .padding(teamIconInnerPadding)
+            )
+        }
+        // TODO actual health points, actual energy (ally only)
     }
 }
