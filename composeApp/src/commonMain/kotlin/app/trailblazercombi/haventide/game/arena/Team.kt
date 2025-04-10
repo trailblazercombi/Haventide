@@ -1,6 +1,9 @@
 package app.trailblazercombi.haventide.game.arena
 
 import app.trailblazercombi.haventide.game.mechanisms.Mechanism
+import app.trailblazercombi.haventide.resources.Res
+import app.trailblazercombi.haventide.resources.enemy
+import org.jetbrains.compose.resources.DrawableResource
 
 /**
  * The actual Team definition and its members.
@@ -16,5 +19,25 @@ import app.trailblazercombi.haventide.game.mechanisms.Mechanism
  * detaches itself from the [Team]. __UNDER NO CIRCUMSTANCES__ try detaching it manually!
  */
 data class Team(
-    val members: MutableSet<Mechanism> = mutableSetOf(),
-)
+    private val members: MutableSet<Mechanism> = mutableSetOf(),
+    val icon: DrawableResource = Res.drawable.enemy // TileMapData.init is resposible for this being correct
+) : Iterable<Mechanism> {
+    fun add(member: Mechanism) = this.members.add(member)
+    fun remove(member: Mechanism) = this.members.remove(member)
+    fun getMembers(): Set<Mechanism> = this.members.toSet()
+    override fun iterator(): Iterator<Mechanism> = this.members.iterator()
+}
+
+/**
+ * This is a singleton that contains all [Mechanisms][Mechanism]
+ * that are not affiliated with any [Team]
+ * (they were passed `teamAffiliation = null` upon construction)
+ */
+data object NeutralFaction : Iterable<Mechanism> {
+    private val members: MutableSet<Mechanism> = mutableSetOf()
+
+    fun add(member: Mechanism) = this.members.add(member)
+    fun remove(member: Mechanism) = this.members.remove(member)
+    fun getMembers(): Set<Mechanism> = this.members.toSet()
+    override fun iterator(): Iterator<Mechanism> = this.members.iterator()
+}

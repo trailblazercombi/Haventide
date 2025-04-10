@@ -59,15 +59,15 @@ enum class PlaceholderPlayers(
 ) {
     PLAYER_ONE(
         "You",
-        Phoenixes.FINNIAN.info,
-        Phoenixes.YUMIO.info,
-        Phoenixes.MALACHAI.info
+        Phoenixes.FINNIAN.template,
+        Phoenixes.YUMIO.template,
+        Phoenixes.MALACHAI.template
     ),
     PLAYER_TWO(
         "Opponent",
-        Phoenixes.AYUNA.info,
-        Phoenixes.AYUMI.info,
-        Phoenixes.SYLVIA.info
+        Phoenixes.AYUNA.template,
+        Phoenixes.AYUMI.template,
+        Phoenixes.SYLVIA.template
     );
 
     fun toProfile() = PlayerProfile(playerName, setOf(member1, member2, member3))
