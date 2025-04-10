@@ -9,12 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import app.trailblazercombi.haventide.game.*
+import app.trailblazercombi.haventide.game.arena.Team
+import app.trailblazercombi.haventide.game.arena.TileData
+import app.trailblazercombi.haventide.game.modificators.Modificator
 import app.trailblazercombi.haventide.resources.*
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import app.trailblazercombi.haventide.resources.PhoenixBallStyle.OutlineThickness as ballOutline
 import app.trailblazercombi.haventide.resources.PhoenixBallStyle.Padding as ballPadding
@@ -26,7 +25,7 @@ class PhoenixMechanism(
     val info: MechanismTemplate.Phoenix,
     override val modificators: MutableList<Modificator> = mutableListOf(),
     teamAffiliation: Team
-) : Mechanism(parentTile, MechanismType.PHOENIX, teamAffiliation), ModificatorHandler, HitPointsHandler {
+) : Mechanism(parentTile, teamAffiliation), ModificatorHandler, HitPointsHandler {
     override val maxHitPoints = info.maxHitPoints
     override var currentHitPoints = maxHitPoints
 
@@ -40,77 +39,6 @@ class PhoenixMechanism(
         if (mechanism !is PhoenixMechanism) return true
         if (mechanism.teamAffiliation != teamAffiliation) return true
         return false
-    }
-}
-
-/*
-/**
- * This is a data blob that contians all data
- * a Phoenix needs to function.
- * @see PhoenixMechanism
- */
-data class PhoenixInfo(
-    val fullName: StringResource,
-    val shortName: StringResource,
-    val accentColor: Color,
-    val profilePhoto: DrawableResource,
-    val maxHitPoints: Int = 120,
-    // TODO Abilities
-    //  Lore pages
-    //  Et cetera
-)
-*/
-
-/**
- * This is a definition of all the Phoenixes' data blobs.
- * Use to create new instances of [PhoenixMechanism].
- */
-enum class Phoenixes(val info: MechanismTemplate.Phoenix) {
-    AYUNA(MechanismTemplate.Phoenix(
-        fullName = Res.string.phoenix_ayuna_long_name,
-        shortName = Res.string.phoenix_ayuna_short_name,
-        accentColor = Color(0xFFD91410),
-        profilePhoto = Res.drawable.Ayuna
-    )),
-    AYUMI(MechanismTemplate.Phoenix(
-        fullName = Res.string.phoenix_ayumi_long_name,
-        shortName = Res.string.phoenix_ayumi_short_name,
-        accentColor = Color(0xFF098432),
-        profilePhoto = Res.drawable.Ayumi
-    )),
-    SYLVIA(MechanismTemplate.Phoenix(
-        fullName = Res.string.phoenix_sylvia_long_name,
-        shortName = Res.string.phoenix_sylvia_short_name,
-        accentColor = Color(0xFF67406D),
-        profilePhoto = Res.drawable.Sylvia
-    )),
-    MALACHAI(MechanismTemplate.Phoenix(
-        fullName = Res.string.phoenix_malachai_long_name,
-        shortName = Res.string.phoenix_malachai_short_name,
-        accentColor = Color(0xFF3B3B93),
-        profilePhoto = Res.drawable.Malachai
-    )),
-    FINNIAN(MechanismTemplate.Phoenix(
-        fullName = Res.string.phoenix_finnian_long_name,
-        shortName = Res.string.phoenix_finnian_short_name,
-        accentColor = Color(0xFF25B97F),
-        profilePhoto = Res.drawable.Finnian
-    )),
-    YUMIO(MechanismTemplate.Phoenix(
-        fullName = Res.string.phoenix_yumio_long_name,
-        shortName = Res.string.phoenix_yumio_short_name,
-        accentColor = Color(0xFF2169AD),
-        profilePhoto = Res.drawable.Yumio
-    )),
-    TORRENT(MechanismTemplate.Phoenix(
-        fullName = Res.string.phoenix_torrent_long_name,
-        shortName = Res.string.phoenix_torrent_short_name,
-        accentColor = Color(0xFF465376),
-        profilePhoto = Res.drawable.Torrent
-    )),
-
-    ; fun toPhoenix(parent: TileData, team: Team): PhoenixMechanism {
-        return PhoenixMechanism(parentTile = parent, info = this.info, teamAffiliation = team)
     }
 }
 

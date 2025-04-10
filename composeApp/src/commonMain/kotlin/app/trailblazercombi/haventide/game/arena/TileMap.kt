@@ -1,6 +1,6 @@
 @file:Suppress("unused")
 
-package app.trailblazercombi.haventide.game
+package app.trailblazercombi.haventide.game.arena
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -14,9 +14,7 @@ import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
-import app.trailblazercombi.haventide.game.mechanisms.ImmidiateEffecter
-import app.trailblazercombi.haventide.game.mechanisms.PhoenixMechanism
-import app.trailblazercombi.haventide.game.mechanisms.Phoenixes
+import app.trailblazercombi.haventide.game.mechanisms.*
 import app.trailblazercombi.haventide.resources.UniversalColorizer.*
 import app.trailblazercombi.haventide.resources.Palette
 import app.trailblazercombi.haventide.resources.UniversalColorizer
@@ -325,7 +323,8 @@ class TileMapData(player1: PlayerProfile, player2: PlayerProfile) {
         this.clearAvailableTiles1()
         this.clearAvailableTiles2()
 
-        // 1.
+        // FIXME This might be bad if I don't keep LocalPIG as separate variable...
+        // 1. Add every tile the localPIG's Phoenixes are standing on
         teams[localPIG]!!.members.forEach {
             if (it !is PhoenixMechanism) return@forEach
             addToAvailableTiles1(it.parentTile)
@@ -334,13 +333,21 @@ class TileMapData(player1: PlayerProfile, player2: PlayerProfile) {
         if (selectedTile1 != null) {
             // TODO: Here goes the algorithm for highlighting secondary positions based on selected Phoenix
             //  Prerequisites: The aforementioned AbilityStack
-            for (positionNearby in selectedTile1!!.position.traversableSurroundings(this, selectedTile1!!.getPhoenix()!!
-                // TODO: Radius of the Ability goes here!
-            )) {
-                val tileNearby = get(positionNearby)
-                if (tileNearby != null) {
-                    this.addToAvailableTiles2(tileData = tileNearby)
-                }
+            val existingTile = selectedTile1 ?: return // If this fails, selectedTile1 is null.
+            val traversableSurroundings = existingTile.position.traversableSurroundings(
+                mapData = this,
+                mechanism = existingTile.getPhoenix()!!,
+                /*
+                 * EXPLANATION: If selectedTile1 is not null, it means it is SELECTED YELLOW
+                 * and CONTAINS an ALLIED PHOENIX. If this call fails, figure out why a tile
+                 * was SELECTED YELLOW without an ALLIED PHOENIX.
+                 */
+                radius = 2.4.toDouble() // FIXME there is an anomaly with really weird numbers...
+            )
+            for (positionNearby in traversableSurroundings) {
+                val tileNearby = get(positionNearby) ?: continue
+                if (tileNearby in availableTiles1) availableTiles1.remove(tileNearby)
+                this.addToAvailableTiles2(tileData = tileNearby)
             }
         }
     }
@@ -413,14 +420,22 @@ class TileMapData(player1: PlayerProfile, player2: PlayerProfile) {
             }
         }
         var tile = tiles[Position(3, 1)]
-        tile?.addMechanism(Phoenixes.AYUNA.toPhoenix(
+        tile?.addMechanism(
+            Phoenixes.AYUNA.toPhoenix(
             tile,
             this.teams[localPIG] ?: throw NullPointerException("Player 1 is null")
         ))
         tile = tiles[Position(4, 2)]
-        tile?.addMechanism(Phoenixes.FINNIAN.toPhoenix(
+        tile?.addMechanism(
+            Phoenixes.FINNIAN.toPhoenix(
             tile,
             this.teams[remotePIG] ?: throw NullPointerException("Player 2 is null")
+        ))
+        tile = tiles[Position(2, 1)]
+        tile?.addMechanism(
+            Phoenixes.FINNIAN.toPhoenix(
+            tile,
+            this.teams[localPIG] ?: throw NullPointerException("Player 2 is null")
         ))
         updateAvailableTiles()
     }
@@ -533,7 +548,7 @@ class TileData(
 
         // 2: Check if it's not necessary for another mechanism to exist
         for (mechie in mechanismStack) {
-            if (mechie is ImmidiateEffecter) return true // Special case, these need to be always destructed
+            if (mechie is ImmediateEffecter) return true // Special case, these need to be always destructed
             if (mechie.vetoTilemateRemoval(mechanism)) return false
         }
 

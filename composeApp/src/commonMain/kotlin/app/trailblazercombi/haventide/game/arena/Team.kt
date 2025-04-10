@@ -1,4 +1,6 @@
-package app.trailblazercombi.haventide.game
+package app.trailblazercombi.haventide.game.arena
+
+import app.trailblazercombi.haventide.game.mechanisms.Mechanism
 
 /**
  * The actual Team definition and its members.

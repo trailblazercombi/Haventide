@@ -1,10 +1,14 @@
-package app.trailblazercombi.haventide.game
+package app.trailblazercombi.haventide.game.mechanisms
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import app.trailblazercombi.haventide.game.mechanisms.ComposablePhoenixMechanismBall
-import app.trailblazercombi.haventide.game.mechanisms.PhoenixMechanism
+import app.trailblazercombi.haventide.game.*
+import app.trailblazercombi.haventide.game.arena.Position
+import app.trailblazercombi.haventide.game.arena.Team
+import app.trailblazercombi.haventide.game.arena.TileData
+import app.trailblazercombi.haventide.game.modificators.Modificator
+import app.trailblazercombi.haventide.game.modificators.ModificatorFactory
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 
@@ -21,7 +25,7 @@ import org.jetbrains.compose.resources.StringResource
  *                        Pass `null` to create an independent mechanism. Such mechanisms will affect everyone
  *                        regardless of the [recipient][Mechanism]'s [Team].
  */
-abstract class Mechanism(parentTile: TileData, private val type: MechanismType = MechanismType.ANY, val teamAffiliation: Team?) {
+abstract class Mechanism(parentTile: TileData, val teamAffiliation: Team?) {
     init { postConstruct() } // Defers assigning team affiliation to prevent leaking this before subclasses are instantiatied
     private fun postConstruct() = teamAffiliation?.members?.add(this)
     /**
@@ -115,18 +119,6 @@ abstract class Mechanism(parentTile: TileData, private val type: MechanismType =
         return this.parentTile.canRemoveMechanism(this)
                 && to.canAddMechanism(this)
     }
-}
-
-/**
- * The enum representing various types of [mechanisms][Mechanism].
- * Good for categorization, and not much else.
- */
-enum class MechanismType {
-    PHOENIX,
-    EFFECTER_AOE,
-    EFFECTER_IMMIDIATE,
-    ANY
-    // TODO If this is not used for any checking, DELETE THIS BOOBCAKE
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -384,6 +376,7 @@ interface ModificatorInvoker {
  */
 interface MechanismSummonInvoker {
     val invokable: MechanismTemplate
+    val summonPattern: (Position) -> Set<Position>
 }
 
 /**
@@ -393,13 +386,30 @@ interface MechanismSummonInvoker {
  */
 interface MovementEnabled
 
-// See also: Modificator.kt
+// See also: _Modificator.kt
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// MECHANISM TEMPLATE
+// MECHANISM SUMMON PATTERN
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+object MechanismSummonPattern {
+    fun Itself(position: Position): Set<Position> = setOf(position)
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// MECHANISM TEMPLATES
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * This class represents various templates to build [Mechanisms][Mechanism].
+ *
+ * Its purpose is universal, however, mainly to be able to summon [Mechanisms][Mechanism].
+ */
 sealed class MechanismTemplate {
+    /**
+     * This data blob represents a [PhoenixMechanism].
+     * @see [app.trailblazercombi.haventide.game.mechanisms.Phoenixes]
+     */
     data class Phoenix(
         val fullName: StringResource,
         val shortName: StringResource,

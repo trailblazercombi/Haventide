@@ -1,7 +1,6 @@
-package app.trailblazercombi.haventide.game
+package app.trailblazercombi.haventide.game.arena
 
-import app.trailblazercombi.haventide.game.mechanisms.PhoenixInfo
-import app.trailblazercombi.haventide.game.mechanisms.PhoenixMechanism
+import app.trailblazercombi.haventide.game.mechanisms.MechanismTemplate
 import app.trailblazercombi.haventide.game.mechanisms.Phoenixes
 
 /**
@@ -31,7 +30,7 @@ class RemotePlayerInGame(profile: PlayerProfile, allied: Boolean = false): Playe
  */
 data class PlayerProfile(
     val name: String,
-    val activeRoster: Set<PhoenixInfo>
+    val activeRoster: Set<MechanismTemplate.Phoenix>
     // TODO Add more info related to the profile itself
     //  Profile picture
     //  Medals
@@ -53,10 +52,10 @@ data class PlayerProfile(
 // TODO Replace with an actual player profile.
 //  This will do for testing purposes though.
 enum class PlaceholderPlayers(
-    val playerName: String,
-    val member1: PhoenixInfo,
-    val member2: PhoenixInfo,
-    val member3: PhoenixInfo
+    private val playerName: String,
+    private val member1: MechanismTemplate.Phoenix,
+    private val member2: MechanismTemplate.Phoenix,
+    private val member3: MechanismTemplate.Phoenix
 ) {
     PLAYER_ONE(
         "You",

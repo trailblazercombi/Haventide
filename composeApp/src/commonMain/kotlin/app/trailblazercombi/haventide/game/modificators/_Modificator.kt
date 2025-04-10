@@ -1,6 +1,6 @@
-package app.trailblazercombi.haventide.game
+package app.trailblazercombi.haventide.game.modificators
 
-import app.trailblazercombi.haventide.game.modificators.TitanShield
+import app.trailblazercombi.haventide.game.mechanisms.ModificatorHandler
 
 /**
  * This enum representing various types of [modificators][Modificator].
@@ -121,7 +121,3 @@ abstract class Modificator(val modificatorType: ModificatorType, private val par
      */
     open fun onHealingRecieved(healing: Int): Int = healing
 }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// MFEIs IMPLEMENTING MODIFICATORS
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
