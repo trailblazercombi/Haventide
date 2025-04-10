@@ -40,7 +40,7 @@ object Palette {
     // Light Alternative
 //    val FillLightAlternative = Color(0xFF747D85)
 //    val LightLightAlternative = Color(0xFF828D96)
-//    val ShadeLightAlternative = Color(0xFF61686F)
+    val ShadeLightAlternative = Color(0xFF61686F)
 
     // Yellow Content
     val FillYellow = Color(0xFFC48C00)
@@ -117,8 +117,11 @@ object TileStyle {
  * [ComposablePhoenixMechanismBall][app.trailblazercombi.haventide.game.mechanisms.ComposablePhoenixMechanismBall].
  */
 object PhoenixBallStyle {
-    val OutlineThickness = 2.dp
+    val OutlineThickness = 4.dp
     val Padding = 32.dp
+    val AffiliationIconSize = 28.dp
+    val AffiliationIconOuterOffsetFromBottomRight = 14.dp
+    val AffiliationIconInnerPadding = 4.dp
 }
 
 /**
@@ -140,6 +143,7 @@ enum class UniversalColorizer(
     NO_INTERACTIONS_WITH_OUTLINE(outlineColor = Palette.Glass20),
     CLICKED_PRIMARY(Palette.FillYellow, Palette.FillYellow),
     CLICKED_SECONDARY(Palette.FillLightPrimary, Palette.FillLightPrimary),
+    CLICKED_TERTIARY(Palette.ShadeLightAlternative, Palette.ShadeLightAlternative),
     HIGHLIGHT_PRIMARY(outlineColor = Palette.FillYellow),
     HIGHLIGHT_SECONDARY(outlineColor = Palette.FillLightPrimary),
     HOVER_GLASS(Palette.Glass10, Palette.Glass20)
