@@ -1,6 +1,6 @@
 package app.trailblazercombi.haventide.game.modificators
 
-import app.trailblazercombi.haventide.game.mechanisms.ModificatorHandler
+import app.trailblazercombi.haventide.game.mechanisms.*
 
 /**
  * This enum representing various types of [modificators][Modificator].
@@ -12,10 +12,10 @@ enum class ModificatorType {
     OTHER
 }
 
-enum class ModificatorFactory {
+enum class Modificators {
     TITAN_SHIELD;
 
-    fun new(parent: ModificatorHandler): Modificator = when (this) {
+    fun build(parent: ModificatorHandler): Modificator = when (this) {
             TITAN_SHIELD -> TitanShield(parent)
     }
 }

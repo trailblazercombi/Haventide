@@ -1,10 +1,15 @@
 package app.trailblazercombi.haventide.game.mechanisms
 
 import app.trailblazercombi.haventide.game.arena.Position
+import app.trailblazercombi.haventide.game.arena.Team
 import app.trailblazercombi.haventide.game.arena.TileData
-import app.trailblazercombi.haventide.game.modificators.ModificatorFactory
+import app.trailblazercombi.haventide.game.modificators.Modificators
 
-abstract class ImmediateEffecter(parentTile: TileData) : Mechanism(parentTile, null) {
+/**
+ * This class represents an instant action.
+ * Implementation-wise, it's a [Mechanism] that gets summoned, does something and then immidiately self-destructs.
+ */
+abstract class ImmediateEffecter(parentTile: TileData, teamAffiliation: Team? = null) : Mechanism(parentTile, teamAffiliation) {
     override fun vetoTilemateAddition(tilemate: Mechanism): Boolean {
         return false
     }
@@ -25,7 +30,7 @@ class ImmediateHealingInvoker(healing: Int, parentTile: TileData) : ImmediateEff
 }
 
 class ImmediateModificatorInvoker(
-    override val invokable: ModificatorFactory, parentTile: TileData
+    override val invokable: Modificators, parentTile: TileData
 ) : ImmediateEffecter(parentTile), ModificatorInvoker {
     init {
         invokeModificator(invokable, parentTile)
@@ -34,11 +39,13 @@ class ImmediateModificatorInvoker(
 }
 
 class ImmediateMechanismSummoner(
-    override val invokable: MechanismTemplate,
+    override val mechanismTemplate: MechanismTemplate,
     override val summonPattern: (Position) -> Set<Position> = MechanismSummonPattern::Itself,
     parentTile: TileData,
-) : ImmediateEffecter(parentTile), MechanismSummonInvoker {
+    teamAffiliation: Team? = null
+) : ImmediateEffecter(parentTile, teamAffiliation), MechanismSummonInvoker {
     init {
-
+        summonMechanism(parentTile, teamAffiliation)
+        destruct()
     }
 }

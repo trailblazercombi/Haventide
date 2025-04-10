@@ -17,7 +17,9 @@ import androidx.compose.ui.unit.Dp
 import app.trailblazercombi.haventide.game.mechanisms.*
 import app.trailblazercombi.haventide.resources.UniversalColorizer.*
 import app.trailblazercombi.haventide.resources.Palette
+import app.trailblazercombi.haventide.resources.Res
 import app.trailblazercombi.haventide.resources.UniversalColorizer
+import app.trailblazercombi.haventide.resources.ally
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.math.*
 import app.trailblazercombi.haventide.resources.TileStyle.TileSize as tileSize
@@ -143,7 +145,7 @@ data class Position(val x: Int, val y: Int) {
      * @return A [Set] of the positions immidiately surrounding [this][Position],
      * __excluding__ [this][Position].
      */
-    private fun surroundings(radius: Double = sqrt(2.toDouble())): Set<Position> {
+    internal fun surroundings(radius: Double = sqrt(2.toDouble())): Set<Position> {
         if (radius < 1.toDouble()) return emptySet()
         val result = mutableSetOf<Position>()
 
@@ -214,7 +216,7 @@ data class Position(val x: Int, val y: Int) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// TILES AND TILE MAP
+// TILE MAP
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
  * This is the map data class in all its glory.
@@ -233,7 +235,7 @@ class TileMapData(player1: PlayerProfile, player2: PlayerProfile) {
 
     private val tiles: MutableMap<Position, TileData?> = mutableMapOf()
     private val teams: Map<PlayerInGame, Team> = mapOf(
-        localPIG to Team(), // Local player, the one playing the game on the device
+        localPIG to Team(icon = Res.drawable.ally), // Local player, the one playing the game on the device
         remotePIG to Team() // Remote player, the enemy playing on another device
     )
 
@@ -242,9 +244,9 @@ class TileMapData(player1: PlayerProfile, player2: PlayerProfile) {
     //               The Mechanism will directly communicate with the Tiles in question.
     // TODO The checking system for figuring out which moves are valid and for whom and whatč
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// TILE HIGHLIGHT HANDLING (TileMapData)
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // TILE HIGHLIGHT HANDLING (TileMapData)
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * Describes the primary selected tile (yellow).
      * If the yellow tile had an outline before selection (was in availableTiles1),
@@ -267,6 +269,16 @@ class TileMapData(player1: PlayerProfile, player2: PlayerProfile) {
             field?.updateClickState(NO_INTERACTIONS_WITH_OUTLINE)
             field = value
             field?.updateClickState(CLICKED_SECONDARY)
+        }
+
+    /**
+     * Describes the tertiary selected tile (grey).
+     */
+    private var selectedTile3: TileData? = null
+        set(value) {
+            field?.updateClickState(NO_INTERACTIONS_WITH_OUTLINE)
+            field = value
+            field?.updateClickState(CLICKED_TERTIARY)
         }
 
     /**
@@ -325,7 +337,7 @@ class TileMapData(player1: PlayerProfile, player2: PlayerProfile) {
 
         // FIXME This might be bad if I don't keep LocalPIG as separate variable...
         // 1. Add every tile the localPIG's Phoenixes are standing on
-        teams[localPIG]!!.members.forEach {
+        teams[localPIG]!!.forEach {
             if (it !is PhoenixMechanism) return@forEach
             addToAvailableTiles1(it.parentTile)
         }
@@ -342,7 +354,7 @@ class TileMapData(player1: PlayerProfile, player2: PlayerProfile) {
                  * and CONTAINS an ALLIED PHOENIX. If this call fails, figure out why a tile
                  * was SELECTED YELLOW without an ALLIED PHOENIX.
                  */
-                radius = 2.4.toDouble() // FIXME there is an anomaly with really weird numbers...
+                radius = 2.4 // There is an anomaly with some numbers...
             )
             for (positionNearby in traversableSurroundings) {
                 val tileNearby = get(positionNearby) ?: continue
@@ -373,12 +385,13 @@ class TileMapData(player1: PlayerProfile, player2: PlayerProfile) {
         return tiles[position]
     }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// TILE CLICK EVENTS AND PROPAGATION - Start here!
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // TILE CLICK EVENTS AND PROPAGATION - Start here!
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // This clicks when a Tile is clicked
     internal fun tileClickEvent(tile: TileData) {
+        selectedTile3 = null
         // If a yellow tile is selected...
         if (selectedTile1 != null) {
             // ...and you click it, deselect it
@@ -399,16 +412,17 @@ class TileMapData(player1: PlayerProfile, player2: PlayerProfile) {
         // Else, if not tile is selected and you click an unmarked tile
         } else {
             selectedTile1 = null
-            selectedTile2 = tile
+            selectedTile2 = null
+            selectedTile3 = tile
         }
         this.updateAvailableTiles()
     }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// THE FORSAKEN INIT BLOCK
-// Moved here because NullPointerException when trying to call fields below it...
-// Ghhhhhhh...
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // THE FORSAKEN INIT BLOCK
+        // Moved here because NullPointerException when trying to call fields below it...
+        // Ghhhhhhh...
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     init {
         // TODO Read from a file instead
@@ -421,19 +435,19 @@ class TileMapData(player1: PlayerProfile, player2: PlayerProfile) {
         }
         var tile = tiles[Position(3, 1)]
         tile?.addMechanism(
-            Phoenixes.AYUNA.toPhoenix(
+            Phoenixes.AYUNA.build(
             tile,
             this.teams[localPIG] ?: throw NullPointerException("Player 1 is null")
         ))
         tile = tiles[Position(4, 2)]
         tile?.addMechanism(
-            Phoenixes.FINNIAN.toPhoenix(
+            Phoenixes.FINNIAN.build(
             tile,
             this.teams[remotePIG] ?: throw NullPointerException("Player 2 is null")
         ))
         tile = tiles[Position(2, 1)]
         tile?.addMechanism(
-            Phoenixes.FINNIAN.toPhoenix(
+            Phoenixes.FINNIAN.build(
             tile,
             this.teams[localPIG] ?: throw NullPointerException("Player 2 is null")
         ))
@@ -441,13 +455,17 @@ class TileMapData(player1: PlayerProfile, player2: PlayerProfile) {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// TILE DATA
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 /**
  * This is the class representing a single tile on the map,
  * including its content (Mechanisms)
  */
 class TileData(
     // BASIC DATA
-    private val parentMap: TileMapData,
+    val parentMap: TileMapData,
     internal val position: Position,
     private val mechanismStack: MutableSet<Mechanism> = mutableSetOf(),
 
@@ -459,9 +477,9 @@ class TileData(
 ) {
     // COMPOSE STATES: MECHANISM STACK
     val mechanismStackState = MutableStateFlow(mechanismStack.toSet())
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// MECHANISM ADDITION, REMOVAL AND CHECKS (TileData)
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // MECHANISM ADDITION, REMOVAL AND CHECKS (TileData)
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // FIXME Maybe remove the checks...?
     //  Figure out the checkflow, but in general this seems like...
@@ -545,10 +563,11 @@ class TileData(
     fun canRemoveMechanism(mechanism: Mechanism): Boolean {
         // 1: Check if it's here
         if (!mechanismStack.contains(mechanism)) return false
+        if (mechanism is ImmediateEffecter) return true // Special case, these need to be always destructed
 
         // 2: Check if it's not necessary for another mechanism to exist
         for (mechie in mechanismStack) {
-            if (mechie is ImmediateEffecter) return true // Special case, these need to be always destructed
+            if (mechie === mechanism) continue
             if (mechie.vetoTilemateRemoval(mechanism)) return false
         }
 
@@ -569,9 +588,9 @@ class TileData(
         mechanismStackState.value = mechanismStack.toSet()
     }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// CLICK STATE PROPAGATION AND HANDLING (TileData)
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // CLICK STATE PROPAGATION AND HANDLING (TileData)
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * Send the click event from [the user][ComposableTile] upwards, to the parent [map][TileMapData].
      * The [map][TileMapData] handles the rest.

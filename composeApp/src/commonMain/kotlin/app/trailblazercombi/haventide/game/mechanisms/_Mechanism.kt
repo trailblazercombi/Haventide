@@ -2,15 +2,14 @@ package app.trailblazercombi.haventide.game.mechanisms
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import app.trailblazercombi.haventide.game.*
+import app.trailblazercombi.haventide.game.arena.NeutralFaction
 import app.trailblazercombi.haventide.game.arena.Position
 import app.trailblazercombi.haventide.game.arena.Team
 import app.trailblazercombi.haventide.game.arena.TileData
+import app.trailblazercombi.haventide.game.arena.TileMapData
 import app.trailblazercombi.haventide.game.modificators.Modificator
-import app.trailblazercombi.haventide.game.modificators.ModificatorFactory
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.StringResource
+import app.trailblazercombi.haventide.game.modificators.Modificators
 
 /**
  * A Mechanism that resides on [a Tile][TileData].
@@ -27,7 +26,7 @@ import org.jetbrains.compose.resources.StringResource
  */
 abstract class Mechanism(parentTile: TileData, val teamAffiliation: Team?) {
     init { postConstruct() } // Defers assigning team affiliation to prevent leaking this before subclasses are instantiatied
-    private fun postConstruct() = teamAffiliation?.members?.add(this)
+    private fun postConstruct() = teamAffiliation?.add(this) ?: NeutralFaction.add(this)
     /**
      * The parent tile of this Mechanism.
      *
@@ -52,7 +51,7 @@ abstract class Mechanism(parentTile: TileData, val teamAffiliation: Team?) {
      * By default, always returns `true` -- no other mechanism shall exist on the same tile.
      */
     open fun vetoTilemateAddition(tilemate: Mechanism): Boolean {
-        return true
+        return tilemate !is ImmediateEffecter
     }
 
     /**
@@ -63,7 +62,7 @@ abstract class Mechanism(parentTile: TileData, val teamAffiliation: Team?) {
      * By default, always returns the same value as [vetoTilemateAddition].
      */
     open fun vetoTraversal(mechanism: Mechanism): Boolean {
-        return vetoTilemateAddition(mechanism)
+        return true
     }
 
     /**
@@ -85,18 +84,22 @@ abstract class Mechanism(parentTile: TileData, val teamAffiliation: Team?) {
      * @throws UnsupportedOperationException When trying to call this upon a Mechanism
      * that cannot be destructed due to external consequences.
      */
-    open fun destruct() {
+    fun destruct() {
         if (!canDestruct())
             throw UnsupportedOperationException("Cannot destruct Mechanism: canDestruct() check returned false")
+
+        if (this is AoEEffecter) onDestruct()
+
         this.parentTile.removeMechanism(this)
+        this.teamAffiliation?.remove(this) ?: NeutralFaction.remove(this)
         // TODO More detaching once this needs to be detached elsewhere
     }
 
     /**
      * Checks if this Mechanism can be destructed.
      */
-    @Suppress("RedundantIf")
-    open fun canDestruct(): Boolean {
+    @Suppress("RedundantIf", "MemberVisibilityCanBePrivate")
+    fun canDestruct(): Boolean {
         if (!this.parentTile.canRemoveMechanism(this)) return false
         // TODO More checks once this needs to be detached elsewhere
         return true
@@ -110,12 +113,24 @@ abstract class Mechanism(parentTile: TileData, val teamAffiliation: Team?) {
      * @throws UnsupportedOperationException When trying to call this upon
      * a Mechanism that doesn't implement [MovementEnabled].
      */
-    open fun move(to: TileData) {
+    fun move(to: TileData) {
         if (this !is MovementEnabled)
             throw UnsupportedOperationException("Cannot move Mechanism: Mechanism does not implement MovementEnabler")
+        TODO()
     }
 
-    open fun canMove(to: TileData): Boolean {
+    /**
+     * Checks if this Mechanism can be removed from its current tile and added to the destination.
+     *
+     * __NOTE__: This method DOES NOT implement [Position.trajectoryTo]!
+     * Trajectory traversability is checked upon ability screening (so when [Position.traversableSurroundings]
+     * is called by a [Mechanism] / [the tile map][TileMapData] / [button click][TileMapData.tileClickEvent]).
+     * No more trajectory checks are done, only the checks to see if Abilities can be played to that spot.
+     * If you need to check the trajectory to somewhere for something else, DO SO MANUALLY!
+     *
+     * @param to The [new parent tile][TileData] in quesiton.
+     */
+    fun canMove(to: TileData): Boolean {
         return this.parentTile.canRemoveMechanism(this)
                 && to.canAddMechanism(this)
     }
@@ -345,17 +360,17 @@ interface ModificatorInvoker {
     /**
      * Specifies the Modificator pattern used for creation of this Modificator.
      */
-    val invokable: ModificatorFactory
+    val invokable: Modificators
 
     /**
      * Add the [Modificator] to all [mechanisms][Mechanism] on the target [tile][TileData].
      */
-    fun invokeModificator(invokable: ModificatorFactory = this.invokable, target: TileData) {
+    fun invokeModificator(invokable: Modificators = this.invokable, target: TileData) {
         val stack = target.getMechanismStack()
         stack.forEach {
             // 1. Checks. Two of checks.
             if (it !is ModificatorHandler) return@forEach
-            val modificator = invokable.new(it)
+            val modificator = invokable.build(it)
             if (!canInvokeModificator(modificator, it)) return@forEach
 
             // 2. Invokation!
@@ -375,8 +390,20 @@ interface ModificatorInvoker {
  * Invoke a new [Mechanism] using [MechanismTemplate].
  */
 interface MechanismSummonInvoker {
-    val invokable: MechanismTemplate
+    val mechanismTemplate: MechanismTemplate
     val summonPattern: (Position) -> Set<Position>
+
+    /**
+     * Summons the [Mechanism(s)][Mechanism] around the specified tile according to the pattern.
+     */
+    fun summonMechanism(onTile: TileData, teamAffiliation: Team?) {
+        summonPattern(onTile.position).forEach {
+            val summonTile = onTile.parentMap[it]
+            summonTile?.addMechanism(
+                mechanism = mechanismTemplate.build(summonTile, teamAffiliation)
+            )
+        }
+    }
 }
 
 /**
@@ -392,34 +419,22 @@ interface MovementEnabled
 // MECHANISM SUMMON PATTERN
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * This object contains functions that return sets of [Position].
+ * The purpose behind all this is to aid with summoning [Mechanisms][Mechanism].
+ *
+ * __NOTE__: When trying to reference this object by name, __DON'T__.
+ * Use `(Position) -> Set<Position>` to denote the type instead.
+ */
+@Suppress("MemberVisibilityCanBePrivate", "unused")
 object MechanismSummonPattern {
     fun Itself(position: Position): Set<Position> = setOf(position)
-}
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// MECHANISM TEMPLATES
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    fun HollowPlus(position: Position): Set<Position> = position.surroundings(1.toDouble())
+    fun FilledPlus(position: Position): Set<Position> = HollowPlus(position) + Itself(position)
 
-/**
- * This class represents various templates to build [Mechanisms][Mechanism].
- *
- * Its purpose is universal, however, mainly to be able to summon [Mechanisms][Mechanism].
- */
-sealed class MechanismTemplate {
-    /**
-     * This data blob represents a [PhoenixMechanism].
-     * @see [app.trailblazercombi.haventide.game.mechanisms.Phoenixes]
-     */
-    data class Phoenix(
-        val fullName: StringResource,
-        val shortName: StringResource,
-        val accentColor: Color,
-        val profilePhoto: DrawableResource,
-        val maxHitPoints: Int = 120,
-        // TODO Abilities
-        //  Lore pages
-        //  Et cetera
-    ) : MechanismTemplate()
+    fun Hollow3x3(position: Position): Set<Position> = position.surroundings()
+    fun Filled3x3(position: Position): Set<Position> = Hollow3x3(position) + Itself(position)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

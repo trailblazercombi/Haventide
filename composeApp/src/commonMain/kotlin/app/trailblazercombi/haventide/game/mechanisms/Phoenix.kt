@@ -1,14 +1,18 @@
 package app.trailblazercombi.haventide.game.mechanisms
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import app.trailblazercombi.haventide.game.arena.Team
 import app.trailblazercombi.haventide.game.arena.TileData
@@ -17,14 +21,17 @@ import app.trailblazercombi.haventide.resources.*
 import org.jetbrains.compose.resources.painterResource
 import app.trailblazercombi.haventide.resources.PhoenixBallStyle.OutlineThickness as ballOutline
 import app.trailblazercombi.haventide.resources.PhoenixBallStyle.Padding as ballPadding
+import app.trailblazercombi.haventide.resources.PhoenixBallStyle.AffiliationIconSize as teamIconSize
+import app.trailblazercombi.haventide.resources.PhoenixBallStyle.AffiliationIconOuterOffsetFromBottomRight as teamIconPadding
+import app.trailblazercombi.haventide.resources.PhoenixBallStyle.AffiliationIconInnerPadding as teamIconInnerPadding
 import app.trailblazercombi.haventide.resources.TileStyle.Padding as tilePadding
 import app.trailblazercombi.haventide.resources.TileStyle.TileSize as tileSize
 
 class PhoenixMechanism(
     parentTile: TileData,
     val info: MechanismTemplate.Phoenix,
-    override val modificators: MutableList<Modificator> = mutableListOf(),
-    teamAffiliation: Team
+    teamAffiliation: Team,
+    override val modificators: MutableList<Modificator> = mutableListOf()
 ) : Mechanism(parentTile, teamAffiliation), ModificatorHandler, HitPointsHandler {
     override val maxHitPoints = info.maxHitPoints
     override var currentHitPoints = maxHitPoints
@@ -45,10 +52,12 @@ class PhoenixMechanism(
 @Composable
 fun ComposablePhoenixMechanismBall(phoenix: PhoenixMechanism, modifier: Modifier = Modifier) {
     val painter: Painter = painterResource(phoenix.info.profilePhoto)
+    val teamIcon: Painter = painterResource(phoenix.teamAffiliation?.icon ?: Res.drawable.emptytile)
 
     Box (modifier = modifier
             .size(tileSize - tilePadding)
     ) {
+        // Primary icon (photo)
         Image(
             painter = painter,
             contentDescription = null,
