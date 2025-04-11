@@ -15,6 +15,9 @@ abstract class ImmediateEffecter(parentTile: TileData, teamAffiliation: Team? = 
     }
 }
 
+/**
+ * Invokes damage, then self-destructs.
+ */
 class ImmediateDamageInvoker(damage: Int, parentTile: TileData) : ImmediateEffecter(parentTile), DamageInvoker {
     init {
         invokeDamage(damage, parentTile)
@@ -22,6 +25,9 @@ class ImmediateDamageInvoker(damage: Int, parentTile: TileData) : ImmediateEffec
     }
 }
 
+/**
+ * Invokes healing, then self-destructs.
+ */
 class ImmediateHealingInvoker(healing: Int, parentTile: TileData) : ImmediateEffecter(parentTile), HealingInvoker {
     init {
         invokeHealing(healing, parentTile)
@@ -29,6 +35,9 @@ class ImmediateHealingInvoker(healing: Int, parentTile: TileData) : ImmediateEff
     }
 }
 
+/**
+ * Invokes [modificators][Modificators], then self-destructs.
+ */
 class ImmediateModificatorInvoker(
     override val invokable: Modificators, parentTile: TileData
 ) : ImmediateEffecter(parentTile), ModificatorInvoker {
@@ -38,6 +47,9 @@ class ImmediateModificatorInvoker(
     }
 }
 
+/**
+ * Summons [mechanism(s)][Mechanism], then self-destructs.
+ */
 class ImmediateMechanismSummoner(
     override val mechanismTemplate: MechanismTemplate,
     override val summonPattern: (Position) -> Set<Position> = MechanismSummonPattern::Itself,
@@ -45,7 +57,15 @@ class ImmediateMechanismSummoner(
     teamAffiliation: Team? = null
 ) : ImmediateEffecter(parentTile, teamAffiliation), MechanismSummonInvoker {
     init {
+        // TODO Summon pattern does not look properly installed
         summonMechanism(parentTile, teamAffiliation)
         destruct()
     }
 }
+
+/**
+ * This is used for checking traversal and tilemate addition for ImmediateEffecters.
+ *
+ * The reason? ImmediateEffecters, normally, immediately destroy themselves upon creation.
+ */
+class DummyImmediateEffecter(parentTile: TileData) : ImmediateEffecter(parentTile)

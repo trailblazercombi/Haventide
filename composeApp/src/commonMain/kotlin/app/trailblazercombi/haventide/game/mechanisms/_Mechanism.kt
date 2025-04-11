@@ -26,7 +26,10 @@ import app.trailblazercombi.haventide.game.modificators.Modificators
  */
 abstract class Mechanism(parentTile: TileData, val teamAffiliation: Team?) {
     init { postConstruct() } // Defers assigning team affiliation to prevent leaking this before subclasses are instantiatied
-    private fun postConstruct() = teamAffiliation?.add(this) ?: NeutralFaction.add(this)
+    private fun postConstruct() {
+        if (this is ImmediateEffecter) return
+        teamAffiliation?.add(this) ?: NeutralFaction.add(this)
+    }
     /**
      * The parent tile of this Mechanism.
      *
@@ -37,11 +40,11 @@ abstract class Mechanism(parentTile: TileData, val teamAffiliation: Team?) {
      * on a [Mechanism] that doesn't implement [MovementEnabled]
      */
     var parentTile: TileData = parentTile
-        set(value) {
-        if (this !is MovementEnabled) throw UnsupportedOperationException(
-            "Cannot change Parent Tile of a Mechanism that does not implement Movable"
-        ) else field = value
-    }
+//        set(value) {
+//            if (this !is MovementEnabled) throw UnsupportedOperationException(
+//                "Cannot change Parent Tile of a Mechanism that does not implement Movable"
+//            ) else field = value
+//        }
 
     /**
      * Denies the specified Mechanism the right to move
@@ -116,7 +119,9 @@ abstract class Mechanism(parentTile: TileData, val teamAffiliation: Team?) {
     fun move(to: TileData) {
         if (this !is MovementEnabled)
             throw UnsupportedOperationException("Cannot move Mechanism: Mechanism does not implement MovementEnabler")
-        // [ABILITY STACK] TODO()
+        this.parentTile.removeMechanism(this)
+        this.parentTile = to
+        this.parentTile.addMechanism(this)
     }
 
     /**
@@ -131,7 +136,8 @@ abstract class Mechanism(parentTile: TileData, val teamAffiliation: Team?) {
      * @param to The [new parent tile][TileData] in quesiton.
      */
     fun canMove(to: TileData): Boolean {
-        return this.parentTile.canRemoveMechanism(this)
+        return this is MovementEnabled
+                && this.parentTile.canRemoveMechanism(this)
                 && to.canAddMechanism(this)
     }
 }

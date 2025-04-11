@@ -1,6 +1,9 @@
 package app.trailblazercombi.haventide.game.mechanisms
 
 import androidx.compose.ui.graphics.Color
+import app.trailblazercombi.haventide.game.abilities.Abilities
+import app.trailblazercombi.haventide.game.abilities.AbilityTemplate
+import app.trailblazercombi.haventide.game.abilities.DieType
 import app.trailblazercombi.haventide.game.arena.Position
 import app.trailblazercombi.haventide.game.modificators.Modificators
 import app.trailblazercombi.haventide.game.arena.Team
@@ -15,54 +18,54 @@ import org.jetbrains.compose.resources.StringResource
  * @see [MechanismTemplate.Phoenix]
  */
 enum class Phoenixes(val template: MechanismTemplate.Phoenix) {
-    AYUNA(
-        MechanismTemplate.Phoenix(
-        fullName = Res.string.phoenix_ayuna_long_name,
-        shortName = Res.string.phoenix_ayuna_short_name,
-        accentColor = Color(0xFFD91410),
-        profilePhoto = Res.drawable.Ayuna
+    AYUNA(MechanismTemplate.Phoenix(
+            fullName = Res.string.phoenix_ayuna_long_name,
+            shortName = Res.string.phoenix_ayuna_short_name,
+            accentColor = Color(0xFFD91410),
+            profilePhoto = Res.drawable.Ayuna,
+            phoenixType = DieType.VANGUARD
     )),
-    AYUMI(
-        MechanismTemplate.Phoenix(
-        fullName = Res.string.phoenix_ayumi_long_name,
-        shortName = Res.string.phoenix_ayumi_short_name,
-        accentColor = Color(0xFF098432),
-        profilePhoto = Res.drawable.Ayumi
+    AYUMI(MechanismTemplate.Phoenix(
+            fullName = Res.string.phoenix_ayumi_long_name,
+            shortName = Res.string.phoenix_ayumi_short_name,
+            accentColor = Color(0xFF098432),
+            profilePhoto = Res.drawable.Ayumi,
+            phoenixType = DieType.MEDIC
+        )),
+    SYLVIA(MechanismTemplate.Phoenix(
+            fullName = Res.string.phoenix_sylvia_long_name,
+            shortName = Res.string.phoenix_sylvia_short_name,
+            accentColor = Color(0xFF67406D),
+            profilePhoto = Res.drawable.Sylvia,
+            phoenixType = DieType.SENTINEL
     )),
-    SYLVIA(
-        MechanismTemplate.Phoenix(
-        fullName = Res.string.phoenix_sylvia_long_name,
-        shortName = Res.string.phoenix_sylvia_short_name,
-        accentColor = Color(0xFF67406D),
-        profilePhoto = Res.drawable.Sylvia
+    MALACHAI(MechanismTemplate.Phoenix(
+            fullName = Res.string.phoenix_malachai_long_name,
+            shortName = Res.string.phoenix_malachai_short_name,
+            accentColor = Color(0xFF3B3B93),
+            profilePhoto = Res.drawable.Malachai,
+            phoenixType = DieType.MEDIC
     )),
-    MALACHAI(
-        MechanismTemplate.Phoenix(
-        fullName = Res.string.phoenix_malachai_long_name,
-        shortName = Res.string.phoenix_malachai_short_name,
-        accentColor = Color(0xFF3B3B93),
-        profilePhoto = Res.drawable.Malachai
+    FINNIAN(MechanismTemplate.Phoenix(
+            fullName = Res.string.phoenix_finnian_long_name,
+            shortName = Res.string.phoenix_finnian_short_name,
+            accentColor = Color(0xFF25B97F),
+            profilePhoto = Res.drawable.Finnian,
+            phoenixType = DieType.SENTINEL
     )),
-    FINNIAN(
-        MechanismTemplate.Phoenix(
-        fullName = Res.string.phoenix_finnian_long_name,
-        shortName = Res.string.phoenix_finnian_short_name,
-        accentColor = Color(0xFF25B97F),
-        profilePhoto = Res.drawable.Finnian
+    YUMIO(MechanismTemplate.Phoenix(
+            fullName = Res.string.phoenix_yumio_long_name,
+            shortName = Res.string.phoenix_yumio_short_name,
+            accentColor = Color(0xFF2169AD),
+            profilePhoto = Res.drawable.Yumio,
+            phoenixType = DieType.VANGUARD
     )),
-    YUMIO(
-        MechanismTemplate.Phoenix(
-        fullName = Res.string.phoenix_yumio_long_name,
-        shortName = Res.string.phoenix_yumio_short_name,
-        accentColor = Color(0xFF2169AD),
-        profilePhoto = Res.drawable.Yumio
-    )),
-    TORRENT(
-        MechanismTemplate.Phoenix(
-        fullName = Res.string.phoenix_torrent_long_name,
-        shortName = Res.string.phoenix_torrent_short_name,
-        accentColor = Color(0xFF465376),
-        profilePhoto = Res.drawable.Torrent
+    TORRENT(MechanismTemplate.Phoenix(
+            fullName = Res.string.phoenix_torrent_long_name,
+            shortName = Res.string.phoenix_torrent_short_name,
+            accentColor = Color(0xFF465376),
+            profilePhoto = Res.drawable.Torrent,
+            phoenixType = DieType.VANGUARD
     ));
 
     /**
@@ -135,7 +138,15 @@ sealed class MechanismTemplate {
         val shortName: StringResource,
         val accentColor: Color,
         val profilePhoto: DrawableResource,
+        val phoenixType: DieType,
         val maxHitPoints: Int = 120,
+        val maxEnergyPoints: Int = 50,
+        val energyForUltimate: Int = 50,
+        val abilityBasic1: AbilityTemplate = Abilities.BASIC_MOVE.template,
+        val abilityBasic2: AbilityTemplate = Abilities.BASIC_STRIKE.template,
+        // val abilityInnate1: AbilityTemplate,
+        // val abilityInnate2: AbilityTemplate,
+        // val abilityUltimate: AbilityTemplate,
         // [ABILITY STACK] TODO Abilities
         //  Lore pages
         //  Et cetera

@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
+import app.trailblazercombi.haventide.game.abilities.AbilityTemplate
 import app.trailblazercombi.haventide.game.mechanisms.*
 import app.trailblazercombi.haventide.resources.UniversalColorizer.*
 import app.trailblazercombi.haventide.resources.Palette
@@ -71,7 +72,7 @@ data class Position(val x: Int, val y: Int) {
      * @return The exact distance of a direct straight line
      * between the two positions, in [tiles][TileData].
      */
-    private fun distanceTo(other: Position): Double {
+    fun distanceTo(other: Position): Double {
         val distX = abs(this.x - other.x)
         val distY = abs(this.y - other.y)
         return hypot(distX.toDouble(), distY.toDouble())
@@ -281,6 +282,8 @@ class TileMapData(player1: PlayerProfile, player2: PlayerProfile) {
             field?.updateClickState(CLICKED_TERTIARY)
         }
 
+    private var preparedAbility: Triple<(Mechanism, TileData) -> Unit, Mechanism, TileData>? = null
+
     /**
      * A [MutableSet] containing all [tiles][TileData] valid for primary highlight.
      */
@@ -346,20 +349,19 @@ class TileMapData(player1: PlayerProfile, player2: PlayerProfile) {
             // [ABILITY STACK] TODO: Here goes the algorithm for highlighting secondary positions based on selected Phoenix
             //  Prerequisites: The aforementioned AbilityStack
             val existingTile = selectedTile1 ?: return // If this fails, selectedTile1 is null.
-            val traversableSurroundings = existingTile.position.traversableSurroundings(
+            val localPhoenix = existingTile.getPhoenix() ?: return // this should already be allied only...
+
+            val surroundings = existingTile.position.traversableSurroundings(
                 mapData = this,
-                mechanism = existingTile.getPhoenix()!!,
-                /*
-                 * EXPLANATION: If selectedTile1 is not null, it means it is SELECTED YELLOW
-                 * and CONTAINS an ALLIED PHOENIX. If this call fails, figure out why a tile
-                 * was SELECTED YELLOW without an ALLIED PHOENIX.
-                 */
-                radius = 2.4 // There is an anomaly with some numbers...
+                mechanism = DummyImmediateEffecter(existingTile),
+                radius = localPhoenix.maxAbilityRange(),
             )
-            for (positionNearby in traversableSurroundings) {
-                val tileNearby = get(positionNearby) ?: continue
-                if (tileNearby in availableTiles1) availableTiles1.remove(tileNearby)
-                this.addToAvailableTiles2(tileData = tileNearby)
+
+            surroundings.forEach {
+                val targetTile = this[it] ?: return@forEach
+                if (localPhoenix.findFirstAvailableAbility(targetTile) != null) {
+                    addToAvailableTiles2(targetTile)
+                }
             }
         }
     }
@@ -391,14 +393,25 @@ class TileMapData(player1: PlayerProfile, player2: PlayerProfile) {
 
     // This clicks when a Tile is clicked
     internal fun tileClickEvent(tile: TileData) {
+        if (preparedAbility != null && tile === selectedTile2) {
+            executeAbility(preparedAbility!!)
+            return
+        }
+
         selectedTile3 = null
         // If a yellow tile is selected...
         if (selectedTile1 != null) {
             // ...and you click it, deselect it
             if (tile == selectedTile1) selectedTile1 = null
             // ...and you click a white outlined tile, select that tile too + preview move
-            else if (this.availableTiles2.contains(tile)) selectedTile2 = tile
-            // [ABILITY STACK] TODO Preview move...
+            else if (this.availableTiles2.contains(tile)) {
+                selectedTile2 = tile
+                prepareAbility(
+                    template = selectedTile1!!.getPhoenix()!!.findFirstAvailableAbility(selectedTile2!!)!!,
+                    doer = selectedTile1!!.getPhoenix()!!,
+                    target = selectedTile2!!,
+                )
+            }
             // ..and you click an unrelated tile, deselect both tiles and see what happens
             else {
                 selectedTile1 = null
@@ -416,6 +429,22 @@ class TileMapData(player1: PlayerProfile, player2: PlayerProfile) {
             selectedTile3 = tile
         }
         this.updateAvailableTiles()
+    }
+
+    private fun prepareAbility(template: AbilityTemplate, doer: Mechanism, target: TileData) {
+        this.preparedAbility = Triple(template.execution, doer, target)
+    }
+
+    private fun executeAbility(triple: Triple<(Mechanism, TileData) -> Unit, Mechanism, TileData>) {
+        executeAbility(triple.first, triple.second, triple.third)
+    }
+
+    private fun executeAbility(execution: (Mechanism, TileData) -> Unit, doer: Mechanism, target: TileData) {
+        execution(doer, target)
+        selectedTile1 = null
+        selectedTile2 = null
+        selectedTile3 = null
+        updateAvailableTiles()
     }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -528,6 +557,12 @@ class TileData(
      */
     @Suppress("MemberVisibilityCanBePrivate")
     fun canAddMechanism(mechanism: Mechanism): Boolean {
+//        // 0: Do not check ImmediateEffecters, thank you :)
+//        if (mechanism is ImmediateEffecter && mechanism !is DummyImmediateEffecter) throw IllegalArgumentException(
+//            "Cannot check for ImmediateEffecters. " +
+//                    "It would immediately explode and leave behind consequences. " +
+//                    "Even if the check failed."
+//        )
         // 1: Check if it's duplicate
         if (mechanismStack.contains(mechanism)) return false
         // 2: Check if it's compatible with the current mechanism stack
@@ -561,8 +596,8 @@ class TileData(
     @Suppress("MemberVisibilityCanBePrivate")
     fun canRemoveMechanism(mechanism: Mechanism): Boolean {
         // 1: Check if it's here
-        if (!mechanismStack.contains(mechanism)) return false
         if (mechanism is ImmediateEffecter) return true // Special case, these need to be always destructed
+        if (!mechanismStack.contains(mechanism)) return false
 
         // 2: Check if it's not necessary for another mechanism to exist
         for (mechie in mechanismStack) {
@@ -574,7 +609,7 @@ class TileData(
         return true
     }
 
-    fun getPhoenix(): Mechanism? {
+    fun getPhoenix(): PhoenixMechanism? {
         this.mechanismStack.forEach { if (it is PhoenixMechanism) return it }
         return null
     }
@@ -624,6 +659,18 @@ class TileData(
     internal fun updateHoverState(hoverStateColorizer: UniversalColorizer) {
         this.hoverStateColorizer.value = hoverStateColorizer
     }
+
+    /**
+     * Find and return all [teams][Team] that have a presence on this tile.
+     * [NeutralFaction] is considered to be always present.
+     */
+    fun findTeams(): Set<Team> {
+        val result: MutableSet<Team> = mutableSetOf()
+        this.mechanismStack.forEach {
+            if (it.teamAffiliation != null) result.add(it.teamAffiliation)
+        }
+        return result.toSet()
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -669,6 +716,7 @@ private fun ComposableTile(tileData: TileData? = null, modifier: Modifier = Modi
         val clickState by tileData.clickStateColorizer.collectAsState()
         val highlightState by tileData.highlightStateColorizer.collectAsState()
         val hoverState by tileData.hoverStateColorizer.collectAsState()
+        val mechanisms by tileData.mechanismStackState.collectAsState()
 
         Box( // Full tile scope
             contentAlignment = Alignment.Center,
@@ -706,7 +754,7 @@ private fun ComposableTile(tileData: TileData? = null, modifier: Modifier = Modi
                         .compositeOver(clickState.fillColor)
                     )
             )
-            ComposableMechanismStack(tileData, modifier.align(Alignment.Center))
+            ComposableMechanismStack(mechanisms, modifier.align(Alignment.Center))
         }
     } else {
         Spacer(modifier.width(tileSize).height(tileSize))
@@ -717,15 +765,13 @@ private fun ComposableTile(tileData: TileData? = null, modifier: Modifier = Modi
  * The [tile][TileData]'s current [Mechanism Stack][TileData.mechanismStack].
  */
 @Composable
-fun ComposableMechanismStack(tileData: TileData, modifier: Modifier = Modifier) {
-    val stackState by tileData.mechanismStackState.collectAsState()
-
+fun ComposableMechanismStack(mechanisms: Set<Mechanism>, modifier: Modifier = Modifier) {
     Box (
         contentAlignment = Alignment.Center,
         modifier = modifier
         .size(tileSize)
     ) {
-        stackState.forEach {
+        mechanisms.forEach {
             ComposableMechanism(it, Modifier.align(Alignment.Center))
         }
     }

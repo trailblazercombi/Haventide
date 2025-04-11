@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
+import app.trailblazercombi.haventide.game.abilities.AbilityTemplate
 import app.trailblazercombi.haventide.game.arena.Team
 import app.trailblazercombi.haventide.game.arena.TileData
 import app.trailblazercombi.haventide.game.modificators.Modificator
@@ -28,11 +29,11 @@ import app.trailblazercombi.haventide.resources.TileStyle.TileSize as tileSize
 
 class PhoenixMechanism(
     parentTile: TileData,
-    val info: MechanismTemplate.Phoenix,
+    val template: MechanismTemplate.Phoenix,
     teamAffiliation: Team,
     override val modificators: MutableList<Modificator> = mutableListOf()
-) : Mechanism(parentTile, teamAffiliation), ModificatorHandler, HitPointsHandler {
-    override val maxHitPoints = info.maxHitPoints
+) : Mechanism(parentTile, teamAffiliation), ModificatorHandler, HitPointsHandler, MovementEnabled {
+    override val maxHitPoints = template.maxHitPoints
     override var currentHitPoints = maxHitPoints
 
 // METHOD OVERRIDES
@@ -46,11 +47,37 @@ class PhoenixMechanism(
         if (mechanism.teamAffiliation != teamAffiliation) return true
         return false
     }
+
+    private fun abilityList(): List<AbilityTemplate> {
+        return listOf(
+            template.abilityBasic1,
+            template.abilityBasic2,
+//            template.abilityInnate1,
+//            template.abilityInnate2,
+//            template.abilityUltimate
+        )
+    }
+
+    fun findFirstAvailableAbility(target: TileData): AbilityTemplate? {
+        return abilityList().firstOrNull { this.isInRange(it, target) && it.executionCheck(this, target) }
+    }
+
+    fun findAllAvailableAbilities(target: TileData): List<AbilityTemplate> {
+        return abilityList().filter { this.isInRange(it, target) && it.executionCheck(this, target) }
+    }
+
+    fun maxAbilityRange(): Double {
+        return abilityList().maxOf { it.range }
+    }
+
+    private fun isInRange(it: AbilityTemplate, target: TileData): Boolean {
+        return this.parentTile.position.distanceTo(target.position) <= it.range
+    }
 }
 
 @Composable
 fun ComposablePhoenixMechanismBall(phoenix: PhoenixMechanism, modifier: Modifier = Modifier) {
-    val painter: Painter = painterResource(phoenix.info.profilePhoto)
+    val painter: Painter = painterResource(phoenix.template.profilePhoto)
     val teamIcon: Painter = painterResource(phoenix.teamAffiliation?.icon ?: Res.drawable.emptytile)
 
     Box (modifier = modifier
