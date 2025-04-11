@@ -7,7 +7,7 @@ import androidx.compose.ui.unit.dp
  * Defines the colors used within the app
  */
 object Palette {
-    // TODO Remove unused colours from the Palette.
+    // [LATER...] TODO Remove unused colours from the Palette.
     //  The Palette got reduced since I first planned it... huh
 
     // Transparent

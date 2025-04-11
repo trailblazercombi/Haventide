@@ -92,7 +92,7 @@ abstract class Mechanism(parentTile: TileData, val teamAffiliation: Team?) {
 
         this.parentTile.removeMechanism(this)
         this.teamAffiliation?.remove(this) ?: NeutralFaction.remove(this)
-        // TODO More detaching once this needs to be detached elsewhere
+        // [THROUGHOUT] TODO More detaching once this needs to be detached elsewhere
     }
 
     /**
@@ -101,7 +101,7 @@ abstract class Mechanism(parentTile: TileData, val teamAffiliation: Team?) {
     @Suppress("RedundantIf", "MemberVisibilityCanBePrivate")
     fun canDestruct(): Boolean {
         if (!this.parentTile.canRemoveMechanism(this)) return false
-        // TODO More checks once this needs to be detached elsewhere
+        // [THROUGHOUT] TODO More checks once this needs to be detached elsewhere
         return true
     }
 
@@ -116,7 +116,7 @@ abstract class Mechanism(parentTile: TileData, val teamAffiliation: Team?) {
     fun move(to: TileData) {
         if (this !is MovementEnabled)
             throw UnsupportedOperationException("Cannot move Mechanism: Mechanism does not implement MovementEnabler")
-        TODO()
+        // [ABILITY STACK] TODO()
     }
 
     /**
@@ -269,7 +269,7 @@ interface ModificatorHandler {
      * and [Modificator.destructCondition]. If the latter check returns `true`, also handles
      * removal from the [MutableList] of [modificators].
      */
-    // TODO Call this in the Game Loop... literally all the time
+    // [GAME LOOP] TODO Call this in the Game Loop... literally all the time
     fun updateModificators() {
         // 0. This will be used in step 2
         val junkModificators = mutableSetOf<Modificator>()

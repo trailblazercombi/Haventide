@@ -223,12 +223,12 @@ data class Position(val x: Int, val y: Int) {
  */
 class TileMapData(player1: PlayerProfile, player2: PlayerProfile) {
 
-    // TODO Size does not need to be a property,
+    // [LATER...] TODO Size does not need to be a property,
     //  and also, read this from file, including the backdrop color.
     val columns = 10; val rows = 10
     val backdropColor = Palette.FullBlack
 
-    // FIXME Bodged to make this work at least somehow.
+    // [LATER...] FIXME Bodged to make this work at least somehow.
     //  This won't allow for more than 2 players though...
     private val localPIG = player1.toLocalPIG()
     private val remotePIG = player2.toRemotePIG()
@@ -242,7 +242,7 @@ class TileMapData(player1: PlayerProfile, player2: PlayerProfile) {
     // The question: Will this even need to handle Mechanism movement?
     // The answer:   It does not need to handle Mechanism movement.
     //               The Mechanism will directly communicate with the Tiles in question.
-    // TODO The checking system for figuring out which moves are valid and for whom and whatč
+    // [ABILITY STACK] TODO The checking system for figuring out which moves are valid and for whom and whatč
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // TILE HIGHLIGHT HANDLING (TileMapData)
@@ -335,15 +335,15 @@ class TileMapData(player1: PlayerProfile, player2: PlayerProfile) {
         this.clearAvailableTiles1()
         this.clearAvailableTiles2()
 
-        // FIXME This might be bad if I don't keep LocalPIG as separate variable...
         // 1. Add every tile the localPIG's Phoenixes are standing on
+        // [GAME LOOP] FIXME This might be bad if I don't keep LocalPIG as separate variable...
         teams[localPIG]!!.forEach {
             if (it !is PhoenixMechanism) return@forEach
             addToAvailableTiles1(it.parentTile)
         }
 
         if (selectedTile1 != null) {
-            // TODO: Here goes the algorithm for highlighting secondary positions based on selected Phoenix
+            // [ABILITY STACK] TODO: Here goes the algorithm for highlighting secondary positions based on selected Phoenix
             //  Prerequisites: The aforementioned AbilityStack
             val existingTile = selectedTile1 ?: return // If this fails, selectedTile1 is null.
             val traversableSurroundings = existingTile.position.traversableSurroundings(
@@ -398,7 +398,7 @@ class TileMapData(player1: PlayerProfile, player2: PlayerProfile) {
             if (tile == selectedTile1) selectedTile1 = null
             // ...and you click a white outlined tile, select that tile too + preview move
             else if (this.availableTiles2.contains(tile)) selectedTile2 = tile
-            // TODO Preview move...
+            // [ABILITY STACK] TODO Preview move...
             // ..and you click an unrelated tile, deselect both tiles and see what happens
             else {
                 selectedTile1 = null
@@ -425,7 +425,7 @@ class TileMapData(player1: PlayerProfile, player2: PlayerProfile) {
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     init {
-        // TODO Read from a file instead
+        // [LATER...] TODO Read from a file instead
         for (y in 0 until rows) {
             for (x in 0 until columns) {
                 val position = Position(x, y)
@@ -473,7 +473,7 @@ class TileData(
     internal var clickStateColorizer: MutableStateFlow<UniversalColorizer> = MutableStateFlow(NO_INTERACTIONS_WITH_OUTLINE),
     internal var highlightStateColorizer: MutableStateFlow<UniversalColorizer> = MutableStateFlow(NO_INTERACTIONS),
     internal var hoverStateColorizer: MutableStateFlow<UniversalColorizer> = MutableStateFlow(NO_INTERACTIONS)
-    // TODO Mechanism stack colorizer(s)
+    // [LATER...] TODO Mechanism stack colorizer(s)
 ) {
     // COMPOSE STATES: MECHANISM STACK
     val mechanismStackState = MutableStateFlow(mechanismStack.toSet())
@@ -481,8 +481,7 @@ class TileData(
         // MECHANISM ADDITION, REMOVAL AND CHECKS (TileData)
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    // FIXME Maybe remove the checks...?
-    //  Figure out the checkflow, but in general this seems like...
+    //  About the CHECKING SYSTEM:
     //  Tile:    All calls for mechanism operations check themselves
     //  TileMap: All calls for mechanism operations check themselves
     //  Mechanism:
@@ -759,5 +758,5 @@ private fun Modifier.scrolling(scrollStateX: ScrollState, scrollStateY: ScrollSt
     return this
         .horizontalScroll(scrollStateX)
         .verticalScroll(scrollStateY)
-    // TODO smooth diagonal scrolling (low priority)
+    // [LATER...] TODO smooth diagonal scrolling (low priority)
 }

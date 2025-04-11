@@ -9,7 +9,7 @@ import app.trailblazercombi.haventide.game.mechanisms.Phoenixes
  * Interfaces directly with [TileMapData], the chief behind the game's logic.
  */
 open class PlayerInGame(val profile: PlayerProfile, allied: Boolean) {
-    // TODO Find out what you'll need this to do
+    // [GAME LOOP] TODO Find out what you'll need this to do
 }
 
 /**
@@ -31,7 +31,7 @@ class RemotePlayerInGame(profile: PlayerProfile, allied: Boolean = false): Playe
 data class PlayerProfile(
     val name: String,
     val activeRoster: Set<MechanismTemplate.Phoenix>
-    // TODO Add more info related to the profile itself
+    // [LATER...] TODO Add more info related to the profile itself
     //  Profile picture
     //  Medals
     //  Match history
@@ -49,7 +49,7 @@ data class PlayerProfile(
     fun toRemotePIG(allied: Boolean = false) = RemotePlayerInGame(this, allied)
 }
 
-// TODO Replace with an actual player profile.
+// [LATER...] TODO Replace with an actual player profile.
 //  This will do for testing purposes though.
 enum class PlaceholderPlayers(
     private val playerName: String,

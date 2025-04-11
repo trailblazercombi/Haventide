@@ -136,7 +136,7 @@ sealed class MechanismTemplate {
         val accentColor: Color,
         val profilePhoto: DrawableResource,
         val maxHitPoints: Int = 120,
-        // TODO Abilities
+        // [ABILITY STACK] TODO Abilities
         //  Lore pages
         //  Et cetera
     ) : MechanismTemplate() {
