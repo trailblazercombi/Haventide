@@ -12,12 +12,8 @@ enum class ModificatorType {
     OTHER
 }
 
-enum class Modificators {
-    TITAN_SHIELD;
-
-    fun build(parent: ModificatorHandler): Modificator = when (this) {
-            TITAN_SHIELD -> TitanShield(parent)
-    }
+enum class Modificators(val build: (ModificatorHandler) -> Modificator) {
+    TITAN_SHIELD( { parent -> TitanShield(parent) } ),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
