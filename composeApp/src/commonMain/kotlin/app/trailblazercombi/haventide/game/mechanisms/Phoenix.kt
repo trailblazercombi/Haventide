@@ -39,7 +39,7 @@ class PhoenixMechanism(
 // METHOD OVERRIDES
 
     override fun onZeroHitPoints() {
-        parentTile.removeMechanism(this)
+        this.destruct()
     }
 
     override fun vetoTraversal(mechanism: Mechanism): Boolean {
