@@ -40,11 +40,7 @@ abstract class Mechanism(parentTile: TileData, val teamAffiliation: Team?) {
      * on a [Mechanism] that doesn't implement [MovementEnabled]
      */
     var parentTile: TileData = parentTile
-//        set(value) {
-//            if (this !is MovementEnabled) throw UnsupportedOperationException(
-//                "Cannot change Parent Tile of a Mechanism that does not implement Movable"
-//            ) else field = value
-//        }
+        private set
 
     /**
      * Denies the specified Mechanism the right to move
