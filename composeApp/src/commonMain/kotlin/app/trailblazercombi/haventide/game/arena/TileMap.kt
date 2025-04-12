@@ -329,12 +329,16 @@ class TileMapData(private val turnTable: TurnTable, val gameLoop: GameLoop) {
         this.clearAvailableTiles1()
         this.clearAvailableTiles2()
 
-        // 1. Add every tile the localPIG's Phoenixes are standing on
+        // 1. Check if it's the local player's turn. If not, shoo!
+        if (localPlayer() != turnTable.currentPlayer()) return
+
+        // 2. Add every tile the localPIG's Phoenixes are standing on
         turnTable.currentPlayer().team.forEach {
             if (it !is PhoenixMechanism) return@forEach
             addToAvailableTiles1(it.parentTile)
         }
 
+        // 3. Highlight secondary tiles, if the primary one is highlighted
         if (selectedTile1 != null) {
             //  Prerequisites: The aforementioned AbilityStack
             val existingTile = selectedTile1 ?: return // If this fails, selectedTile1 is null.
@@ -385,8 +389,15 @@ class TileMapData(private val turnTable: TurnTable, val gameLoop: GameLoop) {
 
         // 1. If there is an ability ready, execute it.
         if (preparedAbility != null && tile === selectedTile2) {
+            // 1.1 Execute the ability
             executeAbility(preparedAbility!!)
-            turnTable.nextPlayerTurn()
+
+            // 1.2 Reset tile highlights
+            selectedTile1 = null
+            selectedTile2 = null
+            selectedTile3 = null
+
+            // 1.3 Next turn, update tile highlights and shoo
             updateAvailableTiles()
             return
         }
@@ -430,14 +441,7 @@ class TileMapData(private val turnTable: TurnTable, val gameLoop: GameLoop) {
     }
 
     private fun executeAbility(triple: Triple<(Mechanism, TileData) -> Unit, Mechanism, TileData>) {
-        executeAbility(triple.first, triple.second, triple.third)
-    }
-
-    private fun executeAbility(execution: (Mechanism, TileData) -> Unit, doer: Mechanism, target: TileData) {
-        execution(doer, target)
-        selectedTile1 = null
-        selectedTile2 = null
-        selectedTile3 = null
+        localPlayer().executeAbility(triple.first, triple.second, triple.third)
     }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

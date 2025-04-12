@@ -10,7 +10,7 @@ import app.trailblazercombi.haventide.game.mechanisms.Phoenixes
  *
  * Interfaces directly with [TileMapData], the chief behind the game's logic.
  */
-open class PlayerInGame(private val profile: PlayerProfile) {
+open class PlayerInGame(private val profile: PlayerProfile, val turnTable: TurnTable) {
     private var isActive = false
 
     val team = Team()
@@ -34,6 +34,7 @@ open class PlayerInGame(private val profile: PlayerProfile) {
 
     open fun executeAbility(ability: (Mechanism, TileData) -> Unit, doer: Mechanism, target: TileData) {
         ability.invoke(doer, target)
+        turnTable.nextPlayerTurn()
     }
 
     fun finishRound() {
@@ -46,14 +47,14 @@ open class PlayerInGame(private val profile: PlayerProfile) {
     }
 }
 
-class LocalPlayerInGame(profile: PlayerProfile) : PlayerInGame(profile) {
+class LocalPlayerInGame(profile: PlayerProfile, turnTable: TurnTable) : PlayerInGame(profile, turnTable) {
     override fun executeAbility(ability: (Mechanism, TileData) -> Unit, doer: Mechanism, target: TileData) {
         super.executeAbility(ability, doer, target)
         // [NETWORK] TODO Make sure this propagates
     }
 }
 
-class RemotePlayerInGame(profile: PlayerProfile) : PlayerInGame(profile) {
+class RemotePlayerInGame(profile: PlayerProfile, turnTable: TurnTable) : PlayerInGame(profile, turnTable) {
     override fun executeAbility(ability: (Mechanism, TileData) -> Unit, doer: Mechanism, target: TileData) {
         // [NETWORK] TODO Figure out what this needs to do...
     }
@@ -77,7 +78,7 @@ data class PlayerProfile(
     /**
      * Returns a new [PlayerInGame] with this [PlayerProfile].
      */
-    fun toPlayerInGame(): PlayerInGame = PlayerInGame(this)
+    fun toPlayerInGame(turnTable: TurnTable): PlayerInGame = PlayerInGame(this, turnTable)
 }
 
 // [LATER...] TODO Replace with an actual player profile.

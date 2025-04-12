@@ -18,10 +18,11 @@ class GameLoop(profile1: PlayerProfile, profile2: PlayerProfile) {
     // [MAPS] TODO Add the TileMapData file loader, and positions, and stuff...
     var roundNumber = mutableStateOf(0)
 
-    private val player1: PlayerInGame = profile1.toPlayerInGame()
-    private val player2: PlayerInGame = profile2.toPlayerInGame()
+    private val turnTable: TurnTable = TurnTable()
+    private val player1: PlayerInGame = profile1.toPlayerInGame(turnTable)
+    private val player2: PlayerInGame = profile2.toPlayerInGame(turnTable)
+    init { turnTable.initialize(player1, player2) }
 
-    private val turnTable = TurnTable(mutableListOf(player1, player2))
     internal val tileMap = TileMapData(turnTable, this)
 
     fun toViewModel() = GameLoopViewModel(this)
@@ -29,9 +30,17 @@ class GameLoop(profile1: PlayerProfile, profile2: PlayerProfile) {
     fun localPlayer() = player1 // TODO Fix this to work properly once multiplayer is involved...
 }
 
-class TurnTable(private var thisTurnArray: MutableList<PlayerInGame>) {
+class TurnTable {
+    private val thisTurnArray: MutableList<PlayerInGame> = mutableListOf()
     private val nextTurnArray: MutableList<PlayerInGame> = mutableListOf()
     private var currentPlayerIndex = 0
+
+    fun initialize(vararg players: PlayerInGame) {
+        thisTurnArray.addAll(players)
+        thisTurnArray.forEach {
+            it.startRound()
+        }
+    }
 
     fun currentPlayer(): PlayerInGame = thisTurnArray[currentPlayerIndex]
 
@@ -58,15 +67,10 @@ class TurnTable(private var thisTurnArray: MutableList<PlayerInGame>) {
     }
 
     private fun nextRound() {
-        thisTurnArray = nextTurnArray
+        thisTurnArray.clear()
+        thisTurnArray.addAll(nextTurnArray)
         nextTurnArray.clear()
         currentPlayerIndex = 0
-        thisTurnArray.forEach {
-            it.startRound()
-        }
-    }
-
-    init {
         thisTurnArray.forEach {
             it.startRound()
         }
