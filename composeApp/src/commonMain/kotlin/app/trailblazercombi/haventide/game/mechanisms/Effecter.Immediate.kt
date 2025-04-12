@@ -10,9 +10,7 @@ import app.trailblazercombi.haventide.game.modificators.Modificators
  * Implementation-wise, it's a [Mechanism] that gets summoned, does something and then immidiately self-destructs.
  */
 abstract class ImmediateEffecter(parentTile: TileData, teamAffiliation: Team? = null) : Mechanism(parentTile, teamAffiliation) {
-    override fun vetoTilemateAddition(tilemate: Mechanism): Boolean {
-        return false
-    }
+    override fun vetoTilemateAddition(tilemate: Mechanism) = false
 }
 
 /**
