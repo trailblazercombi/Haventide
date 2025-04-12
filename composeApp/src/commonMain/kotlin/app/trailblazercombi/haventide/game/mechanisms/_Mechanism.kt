@@ -25,11 +25,6 @@ import app.trailblazercombi.haventide.game.modificators.Modificators
  *                        regardless of the [recipient][Mechanism]'s [Team].
  */
 abstract class Mechanism(parentTile: TileData, val teamAffiliation: Team?) {
-    init { postConstruct() } // Defers assigning team affiliation to prevent leaking this before subclasses are instantiatied
-    private fun postConstruct() {
-        if (this is ImmediateEffecter) return
-        teamAffiliation?.add(this) ?: NeutralFaction.add(this)
-    }
     /**
      * The parent tile of this Mechanism.
      *
@@ -135,6 +130,13 @@ abstract class Mechanism(parentTile: TileData, val teamAffiliation: Team?) {
         return this is MovementEnabled
                 && this.parentTile.canRemoveMechanism(this)
                 && to.canAddMechanism(this)
+    }
+
+    init { postConstruct() } // Defers assigning team affiliation to prevent leaking this before subclasses are instantiatied
+    private fun postConstruct() {
+        if (this is ImmediateEffecter) return
+        teamAffiliation?.add(this) ?: NeutralFaction.add(this)
+        parentTile.addMechanism(this)
     }
 }
 
@@ -400,10 +402,8 @@ interface MechanismSummonInvoker {
      */
     fun summonMechanism(onTile: TileData, teamAffiliation: Team?) {
         summonPattern(onTile.position).forEach {
-            val summonTile = onTile.parentMap[it]
-            summonTile?.addMechanism(
-                mechanism = mechanismTemplate.build(summonTile, teamAffiliation)
-            )
+            val summonTile = onTile.parentMap[it] ?: return@forEach
+            mechanismTemplate.build(summonTile, teamAffiliation)
         }
     }
 }
