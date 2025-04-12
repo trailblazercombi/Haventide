@@ -36,6 +36,8 @@ class PhoenixMechanism(
     override val maxHitPoints = template.maxHitPoints
     override var currentHitPoints = maxHitPoints
 
+    val teamIcon = if (parentTile.parentMap.gameLoop.localPlayer().team == teamAffiliation) Res.drawable.ally else Res.drawable.enemy
+
 // METHOD OVERRIDES
 
     override fun onZeroHitPoints() {
@@ -78,7 +80,7 @@ class PhoenixMechanism(
 @Composable
 fun ComposablePhoenixMechanismBall(phoenix: PhoenixMechanism, modifier: Modifier = Modifier) {
     val painter: Painter = painterResource(phoenix.template.profilePhoto)
-    val teamIcon: Painter = painterResource(phoenix.teamAffiliation?.icon ?: Res.drawable.emptytile)
+    val teamIcon: Painter = painterResource(phoenix.teamIcon)
 
     Box (modifier = modifier
             .size(tileSize - tilePadding)

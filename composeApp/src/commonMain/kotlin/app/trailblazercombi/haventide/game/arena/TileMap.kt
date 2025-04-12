@@ -222,7 +222,7 @@ data class Position(val x: Int, val y: Int) {
 /**
  * This is the map data class in all its glory.
  */
-class TileMapData(/*private val player1: PlayerInGame, private val player2: PlayerInGame,*/ private val turnTable: TurnTable) {
+class TileMapData(private val turnTable: TurnTable, val gameLoop: GameLoop) {
 
     // [LATER...] TODO Size does not need to be a property,
     //  and also, read this from file, including the backdrop color.
@@ -318,6 +318,10 @@ class TileMapData(/*private val player1: PlayerInGame, private val player2: Play
 
     private fun currentPlayer(): PlayerInGame {
         return turnTable.currentPlayer()
+    }
+
+    private fun localPlayer(): PlayerInGame {
+        return gameLoop.localPlayer()
     }
 
     private fun updateAvailableTiles() {

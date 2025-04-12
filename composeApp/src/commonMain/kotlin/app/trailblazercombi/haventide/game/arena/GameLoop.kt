@@ -18,13 +18,15 @@ class GameLoop(profile1: PlayerProfile, profile2: PlayerProfile) {
     // [MAPS] TODO Add the TileMapData file loader, and positions, and stuff...
     var roundNumber = mutableStateOf(0)
 
-    private val player1 = profile1.toPlayerInGame()
-    private val player2 = profile2.toPlayerInGame()
+    private val player1: PlayerInGame = profile1.toPlayerInGame()
+    private val player2: PlayerInGame = profile2.toPlayerInGame()
 
     private val turnTable = TurnTable(mutableListOf(player1, player2))
-    internal val tileMap = TileMapData(turnTable)
+    internal val tileMap = TileMapData(turnTable, this)
 
     fun toViewModel() = GameLoopViewModel(this)
+
+    fun localPlayer() = player1 // TODO Fix this to work properly once multiplayer is involved...
 }
 
 class TurnTable(private var thisTurnArray: MutableList<PlayerInGame>) {
@@ -73,7 +75,6 @@ class TurnTable(private var thisTurnArray: MutableList<PlayerInGame>) {
 
 /**
  * The ViewModel for the game.
- * TODO: Move all the StateFlow(s) to this ViewModel.
  */
 class GameLoopViewModel(gameLoop: GameLoop): ViewModel() {
     val gameLoopState = MutableStateFlow(gameLoop)

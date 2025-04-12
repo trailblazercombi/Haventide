@@ -4,6 +4,7 @@ import app.trailblazercombi.haventide.game.mechanisms.Mechanism
 import app.trailblazercombi.haventide.game.mechanisms.MechanismTemplate
 import app.trailblazercombi.haventide.game.mechanisms.PhoenixMechanism
 import app.trailblazercombi.haventide.resources.Res
+import app.trailblazercombi.haventide.resources.ally
 import app.trailblazercombi.haventide.resources.enemy
 import org.jetbrains.compose.resources.DrawableResource
 
@@ -22,7 +23,6 @@ import org.jetbrains.compose.resources.DrawableResource
  */
 data class Team(
     private val members: MutableSet<Mechanism> = mutableSetOf(),
-    val icon: DrawableResource = Res.drawable.enemy // TileMapData.init is resposible for this being correct
 ) : Iterable<Mechanism> {
     fun add(member: Mechanism) = this.members.add(member)
     fun remove(member: Mechanism) = this.members.remove(member)

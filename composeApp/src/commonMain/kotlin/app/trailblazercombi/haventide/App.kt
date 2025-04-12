@@ -11,9 +11,10 @@ fun App() {
     val gameLoop = GameLoop(
         PlaceholderPlayers.PLAYER_ONE.toProfile(),
         PlaceholderPlayers.PLAYER_TWO.toProfile()
-    ).toViewModel()
+    )
+    val viewModel = gameLoop.toViewModel()
 
     MaterialTheme {
-        ComposableGameScreen(gameLoop)
+        ComposableGameScreen(viewModel)
     }
 }

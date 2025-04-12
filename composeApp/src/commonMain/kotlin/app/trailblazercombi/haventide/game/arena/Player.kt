@@ -1,6 +1,7 @@
 package app.trailblazercombi.haventide.game.arena
 
 import app.trailblazercombi.haventide.game.abilities.DiceStack
+import app.trailblazercombi.haventide.game.mechanisms.Mechanism
 import app.trailblazercombi.haventide.game.mechanisms.MechanismTemplate
 import app.trailblazercombi.haventide.game.mechanisms.Phoenixes
 
@@ -31,6 +32,10 @@ open class PlayerInGame(private val profile: PlayerProfile) {
         dice.roll(8)
     }
 
+    open fun executeAbility(ability: (Mechanism, TileData) -> Unit, doer: Mechanism, target: TileData) {
+        ability.invoke(doer, target)
+    }
+
     fun finishRound() {
         isActive = false
         dice.discardAll()
@@ -38,6 +43,19 @@ open class PlayerInGame(private val profile: PlayerProfile) {
 
     fun isValidForTurn(): Boolean {
         return isActive && team.stillHasAlivePhoenixes()
+    }
+}
+
+class LocalPlayerInGame(profile: PlayerProfile) : PlayerInGame(profile) {
+    override fun executeAbility(ability: (Mechanism, TileData) -> Unit, doer: Mechanism, target: TileData) {
+        super.executeAbility(ability, doer, target)
+        // [NETWORK] TODO Make sure this propagates
+    }
+}
+
+class RemotePlayerInGame(profile: PlayerProfile) : PlayerInGame(profile) {
+    override fun executeAbility(ability: (Mechanism, TileData) -> Unit, doer: Mechanism, target: TileData) {
+        // [NETWORK] TODO Figure out what this needs to do...
     }
 }
 
