@@ -222,28 +222,18 @@ data class Position(val x: Int, val y: Int) {
 /**
  * This is the map data class in all its glory.
  */
-class TileMapData(player1: PlayerProfile, player2: PlayerProfile) {
+class TileMapData(/*private val player1: PlayerInGame, private val player2: PlayerInGame,*/ private val turnTable: TurnTable) {
 
     // [LATER...] TODO Size does not need to be a property,
     //  and also, read this from file, including the backdrop color.
     val columns = 10; val rows = 10
     val backdropColor = Palette.FullBlack
 
-    // [LATER...] FIXME Bodged to make this work at least somehow.
-    //  This won't allow for more than 2 players though...
-    private val localPIG = player1.toLocalPIG()
-    private val remotePIG = player2.toRemotePIG()
-
     private val tiles: MutableMap<Position, TileData?> = mutableMapOf()
-    private val teams: Map<PlayerInGame, Team> = mapOf(
-        localPIG to Team(icon = Res.drawable.ally), // Local player, the one playing the game on the device
-        remotePIG to Team() // Remote player, the enemy playing on another device
-    )
 
     // The question: Will this even need to handle Mechanism movement?
     // The answer:   It does not need to handle Mechanism movement.
-    //               The Mechanism will directly communicate with the Tiles in question.
-    // [ABILITY STACK] TODO The checking system for figuring out which moves are valid and for whom and whatč
+    //               The Mechanism directly communicates with the Tiles in question.
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // TILE HIGHLIGHT HANDLING (TileMapData)
@@ -324,13 +314,10 @@ class TileMapData(player1: PlayerProfile, player2: PlayerProfile) {
          * previewing a move targeting an ally is always more desirable than selecting another ally.
          * That is, of course, if the ally is targetable (within range and the Phoenix has an ability for that).
          */
+    // [GAME LOOP] TODO Make that happen
 
-    private fun localPIG(): LocalPlayerInGame {
-        teams.forEach {
-            val player = it.key
-            if (player is LocalPlayerInGame) return player
-        }
-        throw NullPointerException("There is no local player playing")
+    private fun currentPlayer(): PlayerInGame {
+        return turnTable.currentPlayer()
     }
 
     private fun updateAvailableTiles() {
@@ -339,14 +326,12 @@ class TileMapData(player1: PlayerProfile, player2: PlayerProfile) {
         this.clearAvailableTiles2()
 
         // 1. Add every tile the localPIG's Phoenixes are standing on
-        // [GAME LOOP] FIXME This might be bad if I don't keep LocalPIG as separate variable...
-        teams[localPIG]!!.forEach {
+        turnTable.currentPlayer().team.forEach {
             if (it !is PhoenixMechanism) return@forEach
             addToAvailableTiles1(it.parentTile)
         }
 
         if (selectedTile1 != null) {
-            // [ABILITY STACK] TODO: Here goes the algorithm for highlighting secondary positions based on selected Phoenix
             //  Prerequisites: The aforementioned AbilityStack
             val existingTile = selectedTile1 ?: return // If this fails, selectedTile1 is null.
             val localPhoenix = existingTile.getPhoenix() ?: return // this should already be allied only...
@@ -393,11 +378,16 @@ class TileMapData(player1: PlayerProfile, player2: PlayerProfile) {
 
     // This clicks when a Tile is clicked
     internal fun tileClickEvent(tile: TileData) {
+
+        // 1. If there is an ability ready, execute it.
         if (preparedAbility != null && tile === selectedTile2) {
             executeAbility(preparedAbility!!)
+            turnTable.nextPlayerTurn()
+            updateAvailableTiles()
             return
         }
 
+        // 2. If there is no ability ready, do something else.
         selectedTile3 = null
         // If a yellow tile is selected...
         if (selectedTile1 != null) {
@@ -444,7 +434,6 @@ class TileMapData(player1: PlayerProfile, player2: PlayerProfile) {
         selectedTile1 = null
         selectedTile2 = null
         selectedTile3 = null
-        updateAvailableTiles()
     }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -462,24 +451,11 @@ class TileMapData(player1: PlayerProfile, player2: PlayerProfile) {
                 tiles[position] = TileData(this, position)
             }
         }
-        var tile = tiles[Position(3, 1)]
-        tile?.addMechanism(
-            Phoenixes.AYUNA.build(
-            tile,
-            this.teams[localPIG] ?: throw NullPointerException("Player 1 is null")
-        ))
-        tile = tiles[Position(4, 2)]
-        tile?.addMechanism(
-            Phoenixes.FINNIAN.build(
-            tile,
-            this.teams[remotePIG] ?: throw NullPointerException("Player 2 is null")
-        ))
-        tile = tiles[Position(2, 1)]
-        tile?.addMechanism(
-            Phoenixes.FINNIAN.build(
-            tile,
-            this.teams[localPIG] ?: throw NullPointerException("Player 2 is null")
-        ))
+        var i = 0 // [MAPS] FIXME this is so janky
+        turnTable.allPlayers().forEach {
+            it.addRoster(get(3, 3 * i)!!, get(4, 3 * i)!!, get(5, 3 * i)!!)
+            i++
+        }
         updateAvailableTiles()
     }
 }
@@ -775,6 +751,7 @@ fun ComposableMechanismStack(mechanisms: Set<Mechanism>, modifier: Modifier = Mo
             ComposableMechanism(it, Modifier.align(Alignment.Center))
         }
     }
+    // [LATER...] TODO Smarter approach, because this will look so stupid
 }
 
 /**

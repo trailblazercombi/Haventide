@@ -1,5 +1,6 @@
 package app.trailblazercombi.haventide.game.arena
 
+import app.trailblazercombi.haventide.game.abilities.DiceStack
 import app.trailblazercombi.haventide.game.mechanisms.MechanismTemplate
 import app.trailblazercombi.haventide.game.mechanisms.Phoenixes
 
@@ -8,19 +9,37 @@ import app.trailblazercombi.haventide.game.mechanisms.Phoenixes
  *
  * Interfaces directly with [TileMapData], the chief behind the game's logic.
  */
-open class PlayerInGame(val profile: PlayerProfile, allied: Boolean) {
-    // [GAME LOOP] TODO Find out what you'll need this to do
+open class PlayerInGame(private val profile: PlayerProfile) {
+    private var isActive = false
+
+    val team = Team()
+
+    private val dice = DiceStack()
+
+    fun addRoster(vararg tiles: TileData) {
+        val tileSet = tiles.toList()
+        var i = 0
+        profile.activeRoster.forEach {
+            println("Buhehe! $it for $team")
+            it.build(tileSet[i], team)
+            i++
+        }
+    }
+
+    fun startRound() {
+        isActive = true
+        dice.roll(8)
+    }
+
+    fun finishRound() {
+        isActive = false
+        dice.discardAll()
+    }
+
+    fun isValidForTurn(): Boolean {
+        return isActive && team.stillHasAlivePhoenixes()
+    }
 }
-
-/**
- * A subtype of [PlayerInGame] denoting a player that's interfacing directly with the local client.
- */
-class LocalPlayerInGame(profile: PlayerProfile): PlayerInGame(profile, true)
-
-/**
- * A subtype of [PlayerInGame] denoting a player that's interfacing with the local cleint over a network.
- */
-class RemotePlayerInGame(profile: PlayerProfile, allied: Boolean = false): PlayerInGame(profile, allied)
 
 /**
  * A data blob containing player information.
@@ -38,15 +57,9 @@ data class PlayerProfile(
     //  ELO...
 ) {
     /**
-     * Returns a new [LocalPlayerInGame] with this [PlayerProfile].
+     * Returns a new [PlayerInGame] with this [PlayerProfile].
      */
-    fun toLocalPIG(): LocalPlayerInGame = LocalPlayerInGame(this)
-
-    /**
-     * Returns a new [RemotePlayerInGame] with this [PlayerProfile].
-     * @param allied Whether the player is an ally or not.
-     */
-    fun toRemotePIG(allied: Boolean = false) = RemotePlayerInGame(this, allied)
+    fun toPlayerInGame(): PlayerInGame = PlayerInGame(this)
 }
 
 // [LATER...] TODO Replace with an actual player profile.

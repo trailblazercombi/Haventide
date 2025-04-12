@@ -1,6 +1,8 @@
 package app.trailblazercombi.haventide.game.arena
 
 import app.trailblazercombi.haventide.game.mechanisms.Mechanism
+import app.trailblazercombi.haventide.game.mechanisms.MechanismTemplate
+import app.trailblazercombi.haventide.game.mechanisms.PhoenixMechanism
 import app.trailblazercombi.haventide.resources.Res
 import app.trailblazercombi.haventide.resources.enemy
 import org.jetbrains.compose.resources.DrawableResource
@@ -26,6 +28,11 @@ data class Team(
     fun remove(member: Mechanism) = this.members.remove(member)
     fun getMembers(): Set<Mechanism> = this.members.toSet()
     override fun iterator(): Iterator<Mechanism> = this.members.iterator()
+
+    fun stillHasAlivePhoenixes(): Boolean {
+        getMembers().forEach { member -> if (member is PhoenixMechanism) return true }
+        return false
+    }
 }
 
 /**
