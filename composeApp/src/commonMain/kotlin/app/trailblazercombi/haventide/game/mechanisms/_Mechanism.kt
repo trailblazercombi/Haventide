@@ -447,3 +447,5 @@ object MechanismSummonPattern {
 fun ComposableMechanism(mechanism: Mechanism, modifier: Modifier = Modifier) {
     if (mechanism is PhoenixMechanism) ComposablePhoenixMechanismBall(mechanism)
 }
+
+// end of file
