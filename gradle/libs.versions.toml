@@ -20,6 +20,9 @@ uiGraphicsAndroid = "1.7.8"
 uiGeometryAndroid = "1.7.8"
 runtimeAndroid = "1.7.8"
 uiAndroid = "1.7.8"
+tvMaterial = "1.0.0"
+uiTextAndroid = "1.7.8"
+foundationAndroid = "1.7.8"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -40,6 +43,9 @@ androidx-ui-graphics-android = { group = "androidx.compose.ui", name = "ui-graph
 androidx-ui-geometry-android = { group = "androidx.compose.ui", name = "ui-geometry-android", version.ref = "uiGeometryAndroid" }
 androidx-runtime-android = { group = "androidx.compose.runtime", name = "runtime-android", version.ref = "runtimeAndroid" }
 androidx-ui-android = { group = "androidx.compose.ui", name = "ui-android", version.ref = "uiAndroid" }
+androidx-tv-material = { group = "androidx.tv", name = "tv-material", version.ref = "tvMaterial" }
+androidx-ui-text-android = { group = "androidx.compose.ui", name = "ui-text-android", version.ref = "uiTextAndroid" }
+androidx-foundation-android = { group = "androidx.compose.foundation", name = "foundation-android", version.ref = "foundationAndroid" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
