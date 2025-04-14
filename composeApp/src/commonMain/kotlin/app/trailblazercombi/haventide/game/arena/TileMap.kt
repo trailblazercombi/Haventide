@@ -224,8 +224,8 @@ data class Position(val x: Int, val y: Int) {
  */
 class TileMapData(private val turnTable: TurnTable, val gameLoop: GameLoop) {
 
-    // [LATER...] TODO Size does not need to be a property,
-    //  and also, read this from file, including the backdrop color.
+    // [LOAD FROM FILE] TODO Size does not need to be a property,
+    //                   and also, read this from file, including the backdrop color.
     val columns = 10; val rows = 10
     val backdropColor = Palette.FullBlack
 
@@ -314,7 +314,7 @@ class TileMapData(private val turnTable: TurnTable, val gameLoop: GameLoop) {
          * previewing a move targeting an ally is always more desirable than selecting another ally.
          * That is, of course, if the ally is targetable (within range and the Phoenix has an ability for that).
          */
-    // [GAME LOOP] TODO Make that happen
+    // [GAME LOOP] FIXME I think this is the case already, test it and see
 
     private fun currentPlayer(): PlayerInGame {
         return turnTable.currentPlayer()
@@ -451,7 +451,7 @@ class TileMapData(private val turnTable: TurnTable, val gameLoop: GameLoop) {
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     init {
-        // [LATER...] TODO Read from a file instead
+        // [LOAD FROM FILE] TODO Read from a file instead
         for (y in 0 until rows) {
             for (x in 0 until columns) {
                 val position = Position(x, y)
@@ -465,6 +465,7 @@ class TileMapData(private val turnTable: TurnTable, val gameLoop: GameLoop) {
             i++
         }
         updateAvailableTiles()
+        // [MAPS] FIXME Make sure there is at least one row / column of empty tiles on every edge...
     }
 }
 
@@ -486,7 +487,6 @@ class TileData(
     internal var clickStateColorizer: MutableStateFlow<UniversalColorizer> = MutableStateFlow(NO_INTERACTIONS_WITH_OUTLINE),
     internal var highlightStateColorizer: MutableStateFlow<UniversalColorizer> = MutableStateFlow(NO_INTERACTIONS),
     internal var hoverStateColorizer: MutableStateFlow<UniversalColorizer> = MutableStateFlow(NO_INTERACTIONS)
-    // [LATER...] TODO Mechanism stack colorizer(s)
 ) {
     // COMPOSE STATES: MECHANISM STACK
     val mechanismStackState = MutableStateFlow(mechanismStack.toSet())
@@ -789,5 +789,4 @@ private fun Modifier.scrolling(scrollStateX: ScrollState, scrollStateY: ScrollSt
     return this
         .horizontalScroll(scrollStateX)
         .verticalScroll(scrollStateY)
-    // [LATER...] TODO smooth diagonal scrolling (low priority)
 }

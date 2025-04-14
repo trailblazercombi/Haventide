@@ -10,7 +10,7 @@ import app.trailblazercombi.haventide.game.mechanisms.Phoenixes
  *
  * Interfaces directly with [TileMapData], the chief behind the game's logic.
  */
-open class PlayerInGame(private val profile: PlayerProfile, val turnTable: TurnTable) {
+open class PlayerInGame(val profile: PlayerProfile, val turnTable: TurnTable) {
     private var isActive = false
 
     val team = Team()
@@ -21,7 +21,7 @@ open class PlayerInGame(private val profile: PlayerProfile, val turnTable: TurnT
         val tileSet = tiles.toList()
         var i = 0
         profile.activeRoster.forEach {
-            println("Buhehe! $it for $team")
+
             it.build(tileSet[i], team)
             i++
         }
@@ -45,6 +45,10 @@ open class PlayerInGame(private val profile: PlayerProfile, val turnTable: TurnT
     fun isValidForTurn(): Boolean {
         return isActive && team.stillHasAlivePhoenixes()
     }
+
+    open fun onTurnStart() {}
+
+    fun onGameOver() {}
 }
 
 class LocalPlayerInGame(profile: PlayerProfile, turnTable: TurnTable) : PlayerInGame(profile, turnTable) {
@@ -69,7 +73,7 @@ class RemotePlayerInGame(profile: PlayerProfile, turnTable: TurnTable) : PlayerI
 data class PlayerProfile(
     val name: String,
     val activeRoster: Set<MechanismTemplate.Phoenix>
-    // [LATER...] TODO Add more info related to the profile itself
+    // [MENUS] TODO Add more info related to the profile itself
     //  Profile picture
     //  Medals
     //  Match history
@@ -78,10 +82,13 @@ data class PlayerProfile(
     /**
      * Returns a new [PlayerInGame] with this [PlayerProfile].
      */
-    fun toPlayerInGame(turnTable: TurnTable): PlayerInGame = PlayerInGame(this, turnTable)
+    fun toPlayerInGame(turnTable: TurnTable, local: Boolean = false): PlayerInGame {
+        if (local) return LocalPlayerInGame(this, turnTable)
+        else return RemotePlayerInGame(this, turnTable)
+    }
 }
 
-// [LATER...] TODO Replace with an actual player profile.
+// [MENUS] TODO Replace with an actual player profile.
 //  This will do for testing purposes though.
 enum class PlaceholderPlayers(
     private val playerName: String,

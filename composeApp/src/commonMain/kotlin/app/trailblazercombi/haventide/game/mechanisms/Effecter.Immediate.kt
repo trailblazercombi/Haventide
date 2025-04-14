@@ -55,7 +55,7 @@ class ImmediateMechanismSummoner(
     teamAffiliation: Team? = null
 ) : ImmediateEffecter(parentTile, teamAffiliation), MechanismSummonInvoker {
     init {
-        // TODO Summon pattern does not look properly installed
+        // [ABILITY STACK] TODO Summon pattern does not look properly installed
         summonMechanism(parentTile, teamAffiliation)
         destruct()
     }

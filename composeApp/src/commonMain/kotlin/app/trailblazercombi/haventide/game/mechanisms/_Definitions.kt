@@ -183,7 +183,6 @@ sealed class MechanismTemplate {
         data class ModificatorInvoker(val modificator: Modificators): MechanismTemplate() {
             override fun build(parentTile: TileData, teamAffiliation: Team?): Mechanism
             = ImmediateModificatorInvoker(this.modificator, parentTile)
-
         }
 
         /**

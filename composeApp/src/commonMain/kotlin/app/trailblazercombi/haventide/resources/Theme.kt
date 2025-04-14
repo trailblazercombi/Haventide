@@ -2,6 +2,7 @@ package app.trailblazercombi.haventide.resources
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 /**
  * Defines the colors used within the app
@@ -12,6 +13,7 @@ object Palette {
 
     // Transparent
     val Glass00 = Color(0x00000000)
+
     val Glass10 = Color(0x1AFFFFFF)
     val Glass20 = Color(0x33FFFFFF)
     val Glass30 = Color(0x4DFFFFFF)
@@ -23,7 +25,6 @@ object Palette {
     val Glass90 = Color(0xE6FFFFFF)
 
     // Dark Primary
-//    val FillDarkPrimary = Color(0xFF102538)
 //    val LightDarkPrimary = Color(0xFF16334D)
 //    val ShadeDarkPrimary = Color(0xFF0B1E2E)
 
