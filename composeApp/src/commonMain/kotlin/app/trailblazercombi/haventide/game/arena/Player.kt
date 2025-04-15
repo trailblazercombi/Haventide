@@ -62,6 +62,11 @@ class RemotePlayerInGame(profile: PlayerProfile, turnTable: TurnTable) : PlayerI
     override fun executeAbility(ability: (Mechanism, TileData) -> Unit, doer: Mechanism, target: TileData) {
         // [NETWORK] TODO Figure out what this needs to do...
     }
+
+    override fun onTurnStart() {
+        // [NETWORK] FIXME Remove this later, placeholder only
+        turnTable.nextPlayerTurn()
+    }
 }
 
 /**

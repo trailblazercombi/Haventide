@@ -79,6 +79,7 @@ dependencies {
     implementation(libs.androidx.tv.material)
     implementation(libs.androidx.ui.text.android)
     implementation(libs.androidx.foundation.android)
+    implementation(libs.androidx.ui.unit.android)
     debugImplementation(compose.uiTooling)
 }
 

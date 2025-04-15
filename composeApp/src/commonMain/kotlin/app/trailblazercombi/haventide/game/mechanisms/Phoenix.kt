@@ -1,18 +1,24 @@
 package app.trailblazercombi.haventide.game.mechanisms
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import app.trailblazercombi.haventide.game.abilities.AbilityTemplate
 import app.trailblazercombi.haventide.game.arena.Team
 import app.trailblazercombi.haventide.game.arena.TileData
@@ -36,6 +42,9 @@ class PhoenixMechanism(
     override val maxHitPoints = template.maxHitPoints
     override var currentHitPoints = maxHitPoints
 
+    var energyPoints = 0
+    val maxEnergyPoints = template.maxEnergyPoints
+    val neededEnergyPoints = template.energyForUltimate
     val teamIcon = if (parentTile.parentMap.gameLoop.localPlayer().team == teamAffiliation) Res.drawable.ally else Res.drawable.enemy
 
 // METHOD OVERRIDES
@@ -43,6 +52,8 @@ class PhoenixMechanism(
     override fun onZeroHitPoints() {
         this.destruct()
     }
+    
+    fun ultimateReady() = this.energyPoints >= this.neededEnergyPoints
 
     override fun vetoTraversal(mechanism: Mechanism): Boolean {
         if (mechanism !is PhoenixMechanism) return true
@@ -113,5 +124,33 @@ fun ComposablePhoenixMechanismBall(phoenix: PhoenixMechanism, modifier: Modifier
             )
         }
         // [ABILITY STACK] TODO actual health points, actual energy (ally only)
+    }
+}
+
+@Composable
+fun PhoenixMiniature(
+    phoenix: PhoenixMechanism,
+    width: Dp = GameScreenTopBubbleStyle.MiniatureWidth,
+    height: Dp = GameScreenTopBubbleStyle.MiniatureHeight,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .size(width, height)
+            .also {
+                if (phoenix.ultimateReady()) it.border(
+                    BorderStroke(GameScreenTopBubbleStyle.MiniatureUltimateBorder, Palette.FillYellow),
+                )
+            }
+            // .padding(GameScreenTopBubbleStyle.InnerOffset)
+    ) {
+        Image(
+            painter = painterResource(phoenix.template.profilePhoto), // TODO Change to miniature photo
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = modifier
+                .padding(GameScreenTopBubbleStyle.InnerOffset, 0.dp)
+                .clip(RoundedCornerShape(GameScreenTopBubbleStyle.MiniatureCornerRounding))
+        )
     }
 }

@@ -2,6 +2,7 @@ package app.trailblazercombi.haventide.game.abilities
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.sun.jdi.AbsentInformationException
 import kotlinx.coroutines.flow.MutableStateFlow

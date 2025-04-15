@@ -24,7 +24,18 @@ object Palette {
     val Glass80 = Color(0xCCFFFFFF)
     val Glass90 = Color(0xE6FFFFFF)
 
+    val Abyss10 = Color(0x1A000000)
+    val Abyss20 = Color(0x33000000)
+    val Abyss30 = Color(0x4D000000)
+    val Abyss40 = Color(0x66000000)
+    val Abyss50 = Color(0x80000000)
+    val Abyss60 = Color(0x99000000)
+    val Abyss70 = Color(0xB3000000)
+    val Abyss80 = Color(0xCC000000)
+    val Abyss90 = Color(0xE6000000)
+
     // Dark Primary
+    val FillDarkPrimary = Color(0xFF200011)
 //    val LightDarkPrimary = Color(0xFF16334D)
 //    val ShadeDarkPrimary = Color(0xFF0B1E2E)
 
@@ -123,6 +134,41 @@ object PhoenixBallStyle {
     val AffiliationIconSize = 28.dp
     val AffiliationIconOuterOffsetFromBottomRight = 14.dp
     val AffiliationIconInnerPadding = 4.dp
+}
+
+object GameScreenDialogBoxStyle {
+    val Elevation = 12.dp
+    val LargeTextSize = 36.sp
+    val LargeTextLineSeparation = 50.sp
+    val TitleTextSize = 32.sp
+    val ButtonTextSize = 14.sp
+    val InnerPadding = 8.dp
+    val GameOverInnerPadding = 32.dp
+    val OuterCornerRounding = 8.dp
+    val ButtonCornerRounding = 4.dp
+    val OutlineThickness = 0.dp
+    val StretchedDialogOffsetFromEdge = 64.dp
+    val TapAnywhereLabelOffset = 128.dp
+    val YesNoDialogButtonMaxWidth = 260.dp
+}
+
+object GameScreenTopBubbleStyle {
+    val CornerRounding = 16.dp
+    val OutlineThickness = 0.dp
+    val Elevation = 12.dp
+    val OffsetFromEdge = 16.dp
+    val InnerOffset = 8.dp
+    val BubbleHeight = 56.dp
+    val DoubleBubbleHeight = 80.dp
+    val MiniatureWidth = 64.dp
+    val MiniatureHeight = 32.dp
+    val MiniatureCornerRounding = 8.dp
+    val MiniatureUltimateBorder = 8.dp
+    val RoundCounterWidth = 128.dp
+    val StandardButtonWidth = 256.dp
+    val RoundCounterTextSize = 12.sp
+    val UnifiedRoundTeamTextSize = 14.sp
+    val TeamTurnTextSize = 16.sp
 }
 
 /**

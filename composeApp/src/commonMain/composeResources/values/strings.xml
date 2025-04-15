@@ -4,17 +4,21 @@
     <string name="game_over_dialog_result_good">VICTORY</string>
     <string name="game_over_dialog_result_neutral">DRAW</string>
     <string name="game_over_dialog_result_bad">DEFEAT</string>
-    <string name="game_over_dialog_result_forfeit">MATCH FORFEITED</string>
-    <string name="game_over_dialog_result_contumation">VICTORY BY DEFAULT</string>
-<!--    TODO Find out what "kontumačná výhra" is in English-->
     <string name="game_over_dialog_result_error">MATCH OVER</string>
+
+    <string name="game_over_dialog_result_forfeit">MATCH FORFEITED</string>
+    <string name="game_over_dialog_result_contumation">VICTORY BY FORFEIT</string>
 
     <string name="game_over_dialog_confirm_button">Tap or click on the blank area to continue</string>
 
-    <string name="pause_dialog_return_button">Continue Match</string>
+    <string name="yes_no_dialog_forfeit_title">Are you sure?</string>
+    <string name="yes_no_dialog_forfeit_yes">Yes, forfeit match</string>
+    <string name="yes_no_dialog_forfeit_no">Cancel and keep playing</string>
+
+    <string name="pause_dialog_return_button">Continue Game</string>
     <string name="pause_dialog_offer_draw_button">Offer Draw</string>
-    <string name="pause_dialog_settings_shortcut_button">Game Settings</string>
-    <string name="pause_dialog_forfeit_button">Forfeit Match</string>
+    <string name="pause_dialog_settings_shortcut_button">Settings</string>
+    <string name="pause_dialog_forfeit_button">Forfeit</string>
 
     <string name="game_turn_state_good">Your turn</string>
     <string name="game_turn_state_bad">%1$s's turn</string>
