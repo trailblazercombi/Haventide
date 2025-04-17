@@ -171,6 +171,15 @@ object GameScreenTopBubbleStyle {
     val TeamTurnTextSize = 16.sp
 }
 
+object DieStyle {
+    val DieSize = 36.dp
+    val InnerPadding = 4.dp
+    val CornerRounding = 4.dp
+    val OutlineThickness = 0.dp
+    val Separation = 2.dp
+    val DicePerRow = 4
+}
+
 /**
  * Keep track of click states and the associated tile colors.
  * This enum exists for the purposes of highlighting tiles.

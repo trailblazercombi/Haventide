@@ -2,9 +2,6 @@
 
 package app.trailblazercombi.haventide.game.arena
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -13,17 +10,17 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.Dp
+import androidx.lifecycle.ViewModel
 import app.trailblazercombi.haventide.game.abilities.AbilityTemplate
+import app.trailblazercombi.haventide.game.abilities.DieType
 import app.trailblazercombi.haventide.game.mechanisms.*
 import app.trailblazercombi.haventide.resources.UniversalColorizer.*
-import app.trailblazercombi.haventide.resources.Palette
-import app.trailblazercombi.haventide.resources.Res
 import app.trailblazercombi.haventide.resources.UniversalColorizer
-import app.trailblazercombi.haventide.resources.ally
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.math.*
 import app.trailblazercombi.haventide.resources.TileStyle.TileSize as tileSize
@@ -225,91 +222,16 @@ data class Position(val x: Int, val y: Int) {
 /**
  * This is the map data class in all its glory.
  */
-class TileMapData(private val turnTable: TurnTable, val gameLoop: GameLoop) {
+class TileMapData(val turnTable: TurnTable, val gameLoop: GameLoop) {
 
     // [LOAD FROM FILE] TODO Size does not need to be a property,
     //                   and also, read this from file, including the backdrop color.
     val columns = 10; val rows = 10
-    val backdropColor = Palette.FullBlack
+    val backdropColor = Color(0xFF381428)
 
     private val tiles: MutableMap<Position, TileData?> = mutableMapOf()
 
-    // The question: Will this even need to handle Mechanism movement?
-    // The answer:   It does not need to handle Mechanism movement.
-    //               The Mechanism directly communicates with the Tiles in question.
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // TILE HIGHLIGHT HANDLING (TileMapData)
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /**
-     * Describes the primary selected tile (yellow).
-     * If the yellow tile had an outline before selection (was in availableTiles1),
-     * the setters also generates white outline tiles.
-     */
-    private var selectedTile1: TileData? = null
-        set(value) {
-            field?.updateClickState(NO_INTERACTIONS_WITH_OUTLINE)
-            field = value
-            field?.updateClickState(CLICKED_PRIMARY)
-            selectedTile2 = null
-        }
-
-    /**
-     * Describes the secondary selected tile (white).
-     * The white tile had to have an outline before selection (was in availableTiles2).
-     */
-    private var selectedTile2: TileData? = null
-        set(value) {
-            field?.updateClickState(NO_INTERACTIONS_WITH_OUTLINE)
-            field = value
-            field?.updateClickState(CLICKED_SECONDARY)
-        }
-
-    /**
-     * Describes the tertiary selected tile (grey).
-     */
-    private var selectedTile3: TileData? = null
-        set(value) {
-            field?.updateClickState(NO_INTERACTIONS_WITH_OUTLINE)
-            field = value
-            field?.updateClickState(CLICKED_TERTIARY)
-        }
-
-    private var preparedAbility: Triple<(Mechanism, TileData) -> Unit, Mechanism, TileData>? = null
-
-    /**
-     * A [MutableSet] containing all [tiles][TileData] valid for primary highlight.
-     */
-    private val availableTiles1 = mutableSetOf<TileData>()
-
-    /**
-     * A [MutableSet] containing all [tiles][TileData] valid for secondary highlight.
-     */
-    private val availableTiles2 = mutableSetOf<TileData>()
-
-    private fun addToAvailableTiles1(tileData: TileData) {
-        this.availableTiles1.add(tileData)
-        tileData.updateHighlightState(HIGHLIGHT_PRIMARY)
-    }
-
-    private fun addToAvailableTiles2(tileData: TileData) {
-        this.availableTiles2.add(tileData)
-        tileData.updateHighlightState(HIGHLIGHT_SECONDARY)
-    }
-
-    private fun clearAvailableTiles1() {
-        for (tileData in availableTiles1) {
-            tileData.updateHighlightState(NO_INTERACTIONS)
-        }
-        this.availableTiles1.clear()
-    }
-
-    private fun clearAvailableTiles2() {
-        for (tileData in availableTiles2) {
-            tileData.updateHighlightState(NO_INTERACTIONS)
-        }
-        this.availableTiles2.clear()
-    }
+    val viewModel = TileMapViewModel(this)
 
     /* NOTE: Secondary always takes precedence.
          * Reason: when the primary is selected (clicked on a Phoenix),
@@ -323,43 +245,8 @@ class TileMapData(private val turnTable: TurnTable, val gameLoop: GameLoop) {
         return turnTable.currentPlayer()
     }
 
-    private fun localPlayer(): PlayerInGame {
+    fun localPlayer(): PlayerInGame {
         return gameLoop.localPlayer()
-    }
-
-    private fun updateAvailableTiles() {
-        // 0. Clear the current highlights
-        this.clearAvailableTiles1()
-        this.clearAvailableTiles2()
-
-        // 1. Check if it's the local player's turn. If not, shoo!
-        if (localPlayer() != turnTable.currentPlayer()) return
-
-        // 2. Add every tile the localPIG's Phoenixes are standing on
-        turnTable.currentPlayer().team.forEach {
-            if (it !is PhoenixMechanism) return@forEach
-            addToAvailableTiles1(it.parentTile)
-        }
-
-        // 3. Highlight secondary tiles, if the primary one is highlighted
-        if (selectedTile1 != null) {
-            //  Prerequisites: The aforementioned AbilityStack
-            val existingTile = selectedTile1 ?: return // If this fails, selectedTile1 is null.
-            val localPhoenix = existingTile.getPhoenix() ?: return // this should already be allied only...
-
-            val surroundings = existingTile.position.traversableSurroundings(
-                mapData = this,
-                mechanism = DummyImmediateEffecter(existingTile),
-                radius = localPhoenix.maxAbilityRange(),
-            )
-
-            surroundings.forEach {
-                val targetTile = this[it] ?: return@forEach
-                if (localPhoenix.findFirstAvailableAbility(targetTile) != null) {
-                    addToAvailableTiles2(targetTile)
-                }
-            }
-        }
     }
 
     /**
@@ -384,70 +271,6 @@ class TileMapData(private val turnTable: TurnTable, val gameLoop: GameLoop) {
     }
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // TILE CLICK EVENTS AND PROPAGATION - Start here!
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // This clicks when a Tile is clicked
-    internal fun tileClickEvent(tile: TileData) {
-
-        // 1. If there is an ability ready, execute it.
-        if (preparedAbility != null && tile === selectedTile2) {
-            // 1.1 Execute the ability
-            executeAbility(preparedAbility!!)
-
-            // 1.2 Reset tile highlights
-            selectedTile1 = null
-            selectedTile2 = null
-            selectedTile3 = null
-
-            // 1.3 Next turn, update tile highlights and shoo
-            updateAvailableTiles()
-            return
-        }
-
-        // 2. If there is no ability ready, do something else.
-        selectedTile3 = null
-        // If a yellow tile is selected...
-        if (selectedTile1 != null) {
-            // ...and you click it, deselect it
-            if (tile == selectedTile1) selectedTile1 = null
-            // ...and you click a white outlined tile, select that tile too + preview move
-            else if (this.availableTiles2.contains(tile)) {
-                selectedTile2 = tile
-                prepareAbility(
-                    template = selectedTile1!!.getPhoenix()!!.findFirstAvailableAbility(selectedTile2!!)!!,
-                    doer = selectedTile1!!.getPhoenix()!!,
-                    target = selectedTile2!!,
-                )
-            }
-            // ..and you click an unrelated tile, deselect both tiles and see what happens
-            else {
-                selectedTile1 = null
-                selectedTile2 = null
-                tileClickEvent(tile)
-            }
-        // Else, if no tile is selected, and you click a yellow outlined tile
-        } else if (availableTiles1.contains(tile)) {
-            selectedTile1 = tile
-            selectedTile2 = null
-        // Else, if not tile is selected and you click an unmarked tile
-        } else {
-            selectedTile1 = null
-            selectedTile2 = null
-            selectedTile3 = tile
-        }
-        this.updateAvailableTiles()
-    }
-
-    private fun prepareAbility(template: AbilityTemplate, doer: Mechanism, target: TileData) {
-        this.preparedAbility = Triple(template.execution, doer, target)
-    }
-
-    private fun executeAbility(triple: Triple<(Mechanism, TileData) -> Unit, Mechanism, TileData>) {
-        localPlayer().executeAbility(triple.first, triple.second, triple.third)
-    }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // THE FORSAKEN INIT BLOCK
         // Moved here because NullPointerException when trying to call fields below it...
         // Ghhhhhhh...
@@ -467,7 +290,7 @@ class TileMapData(private val turnTable: TurnTable, val gameLoop: GameLoop) {
             it.addRoster(get(3, 3 * i)!!, get(4, 3 * i)!!, get(5, 3 * i)!!)
             i++
         }
-        updateAvailableTiles()
+        viewModel.updateAvailableTiles()
         // [MAPS] FIXME Make sure there is at least one row / column of empty tiles on every edge...
     }
 }
@@ -617,7 +440,7 @@ class TileData(
      * The [map][TileMapData] handles the rest.
      */
     fun tileClickEvent() {
-        parentMap.tileClickEvent(this)
+        parentMap.viewModel.tileClickEvent(this)
     }
 
     /**
@@ -664,6 +487,215 @@ class TileData(
 // COMPOSABLES
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+class TileMapViewModel(val tileMap: TileMapData) : ViewModel() {
+
+    private var preparedAbility: AbilityPrepEncapsule? = null
+
+    class AbilityPrepEncapsule(
+        val template: AbilityTemplate, val dieType: DieType, val doer: Mechanism, val target: TileData
+    )
+
+    private var selectedTile1: TileData? = null
+        set(value) {
+            field?.updateClickState(NO_INTERACTIONS_WITH_OUTLINE)
+            field = value
+            field?.updateClickState(CLICKED_PRIMARY)
+            tileMap.gameLoop.viewModel.localPlayerDice.value.viewModel.setDiePreference(field?.getPhoenix()?.template?.phoenixType)
+            selectedTile2 = null
+        }
+
+    /**
+     * Describes the secondary selected tile (white).
+     * The white tile had to have an outline before selection (was in availableTiles2).
+     */
+    private var selectedTile2: TileData? = null
+        set(value) {
+            field?.updateClickState(NO_INTERACTIONS_WITH_OUTLINE)
+            field = value
+            field?.updateClickState(CLICKED_SECONDARY)
+        }
+
+    /**
+     * Describes the tertiary selected tile (grey).
+     */
+    private var selectedTile3: TileData? = null
+        set(value) {
+            field?.updateClickState(NO_INTERACTIONS_WITH_OUTLINE)
+            field = value
+            field?.updateClickState(CLICKED_TERTIARY)
+        }
+
+    /**
+     * A [MutableSet] containing all [tiles][TileData] valid for primary highlight.
+     */
+    private val availableTiles1 = mutableSetOf<TileData>()
+
+    /**
+     * A [MutableSet] containing all [tiles][TileData] valid for secondary highlight.
+     */
+    private val availableTiles2 = mutableSetOf<TileData>()
+
+    private fun addToAvailableTiles1(tileData: TileData) {
+        this.availableTiles1.add(tileData)
+        tileData.updateHighlightState(HIGHLIGHT_PRIMARY)
+    }
+
+    private fun addToAvailableTiles2(tileData: TileData) {
+        this.availableTiles2.add(tileData)
+        tileData.updateHighlightState(HIGHLIGHT_SECONDARY)
+    }
+
+    private fun clearAvailableTiles1() {
+        for (tileData in availableTiles1) {
+            tileData.updateHighlightState(NO_INTERACTIONS)
+        }
+        this.availableTiles1.clear()
+    }
+
+    private fun clearAvailableTiles2() {
+        for (tileData in availableTiles2) {
+            tileData.updateHighlightState(NO_INTERACTIONS)
+        }
+        this.availableTiles2.clear()
+    }
+
+    internal fun tileClickEvent(tile: TileData) {
+
+        // 1. Check if there is an ability ready, and if the dice match...
+        if (preparedAbility != null && tile === selectedTile2) {
+            val countedDice =
+                tileMap.gameLoop.viewModel.localPlayerDice.value.viewModel.countSelectedDice(preparedAbility!!.dieType)
+
+            val requiredDice = Pair(
+                first = preparedAbility!!.template.alignedCost,
+                second = preparedAbility!!.template.scatteredCost
+            )
+
+            // 1.1 Check if the dice count matches...
+            if (countedDiceMatch(countedDice, requiredDice)) {
+
+                // 1.1.1 Execute ability!
+                tileMap.localPlayer().executeAbility(
+                    ability = preparedAbility!!.template,
+                    doer = preparedAbility!!.doer,
+                    target = preparedAbility!!.target,
+                    consume = tileMap.gameLoop.viewModel.localPlayerDice.value.viewModel.getSelectedDice()
+                )
+
+                // 1.1.2 Reset tile highlights
+                selectedTile1 = null
+                selectedTile2 = null
+                selectedTile3 = null
+
+                // 1.1.3 Next turn, update tile highlights and shoo
+                updateAvailableTiles()
+                resetAbilityPreparation()
+                return
+
+            // 1.2 ...else just ignore the click
+            } else {
+                println("Not enough dice you bozo")
+                return // TODO Tell the player that the dice are fucked up...
+            }
+        }
+
+        resetAbilityPreparation()
+
+        // 2. If there is no ability ready, do something else.
+        selectedTile3 = null
+        // If a yellow tile is selected...
+        if (selectedTile1 != null) {
+            // ...and you click it, deselect it
+            if (tile == selectedTile1) selectedTile1 = null
+            // ...and you click a white outlined tile, select that tile too + preview move
+            else if (this.availableTiles2.contains(tile)) {
+                selectedTile2 = tile
+                prepareAbilityPreview(
+                    template = selectedTile1!!.getPhoenix()!!.findFirstAvailableAbility(selectedTile2!!)!!,
+                    doer = selectedTile1!!.getPhoenix()!!,
+                    target = selectedTile2!!,
+                )
+            }
+            // ...and you click an unrelated tile, deselect both tiles and see what happens
+            else {
+                selectedTile1 = null
+                selectedTile2 = null
+                tileClickEvent(tile)
+            }
+            // Else, if no tile is selected, and you click a yellow outlined tile
+        } else if (availableTiles1.contains(tile)) {
+            selectedTile1 = tile
+            selectedTile2 = null
+            // Else, if not tile is selected and you click an unmarked tile
+        } else {
+            selectedTile1 = null
+            selectedTile2 = null
+            selectedTile3 = tile
+        }
+        this.updateAvailableTiles()
+    }
+
+    private fun countedDiceMatch(actual: Pair<Int, Int>, required: Pair<Int, Int>): Boolean {
+        // 1. Check if we have enough aligned dice, or if we have spare...
+        val spareAligned = actual.first - required.first
+        if (spareAligned < 0) return false // If this failed, there aren't enough aligned dice...
+        return actual.second + spareAligned == required.second
+    }
+
+    private fun prepareAbilityPreview(template: AbilityTemplate, doer: PhoenixMechanism, target: TileData) {
+        preparedAbility = AbilityPrepEncapsule(template, doer.template.phoenixType, doer, target)
+
+        tileMap.gameLoop.viewModel.previewMoveOnDiceStack(
+            selectedTile1!!.getPhoenix()!!,
+            template
+        )
+    }
+
+    private fun resetAbilityPreparation() {
+        preparedAbility = null
+
+        tileMap.gameLoop.viewModel.localPlayerDice.value.viewModel.deselectAllDice()
+    }
+
+//    private fun executeAbility(triple: Triple<(Mechanism, TileData) -> Unit, Mechanism, TileData>) {
+//        tileMap.localPlayer().executeAbility(triple.first, triple.second, triple.third)
+//    }
+
+    fun updateAvailableTiles() {
+        // 0. Clear the current highlights
+        this.clearAvailableTiles1()
+        this.clearAvailableTiles2()
+
+        // 1. Check if it's the local player's turn. If not, shoo!
+        if (tileMap.localPlayer() != tileMap.turnTable.currentPlayer()) return
+
+        // 2. Add every tile the localPIG's Phoenixes are standing on
+        tileMap.turnTable.currentPlayer().team.forEach {
+            if (it !is PhoenixMechanism) return@forEach
+            addToAvailableTiles1(it.parentTile)
+        }
+
+        // 3. Highlight secondary tiles, if the primary one is highlighted
+        if (selectedTile1 != null) {
+            //  Prerequisites: The aforementioned AbilityStack
+            val existingTile = selectedTile1 ?: return // If this fails, selectedTile1 is null.
+            val localPhoenix = existingTile.getPhoenix() ?: return // this should already be allied only...
+
+            val surroundings = existingTile.position.traversableSurroundings(
+                mapData = tileMap,
+                mechanism = DummyImmediateEffecter(existingTile),
+                radius = localPhoenix.maxAbilityRange(),
+            )
+
+            surroundings.forEach {
+                val targetTile = tileMap[it] ?: return@forEach
+                if (localPhoenix.findFirstAvailableAbility(targetTile) != null) {
+                    addToAvailableTiles2(targetTile)
+                }
+            }
+        }
+    }
+}
 /**
  * This is the UI layer of [TileMapData].
  */

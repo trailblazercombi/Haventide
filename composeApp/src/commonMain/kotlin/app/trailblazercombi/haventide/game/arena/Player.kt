@@ -14,8 +14,7 @@ open class PlayerInGame(val profile: PlayerProfile, val turnTable: TurnTable) {
     private var isActive = false
 
     val team = Team()
-
-    private val dice = DiceStack()
+    val dice = DiceStack()
 
     fun addRoster(vararg tiles: TileData) {
         val tileSet = tiles.toList()
@@ -32,14 +31,15 @@ open class PlayerInGame(val profile: PlayerProfile, val turnTable: TurnTable) {
         dice.roll(8)
     }
 
-    open fun executeAbility(ability: (Mechanism, TileData) -> Unit, doer: Mechanism, target: TileData) {
-        ability.invoke(doer, target)
+    open fun executeAbility(ability: AbilityTemplate, doer: Mechanism, target: TileData, consume: List<Die>) {
+        ability.execution.invoke(doer, target)
+        dice.consume(consume)
         turnTable.nextPlayerTurn()
     }
 
     fun finishRound() {
         isActive = false
-        dice.discardAll()
+        // TODO Dice discarding...
     }
 
     fun isValidForTurn(): Boolean {
@@ -52,14 +52,14 @@ open class PlayerInGame(val profile: PlayerProfile, val turnTable: TurnTable) {
 }
 
 class LocalPlayerInGame(profile: PlayerProfile, turnTable: TurnTable) : PlayerInGame(profile, turnTable) {
-    override fun executeAbility(ability: (Mechanism, TileData) -> Unit, doer: Mechanism, target: TileData) {
-        super.executeAbility(ability, doer, target)
-        // [NETWORK] TODO Make sure this propagates
+    override fun executeAbility(ability: AbilityTemplate, doer: Mechanism, target: TileData, consume: List<Die>) {
+        super.executeAbility(ability, doer, target, consume)
+        // [NETWORK] TODO Make sure this propagates to the opponent's client
     }
 }
 
 class RemotePlayerInGame(profile: PlayerProfile, turnTable: TurnTable) : PlayerInGame(profile, turnTable) {
-    override fun executeAbility(ability: (Mechanism, TileData) -> Unit, doer: Mechanism, target: TileData) {
+    override fun executeAbility(ability: AbilityTemplate, doer: Mechanism, target: TileData, consume: List<Die>) {
         // [NETWORK] TODO Figure out what this needs to do...
     }
 
