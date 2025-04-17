@@ -19,10 +19,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.max
 import androidx.lifecycle.ViewModel
+import app.trailblazercombi.haventide.game.abilities.AbilityTemplate
+import app.trailblazercombi.haventide.game.abilities.ComposableDiceStack
+import app.trailblazercombi.haventide.game.abilities.Die
 import app.trailblazercombi.haventide.game.mechanisms.PhoenixMechanism
 import app.trailblazercombi.haventide.game.mechanisms.PhoenixMiniature
 import app.trailblazercombi.haventide.resources.*
-import app.trailblazercombi.haventide.resources.GameScreenTopBubbleStyle.InnerOffset
 import app.trailblazercombi.haventide.resources.GameScreenTopBubbleStyle.StandardButtonWidth
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.jetbrains.compose.resources.StringResource
@@ -171,6 +173,7 @@ class TurnTable(private val gameLoop: GameLoop) {
 class GameLoopViewModel(gameLoop: GameLoop) : ViewModel() {
     val roundCount = MutableStateFlow(0)
     val gameLoopState = MutableStateFlow(gameLoop)
+
     val gameOverDialog = MutableStateFlow(false)
     val gameOverDialogResult = MutableStateFlow(GameResult.UNKNOWN)
     val forfeitAreYouSureDialog = MutableStateFlow(false)
@@ -503,12 +506,12 @@ fun PauseMenuDialog(viewModel: GameLoopViewModel, modifier: Modifier = Modifier)
                 .fillMaxSize()
         ) {
             Surface(
-                color = Palette.Abyss90.compositeOver(Palette.Abyss60),
+                color = Palette.Abyss40.compositeOver(viewModel.backdropColor.value),
                 shape = RoundedCornerShape(GameScreenDialogBoxStyle.OuterCornerRounding),
                 contentColor = Palette.FullWhite,
                 border = BorderStroke(
                     GameScreenDialogBoxStyle.OutlineThickness,
-                    Palette.Abyss90.compositeOver(Palette.FillLightPrimary)
+                    Palette.Abyss10.compositeOver(viewModel.backdropColor.value),
                 ),
                 elevation = GameScreenDialogBoxStyle.Elevation,
                 modifier = modifier.padding(
@@ -615,7 +618,7 @@ fun YesNoDialog(
         modifier = modifier
     )
 
-    AnimatedVisibility(openDialog, enter = slideInVertically(), exit = slideOutVertically()) {
+    AnimatedVisibility(openDialog, enter = scaleIn(), exit = scaleOut()) {
         Box (
             contentAlignment = Alignment.Center,
             modifier = modifier.fillMaxSize()

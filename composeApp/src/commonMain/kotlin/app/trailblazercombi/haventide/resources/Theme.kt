@@ -55,7 +55,10 @@ object Palette {
     val ShadeLightAlternative = Color(0xFF61686F)
 
     // Yellow Content
-    val FillYellow = Color(0xFFC48C00)
+//    val FillYellow = Color(0xFFC48C00)
+
+    val FillYellow = Color(0xFFFFBF00)
+
 //    val LightYellow = Color(0xFFFFD428)
 //    val ShadeYellow = Color(0xFFD5A000)
 

@@ -145,7 +145,7 @@ fun PhoenixMiniature(
             // .padding(GameScreenTopBubbleStyle.InnerOffset)
     ) {
         Image(
-            painter = painterResource(phoenix.template.profilePhoto), // TODO Change to miniature photo
+            painter = painterResource(phoenix.template.profilePhoto),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = modifier

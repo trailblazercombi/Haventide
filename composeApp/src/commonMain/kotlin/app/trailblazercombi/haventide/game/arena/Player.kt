@@ -1,6 +1,8 @@
 package app.trailblazercombi.haventide.game.arena
 
+import app.trailblazercombi.haventide.game.abilities.AbilityTemplate
 import app.trailblazercombi.haventide.game.abilities.DiceStack
+import app.trailblazercombi.haventide.game.abilities.Die
 import app.trailblazercombi.haventide.game.mechanisms.Mechanism
 import app.trailblazercombi.haventide.game.mechanisms.MechanismTemplate
 import app.trailblazercombi.haventide.game.mechanisms.Phoenixes
@@ -88,8 +90,8 @@ data class PlayerProfile(
      * Returns a new [PlayerInGame] with this [PlayerProfile].
      */
     fun toPlayerInGame(turnTable: TurnTable, local: Boolean = false): PlayerInGame {
-        if (local) return LocalPlayerInGame(this, turnTable)
-        else return RemotePlayerInGame(this, turnTable)
+        return if (local) LocalPlayerInGame(this, turnTable)
+        else RemotePlayerInGame(this, turnTable)
     }
 }
 
@@ -101,13 +103,13 @@ enum class PlaceholderPlayers(
     private val member2: MechanismTemplate.Phoenix,
     private val member3: MechanismTemplate.Phoenix
 ) {
-    PLAYER_ONE(
+    PLAYER_TWO(
         "You",
         Phoenixes.FINNIAN.template,
         Phoenixes.YUMIO.template,
         Phoenixes.MALACHAI.template
     ),
-    PLAYER_TWO(
+    PLAYER_ONE(
         "Opponent",
         Phoenixes.AYUNA.template,
         Phoenixes.AYUMI.template,
@@ -115,4 +117,9 @@ enum class PlaceholderPlayers(
     );
 
     fun toProfile() = PlayerProfile(playerName, setOf(member1, member2, member3))
+}
+
+object PlayerProfileDatabase {
+    // [PLAYER PROFILES] TODO Deal with this, but it won't work over Room.
+    //                    Maybe just a regular CSV file will work no problem...?
 }
