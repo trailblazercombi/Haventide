@@ -177,15 +177,16 @@ class GameLoopViewModel(gameLoop: GameLoop) : ViewModel() {
     val gameOverDialog = MutableStateFlow(false)
     val gameOverDialogResult = MutableStateFlow(GameResult.UNKNOWN)
     val forfeitAreYouSureDialog = MutableStateFlow(false)
+    val pauseMenuDialog = MutableStateFlow(false)
+
+    val localPlayerDice = MutableStateFlow(gameLoop.localPlayer().dice)
 
     val backdropColor = MutableStateFlow(gameLoop.tileMap.backdropColor)
-
     val turnTableState = MutableStateFlow(gameLoop.turnTable)
     val localPlayerTurn = MutableStateFlow(PlayerTurnStates.NOT_THEIR_TURN)
     val alliedPhoenixEntries = MutableStateFlow(gameLoop.compileAlliedPhoenixes())
-    val enemyPhoenixEntries = MutableStateFlow(gameLoop.compileEnemyPhoenixes())
 
-    val pauseMenuDialog = MutableStateFlow(false)
+    val enemyPhoenixEntries = MutableStateFlow(gameLoop.compileEnemyPhoenixes())
 
     fun recompilePhoenixes() {
         alliedPhoenixEntries.value = gameLoopState.value.compileAlliedPhoenixes()
@@ -194,6 +195,12 @@ class GameLoopViewModel(gameLoop: GameLoop) : ViewModel() {
 
     val screenWidth = mutableStateOf((-1).dp)
     val screenHeight = mutableStateOf((-1).dp)
+
+    fun previewMoveOnDiceStack(doer: PhoenixMechanism, ability: AbilityTemplate) {
+        localPlayerDice.value.viewModel.autoSelectDice(
+            doer.template.phoenixType, ability.alignedCost, ability.scatteredCost
+        )
+    }
 }
 
 enum class GameResult(val string: StringResource, val color: Color) {
@@ -233,6 +240,7 @@ fun ComposableGameScreen(viewModel: GameLoopViewModel, modifier: Modifier = Modi
     ) {
         ComposableTileMap(viewModelState.value.tileMap)
         GameStatusBar(viewModel)
+        DiceInfoPanel(viewModel)
     }
 
     // The dialogs
@@ -253,6 +261,44 @@ fun ComposableGameScreen(viewModel: GameLoopViewModel, modifier: Modifier = Modi
         acceptSeverity = ButtonSeverity.DESTRUCTIVE,
         declineSeverity = ButtonSeverity.NEUTRAL,
     )
+
+    // Once all is done, start the game - TODO Make it better
+    viewModel.gameLoopState.value.localPlayer().startRound()
+}
+
+@Composable
+fun DiceInfoPanel(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
+    val backdropColor by viewModel.backdropColor.collectAsState()
+
+    Box (
+        contentAlignment = Alignment.BottomStart,
+        modifier = modifier.fillMaxSize()
+    ) {
+        Surface(
+            color = Palette.Glass20.compositeOver(backdropColor),
+            border = BorderStroke(
+                GameScreenTopBubbleStyle.OutlineThickness,
+                Palette.Glass40.compositeOver(backdropColor)
+            ),
+            modifier = modifier,
+        ) {
+            ComposableDiceStack(viewModel.localPlayerDice.value.viewModel)
+        }
+    }
+}
+
+@Composable
+fun EndRoundDialog(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
+    val renderDice by viewModel.localPlayerDice.collectAsState()
+
+    // TODO
+}
+
+@Composable
+fun StartRoundDialog(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
+    val renderDice by viewModel.localPlayerDice.collectAsState()
+
+    // TODO
 }
 
 @Composable
@@ -425,14 +471,6 @@ fun GameOverDialog(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) 
             contentAlignment = Alignment.Center,
             modifier = modifier
                 .fillMaxSize()
-//                .clickable(
-//                    indication = LocalIndication.current,
-//                    interactionSource = remember { MutableInteractionSource() },
-//                    onClick = {
-//                        viewModel.gameOverDialog.value = false
-//                        // [NAVHOST] TODO Same as the above!
-//                    }
-//                )
         ) {
             Box(
                 contentAlignment = Alignment.Center,

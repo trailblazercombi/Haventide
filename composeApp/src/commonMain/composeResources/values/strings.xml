@@ -25,6 +25,10 @@
     <string name="game_turn_state_over">Round over</string>
     <string name="game_turn_state_round_counter">Round %1$d</string>
 
+    <string name="die_type_vanguard">Vanguard</string>
+    <string name="die_type_sentinel">Sentinel</string>
+    <string name="die_type_medic">Medic</string>
+
     <string name="phoenix_finnian_short_name">Finnian</string>
     <string name="phoenix_finnian_long_name">Finnian</string>
 
