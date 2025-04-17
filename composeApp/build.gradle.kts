@@ -80,6 +80,7 @@ dependencies {
     implementation(libs.androidx.ui.text.android)
     implementation(libs.androidx.foundation.android)
     implementation(libs.androidx.ui.unit.android)
+    implementation(libs.androidx.material3.android)
     debugImplementation(compose.uiTooling)
 }
 
