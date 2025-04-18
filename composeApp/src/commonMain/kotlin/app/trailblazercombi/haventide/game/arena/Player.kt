@@ -61,13 +61,15 @@ class LocalPlayerInGame(profile: PlayerProfile, turnTable: TurnTable) : PlayerIn
 }
 
 class RemotePlayerInGame(profile: PlayerProfile, turnTable: TurnTable) : PlayerInGame(profile, turnTable) {
+    var turnsLeft = 10
+
     override fun executeAbility(ability: AbilityTemplate, doer: Mechanism, target: TileData, consume: List<Die>) {
         // [NETWORK] TODO Figure out what this needs to do...
     }
 
     override fun onTurnStart() {
         // [NETWORK] FIXME Remove this later, placeholder only
-        turnTable.nextPlayerTurn()
+        turnTable.endRoundAndNextPlayerTurn()
     }
 }
 

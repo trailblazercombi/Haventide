@@ -19,9 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.max
 import androidx.lifecycle.ViewModel
-import app.trailblazercombi.haventide.game.abilities.AbilityTemplate
-import app.trailblazercombi.haventide.game.abilities.ComposableDiceStack
-import app.trailblazercombi.haventide.game.abilities.DiceCounter
+import app.trailblazercombi.haventide.game.abilities.*
 import app.trailblazercombi.haventide.game.mechanisms.PhoenixMechanism
 import app.trailblazercombi.haventide.game.mechanisms.PhoenixMiniature
 import app.trailblazercombi.haventide.resources.*
@@ -170,7 +168,7 @@ class TurnTable(private val gameLoop: GameLoop) {
 /**
  * The ViewModel for the game.
  */
-class GameLoopViewModel(gameLoop: GameLoop) : ViewModel() {
+class GameLoopViewModel(private val gameLoop: GameLoop) : ViewModel() {
     val roundCount = MutableStateFlow(0)
     val gameLoopState = MutableStateFlow(gameLoop)
 
@@ -178,6 +176,7 @@ class GameLoopViewModel(gameLoop: GameLoop) : ViewModel() {
     val gameOverDialogResult = MutableStateFlow(GameResult.UNKNOWN)
     val forfeitAreYouSureDialog = MutableStateFlow(false)
     val pauseMenuDialog = MutableStateFlow(false)
+    val endRoundDialog = MutableStateFlow(false)
 
     val localPlayerDice = MutableStateFlow(gameLoop.localPlayer().dice)
 
@@ -200,6 +199,10 @@ class GameLoopViewModel(gameLoop: GameLoop) : ViewModel() {
         localPlayerDice.value.viewModel.autoSelectDice(
             doer.template.phoenixType, ability.alignedCost, ability.scatteredCost
         )
+    }
+
+    fun endLocalPlayerRound() {
+        gameLoop.turnTable.endRoundAndNextPlayerTurn()
     }
 }
 
@@ -244,6 +247,8 @@ fun ComposableGameScreen(viewModel: GameLoopViewModel, modifier: Modifier = Modi
 
     // The dialogs
     PauseMenuDialog(viewModel)
+    EndRoundDialog(viewModel)
+    StartRoundDialog(viewModel)
     YesNoDialog(
         viewModel = viewModel,
         openDialogState = viewModel.forfeitAreYouSureDialog,
@@ -293,12 +298,12 @@ fun DiceInfoPanel(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
                     )
             ) {
                 Row (modifier = modifier.matchParentSize(), verticalAlignment = Alignment.CenterVertically) {
-                    ComposableDiceStack(viewModel, viewModel.localPlayerDice.value.viewModel)
+                    StackOfDiceInGame(viewModel, viewModel.localPlayerDice.value.viewModel)
                     DiceCounter(viewModel, viewModel.localPlayerDice.value.viewModel)
                 }
                 Box (modifier = modifier.matchParentSize(), contentAlignment = Alignment.CenterEnd) {
                     Button(
-                        onClick = { TODO() },
+                        onClick = { viewModel.endRoundDialog.value = true },
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = DieStyle.EndRoundButtonSeverity.fillColor,
                             contentColor = DieStyle.EndRoundButtonSeverity.contentColor,
@@ -329,16 +334,32 @@ fun DiceInfoPanel(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
 
 @Composable
 fun EndRoundDialog(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
-    val renderDice by viewModel.localPlayerDice.collectAsState()
 
-    // TODO
+    val diceStack by viewModel.localPlayerDice.collectAsState()
+    val diceList by diceStack.viewModel.diceStackAsState.collectAsState()
+
+    if (diceList.isEmpty()) {
+        viewModel.endLocalPlayerRound()
+        return
+    }
+
+    YesNoDialog(
+        viewModel = viewModel,
+        openDialogState = viewModel.endRoundDialog,
+        title = Res.string.end_round_dialog_title,
+        acceptLabel = Res.string.end_round_dialog_confirm_button,
+        declineLabel = Res.string.end_round_dialog_cancel_button,
+        onAccept = { viewModel.endLocalPlayerRound() },
+        onDecline = { viewModel.endRoundDialog.value = false },
+        acceptSeverity = ButtonSeverity.PREFERRED,
+        declineSeverity = ButtonSeverity.NEUTRAL,
+        modifier = modifier
+    )
 }
 
 @Composable
 fun StartRoundDialog(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
-    val renderDice by viewModel.localPlayerDice.collectAsState()
 
-    // TODO
 }
 
 @Composable

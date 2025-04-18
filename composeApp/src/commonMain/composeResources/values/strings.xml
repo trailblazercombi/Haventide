@@ -15,6 +15,10 @@
     <string name="yes_no_dialog_forfeit_yes">Yes, forfeit match</string>
     <string name="yes_no_dialog_forfeit_no">Cancel and keep playing</string>
 
+    <string name="end_round_dialog_title">You still have dice to play with.</string>
+    <string name="end_round_dialog_confirm_button">Yes, discard dice and end round</string>
+    <string name="end_round_dialog_cancel_button">Cancel and keep playing</string>
+
     <string name="pause_dialog_return_button">Continue Game</string>
     <string name="pause_dialog_offer_draw_button">Offer Draw</string>
     <string name="pause_dialog_settings_shortcut_button">Settings</string>
