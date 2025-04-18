@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.max
 import androidx.lifecycle.ViewModel
 import app.trailblazercombi.haventide.game.abilities.AbilityTemplate
 import app.trailblazercombi.haventide.game.abilities.ComposableDiceStack
-import app.trailblazercombi.haventide.game.abilities.Die
+import app.trailblazercombi.haventide.game.abilities.DiceCounter
 import app.trailblazercombi.haventide.game.mechanisms.PhoenixMechanism
 import app.trailblazercombi.haventide.game.mechanisms.PhoenixMiniature
 import app.trailblazercombi.haventide.resources.*
@@ -193,8 +193,8 @@ class GameLoopViewModel(gameLoop: GameLoop) : ViewModel() {
         enemyPhoenixEntries.value = gameLoopState.value.compileEnemyPhoenixes()
     }
 
-    val screenWidth = mutableStateOf((-1).dp)
-    val screenHeight = mutableStateOf((-1).dp)
+    val screenWidth = MutableStateFlow((-1).dp)
+    val screenHeight = MutableStateFlow((-1).dp)
 
     fun previewMoveOnDiceStack(doer: PhoenixMechanism, ability: AbilityTemplate) {
         localPlayerDice.value.viewModel.autoSelectDice(
@@ -235,8 +235,7 @@ fun ComposableGameScreen(viewModel: GameLoopViewModel, modifier: Modifier = Modi
 
     // The contents of the game screen
     Box(
-        modifier = modifier
-            .fillMaxSize()
+        modifier = modifier.fillMaxSize()
     ) {
         ComposableTileMap(viewModelState.value.tileMap)
         GameStatusBar(viewModel)
@@ -244,7 +243,6 @@ fun ComposableGameScreen(viewModel: GameLoopViewModel, modifier: Modifier = Modi
     }
 
     // The dialogs
-    GameOverDialog(viewModel)
     PauseMenuDialog(viewModel)
     YesNoDialog(
         viewModel = viewModel,
@@ -261,6 +259,7 @@ fun ComposableGameScreen(viewModel: GameLoopViewModel, modifier: Modifier = Modi
         acceptSeverity = ButtonSeverity.DESTRUCTIVE,
         declineSeverity = ButtonSeverity.NEUTRAL,
     )
+    GameOverDialog(viewModel)
 
     // Once all is done, start the game - TODO Make it better
     viewModel.gameLoopState.value.localPlayer().startRound()
@@ -269,20 +268,61 @@ fun ComposableGameScreen(viewModel: GameLoopViewModel, modifier: Modifier = Modi
 @Composable
 fun DiceInfoPanel(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
     val backdropColor by viewModel.backdropColor.collectAsState()
+    val screenWidth by viewModel.screenWidth.collectAsState()
 
     Box (
-        contentAlignment = Alignment.BottomStart,
+        contentAlignment = Alignment.BottomCenter,
         modifier = modifier.fillMaxSize()
     ) {
         Surface(
-            color = Palette.Glass20.compositeOver(backdropColor),
+            color = GameScreenTopBubbleStyle.FillColorModifier.compositeOver(backdropColor),
             border = BorderStroke(
                 GameScreenTopBubbleStyle.OutlineThickness,
-                Palette.Glass40.compositeOver(backdropColor)
+                GameScreenTopBubbleStyle.OutlineColorModifier.compositeOver(backdropColor)
             ),
             modifier = modifier,
         ) {
-            ComposableDiceStack(viewModel.localPlayerDice.value.viewModel)
+            Box (
+                contentAlignment = Alignment.BottomCenter,
+                modifier = modifier
+                    .padding(DieStyle.PanelPadding)
+                    .fillMaxWidth()
+                    .height(DieStyle.PanelPadding * 2
+                        + if (screenWidth > ScreenSizeThresholds.SpreadDiceStackOnSingleLine)
+                            DieStyle.DieSize else DieStyle.DieSize * 2
+                    )
+            ) {
+                Row (modifier = modifier.matchParentSize(), verticalAlignment = Alignment.CenterVertically) {
+                    ComposableDiceStack(viewModel, viewModel.localPlayerDice.value.viewModel)
+                    DiceCounter(viewModel, viewModel.localPlayerDice.value.viewModel)
+                }
+                Box (modifier = modifier.matchParentSize(), contentAlignment = Alignment.CenterEnd) {
+                    Button(
+                        onClick = { TODO() },
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = DieStyle.EndRoundButtonSeverity.fillColor,
+                            contentColor = DieStyle.EndRoundButtonSeverity.contentColor,
+                        ),
+                        border = BorderStroke(
+                            DieStyle.OutlineThickness,
+                            DieStyle.EndRoundButtonSeverity.outlineColor
+                        ),
+                        modifier = modifier
+                            .padding(DieStyle.Separation)
+                            .height(DieStyle.DieSize *
+                                    if (screenWidth > ScreenSizeThresholds.SpreadDiceStackOnSingleLine) 1 else 2)
+                            .width(DieStyle.DieSize *
+                                    if (screenWidth > ScreenSizeThresholds.SpreadDiceStackOnSingleLine) 4 else 3)
+                    ) {
+                        Text(
+                            text = stringResource(Res.string.game_button_end_round),
+                            textAlign = TextAlign.Center,
+                            fontSize = GameScreenDialogBoxStyle.ButtonTextSize,
+                            modifier = modifier.fillMaxWidth().padding(0.dp)
+                        )
+                    }
+                }
+            }
         }
     }
 }
@@ -306,6 +346,8 @@ fun GameStatusBar(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
     val roundCount by viewModel.roundCount.collectAsState()
     val backdropColor by viewModel.backdropColor.collectAsState()
 
+    val screenWidth by viewModel.screenWidth.collectAsState()
+
     val localPlayerTurn by viewModel.localPlayerTurn.collectAsState()
     val allies by viewModel.alliedPhoenixEntries.collectAsState()
     val enemies by viewModel.enemyPhoenixEntries.collectAsState()
@@ -314,20 +356,20 @@ fun GameStatusBar(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
         contentAlignment = Alignment.TopCenter,
         modifier = modifier
             .padding(
-                if (viewModel.screenWidth.value > 576.dp) GameScreenTopBubbleStyle.OffsetFromEdge
+                if (screenWidth > ScreenSizeThresholds.FloatTopStatusBarAsBubble) GameScreenTopBubbleStyle.OffsetFromEdge
                 else 0.dp
             )
             .fillMaxSize()
     ) {
         Surface(
-            shape = if (viewModel.screenWidth.value > 576.dp) RoundedCornerShape(
+            shape = if (screenWidth > ScreenSizeThresholds.FloatTopStatusBarAsBubble) RoundedCornerShape(
                 GameScreenTopBubbleStyle.CornerRounding
             ) else RoundedCornerShape(0.dp),
-            color = Palette.Glass10.compositeOver(backdropColor),
+            color = GameScreenTopBubbleStyle.FillColorModifier.compositeOver(backdropColor),
             contentColor = Palette.FullWhite,
             border = BorderStroke(
                 GameScreenTopBubbleStyle.OutlineThickness,
-                Palette.Glass30.compositeOver(backdropColor)
+                GameScreenTopBubbleStyle.OutlineColorModifier.compositeOver(backdropColor)
             ),
             elevation = GameScreenTopBubbleStyle.Elevation,
             modifier = modifier
@@ -338,7 +380,8 @@ fun GameStatusBar(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
                 )
                 .intrinsicWidth()
                 .height(
-                    if (viewModel.screenWidth.value > 532.dp) GameScreenTopBubbleStyle.BubbleHeight
+                    if (screenWidth >
+                        ScreenSizeThresholds.FloatTopStatusBarAsBubble) GameScreenTopBubbleStyle.BubbleHeight
                     else GameScreenTopBubbleStyle.DoubleBubbleHeight,
                 )
         ) {
@@ -359,7 +402,7 @@ fun GameStatusBar(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
                 PhoenixMiniatureStrip(enemies, viewModel)
             }
             // HERE STARTS THE ROUND COUNTER / TEAM TO MOVE DISPLAY
-            if (viewModel.screenWidth.value > 532.dp) {
+            if (screenWidth > ScreenSizeThresholds.FloatTopStatusBarAsBubble) {
                 Column(
                     verticalArrangement = Arrangement.Center,
                 ) {
@@ -420,6 +463,8 @@ private fun PhoenixMiniatureStrip(
     allies: List<PhoenixMechanism>,
     viewModel: GameLoopViewModel
 ) {
+    val screenWidth by viewModel.screenWidth.collectAsState()
+
     Row {
         allies.forEach {
             PhoenixMiniature(
@@ -427,7 +472,7 @@ private fun PhoenixMiniatureStrip(
                 min(
                     a = GameScreenTopBubbleStyle.MiniatureWidth,
                     b = max(
-                        a = (viewModel.screenWidth.value
+                        a = (screenWidth
                                 - (GameScreenTopBubbleStyle.OffsetFromEdge * 2)
                                 - (GameScreenTopBubbleStyle.InnerOffset * 5)
                                 ) / 6,
@@ -436,7 +481,8 @@ private fun PhoenixMiniatureStrip(
                         // Make sure they're always at least a square
                     )
                 ),
-                if (viewModel.screenWidth.value > 532.dp) GameScreenTopBubbleStyle.BubbleHeight - (GameScreenTopBubbleStyle.InnerOffset * 2)
+                if (screenWidth > ScreenSizeThresholds.FloatTopStatusBarAsBubble) GameScreenTopBubbleStyle.BubbleHeight
+                        - (GameScreenTopBubbleStyle.InnerOffset * 2)
                 else GameScreenTopBubbleStyle.MiniatureHeight
             )
         }
@@ -454,9 +500,10 @@ private fun Modifier.intrinsicWidth(): Modifier {
 
 @Composable
 fun GameOverDialog(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
-    // val openDialog by viewModel.gameOverDialog.collectAsState()
     val openDialog by viewModel.gameOverDialog.collectAsState()
     val openDialogResult by viewModel.gameOverDialogResult.collectAsState()
+
+    val screenWidth by viewModel.screenWidth.collectAsState()
 
     DialogGenerics(
         openDialogState = viewModel.gameOverDialog,
@@ -478,16 +525,23 @@ fun GameOverDialog(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) 
             ) {
                 Surface(
                     color = Palette.Abyss90.compositeOver(openDialogResult.color),
-                    shape = RoundedCornerShape(GameScreenDialogBoxStyle.OuterCornerRounding),
+                    shape = RoundedCornerShape(
+                        if (screenWidth > ScreenSizeThresholds.StopStretchingGameOverDialogToScreenEdge)
+                            GameScreenDialogBoxStyle.OuterCornerRounding
+                        else 0.dp
+                    ),
                     contentColor = Palette.FullWhite,
                     border = BorderStroke(GameScreenDialogBoxStyle.OutlineThickness, openDialogResult.color),
                     elevation = GameScreenDialogBoxStyle.Elevation,
                     modifier = modifier
                         .fillMaxWidth()
                         .padding(
-                            if (viewModel.screenWidth.value > 340.dp)
-                                GameScreenDialogBoxStyle.StretchedDialogOffsetFromEdge
-                            else GameScreenDialogBoxStyle.GameOverInnerPadding
+                            horizontal = if (screenWidth >
+                                ScreenSizeThresholds.StopStretchingGameOverDialogToScreenEdge)
+                                screenWidth / 4
+//                            GameScreenDialogBoxStyle.StretchedDialogOffsetFromEdge
+                            else 0.dp,
+                            vertical = 0.dp
                         )
                 ) {
                     Box(
@@ -619,7 +673,7 @@ private fun MenuButton(
         ),
         colors = ButtonDefaults.textButtonColors(
             backgroundColor = severity.fillColor,
-            contentColor = severity.labelColor,
+            contentColor = severity.contentColor,
         ),
         contentPadding = PaddingValues(GameScreenDialogBoxStyle.OutlineThickness),
         modifier = modifier
@@ -650,27 +704,35 @@ fun YesNoDialog(
 ) {
     val openDialog by openDialogState.collectAsState()
 
+    val screenWidth by viewModel.screenWidth.collectAsState()
+
     DialogGenerics(
         openDialogState = openDialogState,
         onDismissRequest = { openDialogState.value = false },
         modifier = modifier
     )
 
-    AnimatedVisibility(openDialog, enter = scaleIn(), exit = scaleOut()) {
+    AnimatedVisibility(visible = openDialog, enter = scaleIn(), exit = scaleOut()) {
         Box (
             contentAlignment = Alignment.Center,
             modifier = modifier.fillMaxSize()
         ) {
             Surface(
                 color = Palette.Abyss90.compositeOver(Palette.Abyss60),
-                shape = RoundedCornerShape(GameScreenDialogBoxStyle.OuterCornerRounding),
+                shape = RoundedCornerShape(if (screenWidth > ScreenSizeThresholds.StopStretchingYesNoDialogToScreenEdge)
+                    GameScreenDialogBoxStyle.OuterCornerRounding else 0.dp
+                ),
                 contentColor = Palette.FullWhite,
                 border = BorderStroke(
                     GameScreenDialogBoxStyle.OutlineThickness,
                     Palette.Abyss90.compositeOver(Palette.FillLightPrimary)
                 ),
                 elevation = GameScreenDialogBoxStyle.Elevation,
-                modifier = modifier.padding(GameScreenDialogBoxStyle.StretchedDialogOffsetFromEdge, 0.dp)
+                modifier = modifier.padding(
+                    horizontal = if (screenWidth > ScreenSizeThresholds.StopStretchingYesNoDialogToScreenEdge)
+                        GameScreenDialogBoxStyle.StretchedDialogOffsetFromEdge else 0.dp,
+                    vertical = 0.dp
+                )
             ) {
                 Column (horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
@@ -680,7 +742,7 @@ fun YesNoDialog(
                         modifier = modifier
                             .padding(GameScreenDialogBoxStyle.InnerPadding)
                     )
-                    if (viewModel.screenWidth.value > 528.dp) {
+                    if (screenWidth > ScreenSizeThresholds.StopStackingYesNoDialogVertically) {
                         Row(horizontalArrangement = Arrangement.SpaceEvenly) {
                             RowMenuButton(
                                 viewModel, onDecline, declineSeverity, declineLabel,
@@ -715,18 +777,20 @@ private fun RowMenuButton(
     width: Dp,
     modifier: Modifier = Modifier
 ) {
+    val screenWidth by viewModel.screenWidth.collectAsState()
+
     Button(
         onClick = onClick,
         border = BorderStroke(GameScreenDialogBoxStyle.OutlineThickness, severity.outlineColor),
         colors = ButtonDefaults.textButtonColors(
             backgroundColor = severity.fillColor,
-            contentColor = severity.labelColor
+            contentColor = severity.contentColor
         ),
         contentPadding = PaddingValues(GameScreenDialogBoxStyle.InnerPadding),
         modifier = modifier
             .padding(GameScreenDialogBoxStyle.InnerPadding)
             .width(
-                min(a = (viewModel.screenWidth.value) / 3,
+                min(a = (screenWidth) / 3,
                     b = width)
             )
     ) {
@@ -735,7 +799,7 @@ private fun RowMenuButton(
 }
 
 @Composable
-fun ScreenSizeFinder(screenWidth: MutableState<Dp>, screenHeight: MutableState<Dp>) {
+fun ScreenSizeFinder(screenWidth: MutableStateFlow<Dp>, screenHeight: MutableStateFlow<Dp>) {
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         screenWidth.value = this.maxWidth
         screenHeight.value = this.maxHeight
@@ -746,10 +810,14 @@ fun ScreenSizeFinder(screenWidth: MutableState<Dp>, screenHeight: MutableState<D
 @Composable
 expect fun DismissHandling(onDismiss: () -> Unit)
 
-enum class ButtonSeverity(val fillColor: Color, val outlineColor: Color, val labelColor: Color) {
-    NEUTRAL(Palette.Glass00, Palette.FillLightPrimary, Palette.FillLightPrimary),
-    PREFERRED_MINOR(Palette.Glass00, Palette.FillYellow, Palette.FillYellow),
+enum class ButtonSeverity(val fillColor: Color, val outlineColor: Color, val contentColor: Color) {
+    NEUTRAL(Palette.Abyss30, Palette.FillLightPrimary, Palette.FillLightPrimary),
+    NEUTRAL_FILLED(Palette.FillLightPrimary, Palette.FillLightPrimary, Palette.FullBlack),
     PREFERRED(Palette.FillYellow, Palette.FillYellow, Palette.FullBlack),
     DESTRUCTIVE_MINOR(Palette.Glass00, Palette.FillRed, Palette.FillRed),
     DESTRUCTIVE(Palette.FillRed, Palette.FillRed, Palette.FullWhite)
+}
+
+private enum class DiceCounterMode {
+
 }

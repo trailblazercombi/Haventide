@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.lifecycle.ViewModel
 import app.trailblazercombi.haventide.game.abilities.AbilityTemplate
 import app.trailblazercombi.haventide.game.abilities.DieType
+import app.trailblazercombi.haventide.game.abilities.countedDiceMatch
 import app.trailblazercombi.haventide.game.mechanisms.*
 import app.trailblazercombi.haventide.resources.UniversalColorizer.*
 import app.trailblazercombi.haventide.resources.UniversalColorizer
@@ -633,13 +634,6 @@ class TileMapViewModel(val tileMap: TileMapData) : ViewModel() {
             selectedTile3 = tile
         }
         this.updateAvailableTiles()
-    }
-
-    private fun countedDiceMatch(actual: Pair<Int, Int>, required: Pair<Int, Int>): Boolean {
-        // 1. Check if we have enough aligned dice, or if we have spare...
-        val spareAligned = actual.first - required.first
-        if (spareAligned < 0) return false // If this failed, there aren't enough aligned dice...
-        return actual.second + spareAligned == required.second
     }
 
     private fun prepareAbilityPreview(template: AbilityTemplate, doer: PhoenixMechanism, target: TileData) {

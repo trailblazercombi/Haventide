@@ -25,6 +25,12 @@
     <string name="game_turn_state_over">Round over</string>
     <string name="game_turn_state_round_counter">Round %1$d</string>
 
+    <string name="game_button_end_round">End Round</string>
+
+    <string name="game_button_dice_counter_wide">%1$d + %2$d</string>
+    <string name="game_button_dice_counter_narrow1">%1$d</string>
+    <string name="game_button_dice_counter_narrow2">%1$d</string>
+
     <string name="die_type_vanguard">Vanguard</string>
     <string name="die_type_sentinel">Sentinel</string>
     <string name="die_type_medic">Medic</string>

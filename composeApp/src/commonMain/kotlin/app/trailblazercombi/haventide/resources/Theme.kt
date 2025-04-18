@@ -3,6 +3,7 @@ package app.trailblazercombi.haventide.resources
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import app.trailblazercombi.haventide.game.arena.ButtonSeverity
 
 /**
  * Defines the colors used within the app
@@ -152,7 +153,7 @@ object GameScreenDialogBoxStyle {
     val OutlineThickness = 0.dp
     val StretchedDialogOffsetFromEdge = 64.dp
     val TapAnywhereLabelOffset = 128.dp
-    val YesNoDialogButtonMaxWidth = 260.dp
+    val YesNoDialogButtonMaxWidth = 360.dp
 }
 
 object GameScreenTopBubbleStyle {
@@ -172,15 +173,34 @@ object GameScreenTopBubbleStyle {
     val RoundCounterTextSize = 12.sp
     val UnifiedRoundTeamTextSize = 14.sp
     val TeamTurnTextSize = 16.sp
+    val FillColorModifier = Palette.Abyss30
+    val OutlineColorModifier = Palette.Glass30
 }
 
 object DieStyle {
-    val DieSize = 36.dp
+    val DieSize = 48.dp
     val InnerPadding = 4.dp
     val CornerRounding = 4.dp
     val OutlineThickness = 0.dp
-    val Separation = 2.dp
-    val DicePerRow = 4
+    val Separation = 3.dp
+    val PanelPadding = 4.dp
+    val EndRoundButtonSeverity = ButtonSeverity.PREFERRED
+}
+
+object DiceCounterStyle {
+    val HorizontalTextSize = 18.sp
+    val VerticalTextSize = 18.sp
+    val VerticalSeparation = 6.dp
+    val CornerRounding = 4.dp
+}
+
+object ScreenSizeThresholds {
+    // NOTE: The description always matches the behaviour of value > field.
+    val SpreadDiceStackOnSingleLine = 706.dp
+    val FloatTopStatusBarAsBubble = 576.dp
+    val StopStretchingGameOverDialogToScreenEdge = 780.dp
+    val StopStackingYesNoDialogVertically = 604.dp
+    val StopStretchingYesNoDialogToScreenEdge = 440.dp
 }
 
 /**
