@@ -16,7 +16,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
@@ -27,7 +26,6 @@ import app.trailblazercombi.haventide.resources.*
 import com.sun.jdi.AbsentInformationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -43,9 +41,12 @@ import kotlin.random.Random
  *
  * Dice are needed for Phoenixes to play [Abilities][AbilityTemplate].
  */
-class Die(val type: DieType) { // self-contained view model
+class Die(val type: DieType) {
+    // self-contained view model
     val potential = MutableStateFlow(false)
     val selected = MutableStateFlow(false)
+
+    fun copy() = Die(type)
 }
 
 /**
@@ -56,7 +57,8 @@ class Die(val type: DieType) { // self-contained view model
  */
 // WARNING ::
 class DiceStack(vararg dice: Die) {
-    private val diceStack = mutableListOf(*dice) // SPREAD OPERATOR (*) NEEDED, otherwise it becomes mutableListOf<Array<Die>>ä
+    // SPREAD OPERATOR (*) NEEDED, otherwise it becomes mutableListOf<Array<Die>>
+    private val diceStack = mutableListOf(*dice)
     val viewModel = DiceStackViewModel(this)
 
     /**
@@ -97,23 +99,29 @@ class DiceStack(vararg dice: Die) {
     private fun pushToViewModel() {
         viewModel.diceStackAsState.value = getDice()
     }
+
+    fun freshListState(): MutableStateFlow<List<Die>> {
+        val result = mutableListOf<Die>()
+        getDice().forEach { result.add(it.copy()) }
+        return MutableStateFlow(result.toList())
+    }
 }
 
 /**
  * The [ViewModel] for [DiceStack].
  */
-class DiceStackViewModel(internal val diceStack: DiceStack) : ViewModel() {
+class DiceStackViewModel(private val diceStack: DiceStack) : ViewModel() {
     val diceStackAsState = MutableStateFlow(diceStack.getDice())
 
     /**
      * Contains dice that are selected, and appear yellow on screen.
      */
-    val selectedDice = mutableListOf<Die>().toMutableStateList()
+    private val selectedDice = mutableListOf<Die>().toMutableStateList()
 
     /**
      * Contains dice that are preferred, and appear with white icon on the screen.
      */
-    val preferredDice = mutableListOf<Die>().toMutableStateList()
+    private val preferredDice = mutableListOf<Die>().toMutableStateList()
 
     internal val typeNeeded = MutableStateFlow<DieType?>(null)
     internal val alignedNeeded = MutableStateFlow(0)
@@ -208,9 +216,7 @@ class DiceStackViewModel(internal val diceStack: DiceStack) : ViewModel() {
     }
 
     fun deselectAllDice() {
-        selectedDice.toList().forEach {
-            deselectDie(it)
-        }
+        selectedDice.toList().forEach { deselectDie(it) }
         typeNeeded.value = null
     }
 
@@ -230,9 +236,9 @@ class DiceStackViewModel(internal val diceStack: DiceStack) : ViewModel() {
 }
 
 @Composable
-fun ComposableDie(stackViewModel: DiceStackViewModel, die: Die, small: Boolean = true, modifier: Modifier = Modifier) {
+fun ComposableDie(die: Die, onClick: () -> Unit = {}, modifier: Modifier = Modifier) {
     val dieType: Painter = painterResource(die.type.icon)
-    val dieSize = if (small) DieStyle.DieSize else DieStyle.DieSize * 2
+    val dieSize = DieStyle.DieSize
 
     val potential by die.potential.collectAsState()
     val selected by die.selected.collectAsState()
@@ -249,9 +255,7 @@ fun ComposableDie(stackViewModel: DiceStackViewModel, die: Die, small: Boolean =
             modifier = modifier.clickable(
                 indication = LocalIndication.current,
                 interactionSource = remember { MutableInteractionSource() },
-                onClick = {
-                    stackViewModel.processClick(die)
-                }
+                onClick = onClick
             )
         ) {
             Image(
@@ -267,12 +271,55 @@ fun ComposableDie(stackViewModel: DiceStackViewModel, die: Die, small: Boolean =
 }
 
 @Composable
-fun ComposableDiceStack(loopViewModel: GameLoopViewModel, stackViewModel: DiceStackViewModel, small: Boolean = true, modifier: Modifier = Modifier) {
-    val diceList by stackViewModel.diceStackAsState.collectAsState()
+fun StackOfDiceInGame(
+    loopViewModel: GameLoopViewModel,
+    stackViewModel: DiceStackViewModel,
+    modifier: Modifier = Modifier
+) {
     val screenWidth by loopViewModel.screenWidth.collectAsState()
-
     val dicePerRow = if (screenWidth > ScreenSizeThresholds.SpreadDiceStackOnSingleLine) 8 else 4
 
+    StackOfDice(
+        diceStack = stackViewModel.diceStackAsState,
+        dicePerRow = dicePerRow,
+        onDieClicked = { die: Die -> stackViewModel.processClick(die) },
+        modifier = modifier
+    )
+
+//    Box (
+//        contentAlignment = Alignment.BottomStart,
+//    ) {
+//        Column {
+//            Row {
+//                repeat(finalRow) { ComposableDie(
+//                    diceList[it], { stackViewModel.processClick(diceList[it]) },
+//                    modifier.padding(DieStyle.Separation / 2)
+//                )
+//                }
+//            }
+//            repeat(if (finalRow == 0) rows else rows - 1) { row ->
+//                Row {
+//                    repeat(dicePerRow) { column ->
+//                        ComposableDie(
+//                            diceList[finalRow + (dicePerRow * row + column)],
+//                            { stackViewModel.processClick(diceList[finalRow + (dicePerRow * row + column)]) },
+//                            modifier.padding(DieStyle.Separation / 2)
+//                        )
+//                    }
+//                }
+//            }
+//        }
+//    }
+}
+
+@Composable
+fun StackOfDice(
+    diceStack: MutableStateFlow<List<Die>>,
+    dicePerRow: Int = 4,
+    onDieClicked: (Die) -> Unit = {},
+    modifier: Modifier = Modifier
+) {
+    val diceList by diceStack.collectAsState()
     val rows = ceil((diceList.size.toDouble() / dicePerRow)).toInt()
     val finalRow = diceList.size % dicePerRow
 
@@ -281,16 +328,23 @@ fun ComposableDiceStack(loopViewModel: GameLoopViewModel, stackViewModel: DiceSt
     ) {
         Column {
             Row {
-                repeat(finalRow) { ComposableDie(stackViewModel, diceList[it],
-                    small, modifier.padding(DieStyle.Separation / 2))
+                repeat(finalRow) {
+                    val die = diceList[it]
+                    ComposableDie(
+                        die = die,
+                        onClick = { onDieClicked(die) },
+                        modifier = modifier.padding(DieStyle.Separation / 2)
+                    )
                 }
             }
             repeat(if (finalRow == 0) rows else rows - 1) { row ->
                 Row {
                     repeat(dicePerRow) { column ->
+                        val die = diceList[finalRow + (dicePerRow * row + column)]
                         ComposableDie(
-                            stackViewModel, diceList[finalRow + (dicePerRow * row + column)],
-                            small, modifier.padding(DieStyle.Separation / 2)
+                            die = die,
+                            onClick = { onDieClicked(die) },
+                            modifier = modifier.padding(DieStyle.Separation / 2)
                         )
                     }
                 }
@@ -345,7 +399,7 @@ fun DiceCounter(loopViewModel: GameLoopViewModel, stackViewModel: DiceStackViewM
                             textAlign = TextAlign.Center,
                             lineHeight = DiceCounterStyle.HorizontalTextSize,
                             maxLines = 1,
-                            modifier = modifier.padding(0.dp).fillMaxSize()
+                            modifier = modifier.padding(0.dp).fillMaxWidth()
                         )
                     } else {
                         Column {
@@ -363,7 +417,7 @@ fun DiceCounter(loopViewModel: GameLoopViewModel, stackViewModel: DiceStackViewM
                             Spacer(modifier.height(DiceCounterStyle.VerticalSeparation))
                             Text(
                                 text = stringResource(
-                                    Res.string.game_button_dice_counter_narrow1,
+                                    Res.string.game_button_dice_counter_narrow2,
                                     scattered
                                 ),
                                 fontSize = DiceCounterStyle.VerticalTextSize,
