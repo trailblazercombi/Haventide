@@ -1,0 +1,108 @@
+package app.trailblazercombi.haventide.game2.jetpack.gamescreen.dialogs
+
+import androidx.compose.animation.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import app.trailblazercombi.haventide.game.arena.GameLoopViewModel
+import app.trailblazercombi.haventide.game2.jetpack.universal.DialogGenerics
+import app.trailblazercombi.haventide.resources.*
+import org.jetbrains.compose.resources.stringResource
+
+@Composable
+fun GameOverDialog(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
+    val openDialog by viewModel.gameOverDialog.collectAsState()
+    val openDialogResult by viewModel.gameOverDialogResult.collectAsState()
+
+    val screenWidth by viewModel.screenWidth.collectAsState()
+
+    DialogGenerics(
+        openDialogState = viewModel.gameOverDialog,
+        onDismissRequest = {
+            viewModel.gameOverDialog.value = false
+            // [NAVHOST] TODO Navigate to summary screen
+        },
+    )
+
+    AnimatedVisibility(openDialog, enter = scaleIn(), exit = scaleOut()) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = modifier
+                .fillMaxSize()
+        ) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = modifier
+            ) {
+                Surface(
+                    color = Palette.Abyss90.compositeOver(openDialogResult.color),
+                    shape = RoundedCornerShape(
+                        if (screenWidth > ScreenSizeThresholds.StopStretchingGameOverDialogToScreenEdge)
+                            GameScreenDialogBoxStyle.OuterCornerRounding
+                        else 0.dp
+                    ),
+                    contentColor = Palette.FullWhite,
+                    border = BorderStroke(GameScreenDialogBoxStyle.OutlineThickness, openDialogResult.color),
+                    elevation = GameScreenDialogBoxStyle.Elevation,
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .padding(
+                            horizontal = if (screenWidth >
+                                ScreenSizeThresholds.StopStretchingGameOverDialogToScreenEdge)
+                                screenWidth / 4
+//                            GameScreenDialogBoxStyle.StretchedDialogOffsetFromEdge
+                            else 0.dp,
+                            vertical = 0.dp
+                        )
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = modifier
+                            .padding(GameScreenDialogBoxStyle.GameOverInnerPadding),
+                    ) {
+                        Text(
+                            text = stringResource(resource = openDialogResult.string),
+                            color = Palette.FullWhite,
+                            style = TextStyle(
+                                fontWeight = FontWeight.Bold,
+                                fontSize = GameScreenDialogBoxStyle.LargeTextSize,
+                                lineHeight = GameScreenDialogBoxStyle.LargeTextLineSeparation
+                            ),
+                            textAlign = TextAlign.Center,
+                            modifier = modifier
+                                .fillMaxWidth()
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    AnimatedVisibility(openDialog, enter = fadeIn(), exit = fadeOut()) {
+        Box (modifier.fillMaxSize()) {
+            Text(
+                text = stringResource(resource = Res.string.game_over_dialog_confirm_button),
+                textAlign = TextAlign.Center,
+                color = Palette.FullGrey,
+                modifier = modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(0.dp, GameScreenDialogBoxStyle.TapAnywhereLabelOffset)
+            )
+        }
+    }
+}
