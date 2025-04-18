@@ -6,12 +6,19 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.NotificationManagerCompat
+import app.trailblazercombi.haventide.game.arena.GameLoop
+import app.trailblazercombi.haventide.game.arena.PlaceholderPlayers
 
 class MainActivity : ComponentActivity() {
+    val gameLoop = GameLoop(
+        PlaceholderPlayers.PLAYER_ONE.toProfile(),
+        PlaceholderPlayers.PLAYER_TWO.toProfile()
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            App()
+            App(gameLoop)
         }
     }
 
@@ -33,8 +40,8 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Preview
-@Composable
-fun AppAndroidPreview() {
-    App()
-}
+//@Preview
+//@Composable
+//fun AppAndroidPreview() {
+//
+//}

@@ -7,13 +7,22 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 @Preview
-fun App() {
-    val gameLoop = GameLoop(
-        PlaceholderPlayers.PLAYER_ONE.toProfile(),
-        PlaceholderPlayers.PLAYER_TWO.toProfile()
-    )
+fun App(launchParameters: GameLoop) {
+    val gameLoop by remember { mutableStateOf(launchParameters) }
+
+//    val diceStack = DiceStack()
+//    diceStack.roll(14)
+//    diceStack.viewModel.setDiePreference(DieType.MEDIC)
+//    diceStack.viewModel.autoSelectDice(
+//        diceStack.getDice()[0],
+//        diceStack.getDice()[3],
+//        diceStack.getDice()[5],
+//        diceStack.getDice()[7],
+//        diceStack.getDice()[8],
+//    )
 
     MaterialTheme {
         ComposableGameScreen(gameLoop.viewModel)
+//        ComposableDiceStack(diceStack.viewModel)
     }
 }
