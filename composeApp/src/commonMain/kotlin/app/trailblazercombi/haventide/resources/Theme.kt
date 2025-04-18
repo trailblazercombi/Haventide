@@ -123,9 +123,9 @@ object Palette {
  */
 object TileStyle {
     val TileSize = 128.dp
-    val CornerRounding = 8.dp
+    val CornerRounding = 0.dp
     val OutlineThickness = 2.dp
-    val Padding = 24.dp
+    val Padding = 16.dp
 }
 
 /**
@@ -136,7 +136,7 @@ object PhoenixBallStyle {
     val OutlineThickness = 4.dp
     val Padding = 32.dp
     val AffiliationIconSize = 28.dp
-    val AffiliationIconOuterOffsetFromBottomRight = 14.dp
+    val AffiliationIconOuterOffsetFromBottomRight = 12.dp
     val AffiliationIconInnerPadding = 4.dp
 }
 
@@ -196,11 +196,11 @@ object DiceCounterStyle {
 
 object ScreenSizeThresholds {
     // NOTE: The description always matches the behaviour of value > field.
-    val SpreadDiceStackOnSingleLine = 706.dp
+    val SpreadDiceStackOnSingleLine = 728.dp
     val FloatTopStatusBarAsBubble = 576.dp
     val StopStretchingGameOverDialogToScreenEdge = 780.dp
     val StopStackingYesNoDialogVertically = 604.dp
-    val StopStretchingYesNoDialogToScreenEdge = 440.dp
+    val StopStretchingYesNoDialogToScreenEdge = 380.dp
 }
 
 /**

@@ -11,8 +11,8 @@
 
     <string name="game_over_dialog_confirm_button">Tap or click on the blank area to continue</string>
 
-    <string name="yes_no_dialog_forfeit_title">Are you sure?</string>
-    <string name="yes_no_dialog_forfeit_yes">Yes, forfeit match</string>
+    <string name="yes_no_dialog_forfeit_title">You haven't lost the match yet.</string>
+    <string name="yes_no_dialog_forfeit_yes">Yes, forfeit the match</string>
     <string name="yes_no_dialog_forfeit_no">Cancel and keep playing</string>
 
     <string name="end_round_dialog_title">You still have dice to play with.</string>

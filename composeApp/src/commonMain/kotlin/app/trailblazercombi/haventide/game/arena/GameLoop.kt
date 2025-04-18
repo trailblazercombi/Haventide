@@ -619,13 +619,13 @@ fun PauseMenuDialog(viewModel: GameLoopViewModel, modifier: Modifier = Modifier)
                 .fillMaxSize()
         ) {
             Surface(
-                color = Palette.Abyss40.compositeOver(viewModel.backdropColor.value),
+                color = Palette.Glass00,
                 shape = RoundedCornerShape(GameScreenDialogBoxStyle.OuterCornerRounding),
                 contentColor = Palette.FullWhite,
-                border = BorderStroke(
-                    GameScreenDialogBoxStyle.OutlineThickness,
-                    Palette.Abyss10.compositeOver(viewModel.backdropColor.value),
-                ),
+//                border = BorderStroke(
+//                    GameScreenDialogBoxStyle.OutlineThickness,
+//                    Palette.Abyss10.compositeOver(viewModel.backdropColor.value),
+//                ),
                 elevation = GameScreenDialogBoxStyle.Elevation,
                 modifier = modifier.padding(
                     top = GameScreenTopBubbleStyle.BubbleHeight + GameScreenTopBubbleStyle.OffsetFromEdge * 2
@@ -669,7 +669,7 @@ private fun DialogGenerics(
             contentAlignment = Alignment.TopCenter,
             modifier = modifier
                 .fillMaxSize()
-                .background(Palette.Abyss50)
+                .background(Palette.Abyss80)
                 .clickable {
                     onDismissRequest()
                 }
@@ -739,16 +739,16 @@ fun YesNoDialog(
             modifier = modifier.fillMaxSize()
         ) {
             Surface(
-                color = Palette.Abyss90.compositeOver(Palette.Abyss60),
+                color = Palette.Glass00,
                 shape = RoundedCornerShape(if (screenWidth > ScreenSizeThresholds.StopStretchingYesNoDialogToScreenEdge)
                     GameScreenDialogBoxStyle.OuterCornerRounding else 0.dp
                 ),
                 contentColor = Palette.FullWhite,
-                border = BorderStroke(
-                    GameScreenDialogBoxStyle.OutlineThickness,
-                    Palette.Abyss90.compositeOver(Palette.FillLightPrimary)
-                ),
-                elevation = GameScreenDialogBoxStyle.Elevation,
+//                border = BorderStroke(
+//                    GameScreenDialogBoxStyle.OutlineThickness,
+//                    Palette.Abyss90.compositeOver(Palette.FillLightPrimary)
+//                ),
+//                elevation = GameScreenDialogBoxStyle.Elevation,
                 modifier = modifier.padding(
                     horizontal = if (screenWidth > ScreenSizeThresholds.StopStretchingYesNoDialogToScreenEdge)
                         GameScreenDialogBoxStyle.StretchedDialogOffsetFromEdge else 0.dp,
@@ -760,6 +760,7 @@ fun YesNoDialog(
                         text = stringResource(title),
                         textAlign = TextAlign.Center,
                         fontSize = GameScreenDialogBoxStyle.TitleTextSize,
+                        lineHeight = GameScreenDialogBoxStyle.TitleTextSize,
                         modifier = modifier
                             .padding(GameScreenDialogBoxStyle.InnerPadding)
                     )
@@ -832,10 +833,10 @@ fun ScreenSizeFinder(screenWidth: MutableStateFlow<Dp>, screenHeight: MutableSta
 expect fun DismissHandling(onDismiss: () -> Unit)
 
 enum class ButtonSeverity(val fillColor: Color, val outlineColor: Color, val contentColor: Color) {
-    NEUTRAL(Palette.Abyss30, Palette.FillLightPrimary, Palette.FillLightPrimary),
+    NEUTRAL(Palette.FillLightPrimary, Palette.FillLightPrimary, Palette.FullBlack),
     NEUTRAL_FILLED(Palette.FillLightPrimary, Palette.FillLightPrimary, Palette.FullBlack),
     PREFERRED(Palette.FillYellow, Palette.FillYellow, Palette.FullBlack),
-    DESTRUCTIVE_MINOR(Palette.Glass00, Palette.FillRed, Palette.FillRed),
+    DESTRUCTIVE_MINOR(Palette.FillRed, Palette.FillRed, Palette.FullWhite),
     DESTRUCTIVE(Palette.FillRed, Palette.FillRed, Palette.FullWhite)
 }
 
