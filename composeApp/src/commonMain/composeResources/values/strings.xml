@@ -22,7 +22,7 @@
 
     <string name="game_turn_state_good">Your turn</string>
     <string name="game_turn_state_bad">%1$s's turn</string>
-    <string name="game_turn_state_over">Round over</string>
+    <string name="game_turn_state_over">Waiting for the opponent to finish...</string>
     <string name="game_turn_state_round_counter">Round %1$d</string>
 
     <string name="game_button_end_round">End Round</string>
