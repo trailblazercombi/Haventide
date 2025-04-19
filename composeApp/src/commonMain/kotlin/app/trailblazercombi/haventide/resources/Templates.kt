@@ -1,10 +1,16 @@
 package app.trailblazercombi.haventide.resources
 
 import androidx.compose.ui.graphics.Color
+import app.trailblazercombi.haventide.game2.data.tilemap.Position
 import app.trailblazercombi.haventide.game2.data.tilemap.TileData
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.Mechanism
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.MechanismSummonPattern
-import app.trailblazercombi.haventide.game2.jetpack.gamescreen.panels.components.DieType
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.PhoenixMechanism
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.immediate.ImmediateDamageInvoker
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.immediate.ImmediateHealingInvoker
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.immediate.ImmediateMechanismSummoner
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.immediate.ImmediateModificatorInvoker
+import app.trailblazercombi.haventide.game2.data.turntable.Team
 import app.trailblazercombi.haventide.resources.*
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
@@ -251,7 +257,11 @@ enum class Abilities(val template: AbilityTemplate) {
             alignedCost = 2,
             scatteredCost = 2,
             range = 3.27,
-            executionCheck = { _, target -> target.canAddMechanism(DummyImmediateEffecter(target)) },
+            executionCheck = { _, target -> target.canAddMechanism(
+                app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.immediate.DummyImmediateEffecter(
+                    target
+                )
+            ) },
             execution = { doer, target ->
                 ImmediateEffecters.MechanismSummoners.BARRIER_MAKER.template.build(target, doer.teamAffiliation) },
         )

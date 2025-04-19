@@ -101,31 +101,3 @@ fun DiceCounter(loopViewModel: GameLoopViewModel, stackViewModel: DiceStackViewM
         }
     }
 }
-
-fun countedDiceMatch(actual: Pair<Int, Int>, required: Pair<Int, Int>): Boolean {
-    // 1. Check if we have enough aligned dice, or if we have spare...
-    val spareAligned = actual.first - required.first
-    if (spareAligned < 0) return false // If this failed, there aren't enough aligned dice...
-    return actual.second + spareAligned == required.second
-}
-
-enum class DieHighlightState(val fillColor: Color, val outlineColor: Color, val contentColor: Color) {
-    IDLE(Palette.Abyss50.compositeOver(Palette.FullGrey), Palette.FullGrey, Palette.FullGrey),
-    POTENTIAL_IDLE(Palette.Abyss50.compositeOver(Palette.FullGrey), Palette.FullWhite, Palette.FullWhite),
-    SELECTED(
-        Palette.Abyss70.compositeOver(Palette.FillYellow),
-        Palette.Abyss40.compositeOver(Palette.FillYellow),
-        Palette.Abyss40.compositeOver(Palette.FillYellow)
-    ),
-    POTENTIAL_SELECTED(Palette.Abyss70.compositeOver(Palette.FillYellow), Palette.FillYellow, Palette.FillYellow);
-}
-
-fun DieHighlightState(potential: Boolean, selected: Boolean): DieHighlightState =
-    if (potential) { if (selected) POTENTIAL_SELECTED else POTENTIAL_IDLE }
-    else { if (selected) SELECTED else IDLE }
-
-enum class DieType(val icon: DrawableResource, val title: StringResource, val order: Int) {
-    VANGUARD(Res.drawable.vanguard, Res.string.die_type_vanguard, 0),
-    SENTINEL(Res.drawable.sentinel, Res.string.die_type_sentinel, 1),
-    MEDIC(Res.drawable.medic, Res.string.die_type_medic, 2)
-}

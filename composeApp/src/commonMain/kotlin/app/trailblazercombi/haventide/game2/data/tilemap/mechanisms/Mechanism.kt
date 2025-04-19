@@ -1,11 +1,11 @@
 package app.trailblazercombi.haventide.game2.data.tilemap.mechanisms
 
-import app.trailblazercombi.haventide.game.arena.NeutralFaction
-import app.trailblazercombi.haventide.game.arena.Team
-import app.trailblazercombi.haventide.game.mechanisms.AoEEffecter
-import app.trailblazercombi.haventide.game.mechanisms.ImmediateEffecter
 import app.trailblazercombi.haventide.game2.data.tilemap.TileData
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.aoe.AoEEffecter
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.immediate.ImmediateEffecter
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.mfei.MovementEnabled
+import app.trailblazercombi.haventide.game2.data.turntable.NeutralFaction
+import app.trailblazercombi.haventide.game2.data.turntable.Team
 
 /**
  * A Mechanism that resides on [a Tile][TileData].

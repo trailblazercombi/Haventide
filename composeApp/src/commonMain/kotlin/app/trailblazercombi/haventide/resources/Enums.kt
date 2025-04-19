@@ -1,9 +1,13 @@
 package app.trailblazercombi.haventide.resources
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.mfei.ModificatorHandler
 import app.trailblazercombi.haventide.game2.data.tilemap.modificators.Modificator
 import app.trailblazercombi.haventide.game2.data.tilemap.modificators.TitanShield
+import app.trailblazercombi.haventide.game2.data.turntable.PlayerInGame
+import app.trailblazercombi.haventide.playerdata.PlayerProfile
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 
 /**
@@ -26,7 +30,7 @@ enum class GameResult(val string: StringResource, val color: Color) {
     DEFEAT(Res.string.game_over_dialog_result_bad, Palette.FillRed),
     DEFEAT_FORFEIT(Res.string.game_over_dialog_result_forfeit, Palette.FillRed),
     DRAW(Res.string.game_over_dialog_result_neutral, Palette.FullGrey),
-    UNKNOWN(Res.string.game_over_dialog_result_error, Palette.FillYellow)
+    GAME_ONGOING(Res.string.game_over_dialog_result_error, Palette.FillYellow)
 }
 
 /**
@@ -85,3 +89,20 @@ enum class PlaceholderPlayers(
 }
 
 enum class TargetType { ALLY, ENEMY, EMPTY_TILE }
+
+enum class DieType(val icon: DrawableResource, val title: StringResource, val order: Int) {
+    VANGUARD(Res.drawable.vanguard, Res.string.die_type_vanguard, 0),
+    SENTINEL(Res.drawable.sentinel, Res.string.die_type_sentinel, 1),
+    MEDIC(Res.drawable.medic, Res.string.die_type_medic, 2)
+}
+
+enum class DieHighlightState(val fillColor: Color, val outlineColor: Color, val contentColor: Color) {
+    IDLE(Palette.Abyss50.compositeOver(Palette.FullGrey), Palette.FullGrey, Palette.FullGrey),
+    POTENTIAL_IDLE(Palette.Abyss50.compositeOver(Palette.FullGrey), Palette.FullWhite, Palette.FullWhite),
+    SELECTED(
+        Palette.Abyss70.compositeOver(Palette.FillYellow),
+        Palette.Abyss40.compositeOver(Palette.FillYellow),
+        Palette.Abyss40.compositeOver(Palette.FillYellow)
+    ),
+    POTENTIAL_SELECTED(Palette.Abyss70.compositeOver(Palette.FillYellow), Palette.FillYellow, Palette.FillYellow);
+}

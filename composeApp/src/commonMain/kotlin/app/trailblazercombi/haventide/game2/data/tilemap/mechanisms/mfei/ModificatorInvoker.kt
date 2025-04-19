@@ -1,8 +1,7 @@
 package app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.mfei
 
-import app.trailblazercombi.haventide.game.mechanisms.Mechanism
-import app.trailblazercombi.haventide.game.mechanisms.ModificatorHandler
 import app.trailblazercombi.haventide.game2.data.tilemap.TileData
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.Mechanism
 import app.trailblazercombi.haventide.game2.data.tilemap.modificators.Modificator
 import app.trailblazercombi.haventide.resources.Modificators
 

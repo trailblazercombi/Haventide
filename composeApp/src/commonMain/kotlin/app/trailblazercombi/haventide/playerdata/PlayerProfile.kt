@@ -1,8 +1,8 @@
 package app.trailblazercombi.haventide.playerdata
 
-import app.trailblazercombi.haventide.game.arena.LocalPlayerInGame
-import app.trailblazercombi.haventide.game.arena.PlayerInGame
-import app.trailblazercombi.haventide.game.arena.RemotePlayerInGame
+import app.trailblazercombi.haventide.game2.data.turntable.LocalPlayerInGame
+import app.trailblazercombi.haventide.game2.data.turntable.PlayerInGame
+import app.trailblazercombi.haventide.game2.data.turntable.RemotePlayerInGame
 import app.trailblazercombi.haventide.game2.data.turntable.TurnTable
 import app.trailblazercombi.haventide.resources.MechanismTemplate
 

@@ -1,7 +1,7 @@
 package app.trailblazercombi.haventide.game2.data.tilemap
 
 import androidx.compose.ui.unit.Dp
-import app.trailblazercombi.haventide.game.mechanisms.Mechanism
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.Mechanism
 import app.trailblazercombi.haventide.resources.TileStyle.TileSize
 import kotlin.math.abs
 import kotlin.math.hypot

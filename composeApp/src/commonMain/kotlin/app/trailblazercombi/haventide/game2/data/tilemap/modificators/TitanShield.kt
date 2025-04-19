@@ -1,6 +1,7 @@
 package app.trailblazercombi.haventide.game2.data.tilemap.modificators
 
-import app.trailblazercombi.haventide.game.mechanisms.ModificatorHandler
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.mfei.ModificatorHandler
+import app.trailblazercombi.haventide.resources.ModificatorType
 
 class TitanShield(parent: ModificatorHandler) : Modificator(ModificatorType.BUFF, parent) {
     private var destructOnNextCheck = false

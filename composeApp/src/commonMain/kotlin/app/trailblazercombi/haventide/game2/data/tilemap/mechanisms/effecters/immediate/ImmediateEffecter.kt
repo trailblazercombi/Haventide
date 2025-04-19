@@ -1,8 +1,8 @@
 package app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.immediate
 
-import app.trailblazercombi.haventide.game.arena.Team
 import app.trailblazercombi.haventide.game2.data.tilemap.TileData
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.Mechanism
+import app.trailblazercombi.haventide.game2.data.turntable.Team
 
 /**
  * This class represents an instant action.

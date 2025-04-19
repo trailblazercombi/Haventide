@@ -1,16 +1,10 @@
 package app.trailblazercombi.haventide.game2.data.tilemap
 
-import app.trailblazercombi.haventide.game.arena.NeutralFaction
-import app.trailblazercombi.haventide.game.arena.Position
-import app.trailblazercombi.haventide.game.arena.Team
-import app.trailblazercombi.haventide.game.arena.TileMapData
-import app.trailblazercombi.haventide.game.mechanisms.ImmediateEffecter
-import app.trailblazercombi.haventide.game.mechanisms.Mechanism
-import app.trailblazercombi.haventide.game.mechanisms.PhoenixMechanism
-import app.trailblazercombi.haventide.resources.UniversalColorizer
-import app.trailblazercombi.haventide.resources.UniversalColorizer.NO_INTERACTIONS
-import app.trailblazercombi.haventide.resources.UniversalColorizer.NO_INTERACTIONS_WITH_OUTLINE
-import kotlinx.coroutines.flow.MutableStateFlow
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.Mechanism
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.PhoenixMechanism
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.immediate.ImmediateEffecter
+import app.trailblazercombi.haventide.game2.data.turntable.Team
+import app.trailblazercombi.haventide.resources.MechanismTemplate
 
 /**
  * This is the class representing a single tile on the map,
@@ -18,19 +12,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
  */
 class TileData(
     // BASIC DATA
-    val parentMap: TileMapData,
-    val position: Position,
+    private val parentMap: TileMapData,
+    private val position: Position,
     private val mechanismStack: MutableSet<Mechanism> = mutableSetOf(),
-
-    // COMPOSE STATES: COLORIZERS
-    private var clickStateColorizer: MutableStateFlow<UniversalColorizer> = MutableStateFlow(
-        NO_INTERACTIONS_WITH_OUTLINE
-    ),
-    private var highlightStateColorizer: MutableStateFlow<UniversalColorizer> = MutableStateFlow(NO_INTERACTIONS),
-    private var hoverStateColorizer: MutableStateFlow<UniversalColorizer> = MutableStateFlow(NO_INTERACTIONS)
 ) {
-    // TODO Figure out a better view model
-    private val mechanismStackState = MutableStateFlow(mechanismStack.toSet())
 
     //  About the CHECKING SYSTEM:
     //  Tile:    All calls for mechanism operations check themselves
@@ -53,7 +38,6 @@ class TileData(
     fun addMechanism(mechanism: Mechanism) {
         if (canAddMechanism(mechanism)) {
             mechanismStack.add(mechanism)
-            updateMechanismStackState()
         }
     }
 
@@ -66,7 +50,6 @@ class TileData(
     fun removeMechanism(mechanism: Mechanism) {
         if (canRemoveMechanism(mechanism)) {
             mechanismStack.remove(mechanism)
-            updateMechanismStackState()
         }
     }
 
@@ -131,54 +114,16 @@ class TileData(
         return true
     }
 
-    fun getPhoenix(): PhoenixMechanism? {
-        this.mechanismStack.forEach { if (it is PhoenixMechanism) return it }
-        return null
-    }
+    /**
+     * Find and return a [PhoenixMechanism], if it's present on this tile.
+     * @return The [PhoenixMechanism] present on this tile.
+     *  There should never be mutliple present (because [PhoenixMechanism] vetoes any other [PhoenixMechanism]'s
+     *  request to enter), but if there are, returns the first one it finds. Or `null` if there is 0.
+     */
+    fun getPhoenix() = this.mechanismStack.firstOrNull { it is PhoenixMechanism } as? PhoenixMechanism
 
     fun getMechanismStack(): Set<Mechanism> {
         return mechanismStack.toSet()
-    }
-
-    // TODO Move the below to ViewModel...
-
-    private fun updateMechanismStackState() {
-        mechanismStackState.value = mechanismStack.toSet()
-    }
-
-    /**
-     * Send the click event from [the user][ComposableTile] upwards, to the parent [map][TileMapData].
-     * The [map][TileMapData] handles the rest.
-     */
-    fun tileClickEvent() {
-        parentMap.viewModel.tileClickEvent(this)
-    }
-
-    /**
-     * Update the __click state__ of the Composable Tile.
-     * This dictates the base fill and outline color.
-     * @param clickStateColorizer The new color of this state, as defined by [UniversalColorizer]
-     */
-    internal fun updateClickState(clickStateColorizer: UniversalColorizer) {
-        this.clickStateColorizer.value = clickStateColorizer
-    }
-
-    /**
-     * Update the __highlight__ state of the Composable Tile.
-     * This dictates the outline color, for tiles which would actually be useful to click.
-     * @param highlightStateColorizer The new color of this state, as defined by [UniversalColorizer]
-     */
-    internal fun updateHighlightState(highlightStateColorizer: UniversalColorizer) {
-        this.highlightStateColorizer.value = highlightStateColorizer
-    }
-
-    /**
-     * Update the __hover__ state of the Composable Tile.
-     * This dictates the fill and outline glass for pointer devices.
-     * @param hoverStateColorizer The new color of this state, as defined by [UniversalColorizer]
-     */
-    internal fun updateHoverState(hoverStateColorizer: UniversalColorizer) {
-        this.hoverStateColorizer.value = hoverStateColorizer
     }
 
     /**
@@ -191,5 +136,25 @@ class TileData(
             if (it.teamAffiliation != null) result.add(it.teamAffiliation)
         }
         return result.toSet()
+    }
+
+    // FUNCITON EXPOSURE
+
+    /**
+     * Exposes [TileMapData.summonMechanismsInPattern].
+     */
+    fun summonMechanismsInPattern(
+        mechanismTemplate: MechanismTemplate,
+        summonPattern: (Position) -> Set<Position>,
+        teamAffiliation: Team?
+    ) {
+        this.parentMap.summonMechanismsInPattern(mechanismTemplate, summonPattern(this.position), teamAffiliation)
+    }
+
+    /**
+     * Exposes [Position.distanceTo].
+     */
+    fun distanceTo(other: TileData): Double {
+        return this.position.distanceTo(other.position)
     }
 }

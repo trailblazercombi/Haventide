@@ -1,10 +1,6 @@
 package app.trailblazercombi.haventide.game2.data.turntable
 
-import app.trailblazercombi.haventide.game.abilities.DiceStackViewModel
-import app.trailblazercombi.haventide.game.abilities.Die
-import com.sun.jdi.AbsentInformationException
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlin.random.Random
+import app.trailblazercombi.haventide.resources.functions.randomDie
 
 /**
  * This class is the data layer for a stack of Dice, normally up to eight.
@@ -15,7 +11,6 @@ import kotlin.random.Random
 class DiceStack(vararg dice: Die) {
     // SPREAD OPERATOR (*) NEEDED, otherwise it becomes mutableListOf<Array<Die.kt>>
     private val diceStack = mutableListOf(*dice)
-    val viewModel = DiceStackViewModel(this)
 
     /**
      * Roll random dice.
@@ -25,45 +20,30 @@ class DiceStack(vararg dice: Die) {
      * @param freshRoll Discard all dice first. Then roll the exacat amount specified.
      */
     fun roll(howMany: Int, freshRoll: Boolean = false) {
-        if (freshRoll) { diceStack.clear() }
+        if (freshRoll) { discardAllDice() }
         repeat(howMany - diceStack.size) { diceStack.add(randomDie()) }
         diceStack.sortBy { it.type.order }
-        pushToViewModel()
     }
 
-    fun consume(consumedDice: List<Die>) {
-        consumedDice.forEach { diceStack.remove(it) }
-        pushToViewModel()
-    }
+    /**
+     * Consume dice, for example, for ability execution.
+     * @param consumedDice The dice consumed.
+     */
+    fun consume(consumedDice: List<Die>) = consumedDice.forEach { diceStack.remove(it) }
 
-    fun discardAllDice() {
-        diceStack.clear()
-        pushToViewModel()
-    }
+    /**
+     * Check if the specified dice are present in the [DiceStack].
+     * @param consumedDice The dice checked.
+     */
+    fun hasDice(consumedDice: List<Die>) = consumedDice.all { diceStack.contains(it) }
+
+    /**
+     * Discard all dice.
+     */
+    fun discardAllDice() = diceStack.clear()
 
     /**
      * @return The list of [Dice][Die] currently in the stack.
      */
     fun getDice() = diceStack.toList()
-
-    private fun randomDie(): Die {
-        return when (Random.nextInt(0, 3)) {
-            0 -> Die(DieType.VANGUARD)
-            1 -> Die(DieType.SENTINEL)
-            2 -> Die(DieType.MEDIC)
-            else -> throw AbsentInformationException(
-                "It is not possible to create an INVALID die :: RandomDie.new()"
-            )
-        }
-    }
-
-    private fun pushToViewModel() {
-        viewModel.diceStackAsState.value = getDice()
-    }
-
-    fun freshListState(): MutableStateFlow<List<Die>> {
-        val result = mutableListOf<Die>()
-        getDice().forEach { result.add(it.copy()) }
-        return MutableStateFlow(result.toList())
-    }
 }
