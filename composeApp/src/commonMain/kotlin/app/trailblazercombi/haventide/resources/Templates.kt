@@ -98,23 +98,23 @@ enum class PhoenixTemplates(val template: MechanismTemplate.Phoenix) {
  * Defintions for all the Immidiate Effecters ever.
  */
 @Suppress("MemberVisibilityCanBePrivate")
-object ImmediateEffecters {
-    enum class DamageInvokers(val template: MechanismTemplate.ImmediateEffecter.DamageInvoker) {
+object ImmediateEffecterTemplates {
+    enum class DamageInvokerTemplates(val template: MechanismTemplate.ImmediateEffecter.DamageInvoker) {
         BASIC_STRIKE(MechanismTemplate.ImmediateEffecter.DamageInvoker(2000))
     }
 
-    enum class HealingInvokers(val template: MechanismTemplate.ImmediateEffecter.HealingInvoker) {
+    enum class HealingInvokerTemplates(val template: MechanismTemplate.ImmediateEffecter.HealingInvoker) {
 
     }
 
-    enum class ModificatorInvokers(val template: MechanismTemplate.ImmediateEffecter.ModificatorInvoker) {
+    enum class ModificatorInvokerTemplates(val template: MechanismTemplate.ImmediateEffecter.ModificatorInvoker) {
         TITAN_SHIELD(MechanismTemplate.ImmediateEffecter.ModificatorInvoker(Modificators.TITAN_SHIELD))
     }
 
-    enum class MechanismSummoners(val template: MechanismTemplate.ImmediateEffecter.MechanismSummoner) {
+    enum class MechanismSummonerTemplates(val template: MechanismTemplate.ImmediateEffecter.MechanismSummoner) {
         BARRIER_MAKER(
             MechanismTemplate.ImmediateEffecter.MechanismSummoner(
-                mechanism = AoEEffecters.BARRIER_SINGLE.template,
+                mechanism = AoEEffecterTemplates.BARRIER_SINGLE.template,
                 pattern = MechanismSummonPattern::Filled3x3
             )
         )
@@ -126,7 +126,7 @@ object ImmediateEffecters {
  * Builds Effecters in the same way and similar fashion to
  * [app.trailblazercombi.haventide.game.modificators.Modificators] builds Modificators.
  */
-enum class AoEEffecters(val template: MechanismTemplate) {
+enum class AoEEffecterTemplates(val template: MechanismTemplate) {
     BARRIER_SINGLE(MechanismTemplate.Custom { parentTile, _ ->
         app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.aoe.Barrier(parentTile)
     });
@@ -162,8 +162,8 @@ sealed class MechanismTemplate {
         val maxHitPoints: Int = 120,
         val maxEnergyPoints: Int = 50,
         val energyForUltimate: Int = 50,
-        val abilityBasic1: AbilityTemplate = Abilities.BASIC_MOVE.template,
-        val abilityBasic2: AbilityTemplate = Abilities.BASIC_STRIKE.template,
+        val abilityBasic1: AbilityTemplate = AbilityTemplates.BASIC_MOVE.template,
+        val abilityBasic2: AbilityTemplate = AbilityTemplates.BASIC_STRIKE.template,
         // val abilityInnate1: AbilityTemplate,
         // val abilityInnate2: AbilityTemplate,
         // val abilityUltimate: AbilityTemplate,
@@ -231,7 +231,7 @@ sealed class MechanismTemplate {
     abstract fun build(parentTile: TileData, teamAffiliation: Team?): Mechanism
 }
 
-enum class Abilities(val template: AbilityTemplate) {
+enum class AbilityTemplates(val template: AbilityTemplate) {
     // Basic universal abilities
     BASIC_MOVE(
         AbilityTemplate(
@@ -249,7 +249,7 @@ enum class Abilities(val template: AbilityTemplate) {
             range = 2.65,
             executionCheck = { doer, target -> (target.findTeams() - doer.teamAffiliation).isNotEmpty() },
             execution = { doer, target ->
-                ImmediateEffecters.DamageInvokers.BASIC_STRIKE.template.build(target, doer.teamAffiliation) },
+                ImmediateEffecterTemplates.DamageInvokerTemplates.BASIC_STRIKE.template.build(target, doer.teamAffiliation) },
         )
     ),
     BARRIER(
@@ -263,7 +263,7 @@ enum class Abilities(val template: AbilityTemplate) {
                 )
             ) },
             execution = { doer, target ->
-                ImmediateEffecters.MechanismSummoners.BARRIER_MAKER.template.build(target, doer.teamAffiliation) },
+                ImmediateEffecterTemplates.MechanismSummonerTemplates.BARRIER_MAKER.template.build(target, doer.teamAffiliation) },
         )
     )
 }
