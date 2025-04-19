@@ -19,7 +19,7 @@ import org.jetbrains.compose.resources.stringResource
 fun MenuButton(
     onClick: () -> Unit,
     label: StringResource,
-    severity: ButtonSeverity,
+    severity: ButtonSeverity = ButtonSeverity.NEUTRAL,
     modifier: Modifier = Modifier
 ) {
     Button(

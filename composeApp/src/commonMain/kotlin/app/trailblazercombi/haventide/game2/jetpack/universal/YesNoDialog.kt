@@ -10,39 +10,38 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import app.trailblazercombi.haventide.game.arena.GameLoopViewModel
 import app.trailblazercombi.haventide.resources.ButtonSeverity
 import app.trailblazercombi.haventide.resources.GameScreenDialogBoxStyle
 import app.trailblazercombi.haventide.resources.Palette
 import app.trailblazercombi.haventide.resources.ScreenSizeThresholds
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun YesNoDialog(
-    viewModel: GameLoopViewModel,
-    openDialogState: MutableStateFlow<Boolean>,
+    openDialogState: StateFlow<Boolean>,
     title: StringResource,
     acceptLabel: StringResource,
     declineLabel: StringResource,
     onAccept: () -> Unit,
     onDecline: () -> Unit,
-    acceptSeverity: ButtonSeverity,
-    declineSeverity: ButtonSeverity,
+    onDismissRequest: () -> Unit = onDecline,
+    acceptSeverity: ButtonSeverity = ButtonSeverity.PREFERRED,
+    declineSeverity: ButtonSeverity = ButtonSeverity.NEUTRAL,
     modifier: Modifier = Modifier
 ) {
     val openDialog by openDialogState.collectAsState()
-
-    val screenWidth by viewModel.screenWidth.collectAsState()
+    val screenWidth = rememberScreenSize().first
 
     DialogGenerics(
         openDialogState = openDialogState,
-        onDismissRequest = { openDialogState.value = false },
+        onDismissRequest = onDismissRequest,
         modifier = modifier
     )
 
@@ -80,12 +79,18 @@ fun YesNoDialog(
                     if (screenWidth > ScreenSizeThresholds.StopStackingYesNoDialogVertically) {
                         Row(horizontalArrangement = Arrangement.SpaceEvenly) {
                             RowMenuButton(
-                                viewModel, onDecline, declineSeverity, declineLabel,
-                                GameScreenDialogBoxStyle.YesNoDialogButtonMaxWidth
+                                onClick = onDecline,
+                                label = declineLabel,
+                                width = GameScreenDialogBoxStyle.YesNoDialogButtonMaxWidth,
+                                severity = declineSeverity,
+                                modifier = modifier
                             )
                             RowMenuButton(
-                                viewModel, onAccept, acceptSeverity, acceptLabel,
-                                GameScreenDialogBoxStyle.YesNoDialogButtonMaxWidth
+                                onClick = onAccept,
+                                label = acceptLabel,
+                                width = GameScreenDialogBoxStyle.YesNoDialogButtonMaxWidth,
+                                severity = acceptSeverity,
+                                modifier = modifier
                             )
                         }
                     } else {

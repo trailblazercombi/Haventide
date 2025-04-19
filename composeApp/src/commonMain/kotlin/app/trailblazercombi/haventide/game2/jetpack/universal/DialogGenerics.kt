@@ -12,13 +12,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import app.trailblazercombi.haventide.game.arena.DismissHandling
 import app.trailblazercombi.haventide.resources.Palette
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 @Composable
 fun DialogGenerics(
-    openDialogState: MutableStateFlow<Boolean>,
+    openDialogState: StateFlow<Boolean>,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier
 ) {
