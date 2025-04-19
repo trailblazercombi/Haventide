@@ -33,8 +33,8 @@ class GameLoop(player1: PlayerProfile, player2: PlayerProfile) {
     private val turnTable = TurnTable(this)
     private val tileMap = TileMapData(this)
 
-    private val player1: PlayerInGame = player1.toPlayerInGame(turnTable, true)
-    private val player2: PlayerInGame = player2.toPlayerInGame(turnTable)
+    private val player1: PlayerInGame = player1.toPlayerInGame(turnTable = turnTable, local = true)
+    private val player2: PlayerInGame = player2.toPlayerInGame(turnTable = turnTable)
 
     init {
         turnTable.initialize(this.player1, this.player2)
