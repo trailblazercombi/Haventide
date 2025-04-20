@@ -12,8 +12,8 @@ import app.trailblazercombi.haventide.resources.MechanismTemplate
  */
 class TileData(
     // BASIC DATA
-    private val parentMap: TileMapData,
-    private val position: Position,
+    val parentMap: TileMapData,
+    internal val position: Position,
     private val mechanismStack: MutableSet<Mechanism> = mutableSetOf(),
 ) {
 

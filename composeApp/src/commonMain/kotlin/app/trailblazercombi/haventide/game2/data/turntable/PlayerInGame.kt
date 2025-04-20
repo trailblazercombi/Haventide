@@ -6,15 +6,14 @@ import app.trailblazercombi.haventide.playerdata.PlayerProfile
 import app.trailblazercombi.haventide.resources.AbilityTemplate
 import app.trailblazercombi.haventide.resources.MechanismTemplate
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.PhoenixMechanism
-import app.trailblazercombi.haventide.resources.Res
-import app.trailblazercombi.haventide.resources.ally
+import app.trailblazercombi.haventide.game2.viewModel.AbilityPreview
 
 /**
  * Defines a Player that's playing within the game.
  *
  * Interfaces directly with [TileMapData], the chief behind the game's logic.
  */
-open class PlayerInGame(val profile: PlayerProfile, private val turnTable: TurnTable) {
+open class PlayerInGame(val profile: PlayerProfile, protected val turnTable: TurnTable) {
     /**
      * Check if the PlayerInGame was already initialized.
      * @return `true` if [initialize] was called on `this` previously.
@@ -61,10 +60,24 @@ open class PlayerInGame(val profile: PlayerProfile, private val turnTable: TurnT
      *               will be affected.
      * @param consume The list of [Dice][DiceStack] to be consumed by this operation.
      */
-    open fun executeAbility(ability: AbilityTemplate, doer: Mechanism, target: TileData, consume: List<Die>) {
+    open fun executeAbility(ability: AbilityTemplate, doer: Mechanism, target: TileData, consume: List<Die> = listOf()) {
         ability.execution.invoke(doer, target)
         dice.consume(consume)
-        turnTable.nextPlayerTurn()
+    }
+
+    /**
+     * Execute an ability as this [PlayerInGame].
+     *
+     * __NOTE__ This method does not do any checks, it merely executes the ability.
+     * @param abilityPreview The data for the ability execution packed in [AbilityPreview].
+     */
+    open fun executeAbility(abilityPreview: AbilityPreview) {
+        executeAbility(
+            ability = abilityPreview.template,
+            doer = abilityPreview.doer,
+            target = abilityPreview.target,
+            consume = abilityPreview.consume
+        )
     }
 
     /**
@@ -107,4 +120,9 @@ open class PlayerInGame(val profile: PlayerProfile, private val turnTable: TurnT
      * Exposes [Team.getMembers] and filters for [PhoenixMechanism].
      */
     fun compilePhoenixes() = team.getMembers().filterIsInstance<PhoenixMechanism>()
+
+    /**
+     * Exposes [DiceStack.getDice]
+     */
+    protected fun getDice() = dice.getDice()
 }

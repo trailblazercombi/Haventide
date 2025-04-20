@@ -11,9 +11,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import app.trailblazercombi.haventide.game.arena.GameLoopViewModel
 import app.trailblazercombi.haventide.game2.jetpack.universal.DialogGenerics
 import app.trailblazercombi.haventide.game2.jetpack.universal.MenuButton
+import app.trailblazercombi.haventide.game2.viewModel.GameLoopViewModel
 import app.trailblazercombi.haventide.resources.*
 import app.trailblazercombi.haventide.resources.GameScreenTopBubbleStyle.StandardButtonWidth
 
@@ -55,13 +55,13 @@ fun PauseMenuDialog(viewModel: GameLoopViewModel, modifier: Modifier = Modifier)
                             .width(StandardButtonWidth)
                             .padding(GameScreenDialogBoxStyle.InnerPadding),
                     ) {
-                        /* RETURN   */ MenuButton({ viewModel.pauseMenuDialog.value = false },
+                        /* RETURN   */ MenuButton({ viewModel.hidePauseMenuDialog() },
                         Res.string.pause_dialog_return_button, ButtonSeverity.NEUTRAL)
-                        /* DRAW     */ MenuButton({ /* TODO */ },
+                        /* DRAW     */ MenuButton({ TODO("Cannot yet OFFER DRAW") },
                         Res.string.pause_dialog_offer_draw_button, ButtonSeverity.NEUTRAL)
-                        /* SETTINGS */ MenuButton({ /* TODO */ },
+                        /* SETTINGS */ MenuButton({ TODO("Cannot yet SETTINGS") },
                         Res.string.pause_dialog_settings_shortcut_button, ButtonSeverity.NEUTRAL)
-                        /* FORFEIT  */ MenuButton(onClick = { viewModel.forfeitAreYouSureDialog.value = true },
+                        /* FORFEIT  */ MenuButton(onClick = { viewModel.showForfeitConfirmationDialog() },
                         Res.string.pause_dialog_forfeit_button, ButtonSeverity.DESTRUCTIVE_MINOR)
                     }
                 }

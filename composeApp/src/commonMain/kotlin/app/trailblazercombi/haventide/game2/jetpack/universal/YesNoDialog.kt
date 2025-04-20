@@ -10,11 +10,12 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
+import app.trailblazercombi.haventide.game2.viewModel.ScreenSizeProvider
 import app.trailblazercombi.haventide.resources.ButtonSeverity
 import app.trailblazercombi.haventide.resources.GameScreenDialogBoxStyle
 import app.trailblazercombi.haventide.resources.Palette
@@ -25,6 +26,7 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun YesNoDialog(
+    screenSizeProvider: ScreenSizeProvider,
     openDialogState: StateFlow<Boolean>,
     title: StringResource,
     acceptLabel: StringResource,
@@ -37,7 +39,7 @@ fun YesNoDialog(
     modifier: Modifier = Modifier
 ) {
     val openDialog by openDialogState.collectAsState()
-    val screenWidth = rememberScreenSize().first
+    val screenWidth by screenSizeProvider.screenWidth.collectAsState()
 
     DialogGenerics(
         openDialogState = openDialogState,
@@ -81,14 +83,20 @@ fun YesNoDialog(
                             RowMenuButton(
                                 onClick = onDecline,
                                 label = declineLabel,
-                                width = GameScreenDialogBoxStyle.YesNoDialogButtonMaxWidth,
+                                width = min(
+                                    a = screenWidth / 3,
+                                    b = GameScreenDialogBoxStyle.YesNoDialogButtonMaxWidth
+                                ),
                                 severity = declineSeverity,
                                 modifier = modifier
                             )
                             RowMenuButton(
                                 onClick = onAccept,
                                 label = acceptLabel,
-                                width = GameScreenDialogBoxStyle.YesNoDialogButtonMaxWidth,
+                                width = min(
+                                    a = screenWidth / 3,
+                                    b = GameScreenDialogBoxStyle.YesNoDialogButtonMaxWidth
+                                ),
                                 severity = acceptSeverity,
                                 modifier = modifier
                             )

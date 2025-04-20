@@ -23,7 +23,6 @@ fun RowMenuButton(
     modifier: Modifier = Modifier,
     width: Dp
 ) {
-
     Button(
         onClick = onClick,
         border = BorderStroke(GameScreenDialogBoxStyle.OutlineThickness, severity.outlineColor),

@@ -1,7 +1,5 @@
 package app.trailblazercombi.haventide.game2.data.turntable
 
-import app.trailblazercombi.haventide.resources.functions.randomDie
-
 /**
  * This class is the data layer for a stack of Dice, normally up to eight.
  * (For reasons, this class supports arbitrary number of dies).

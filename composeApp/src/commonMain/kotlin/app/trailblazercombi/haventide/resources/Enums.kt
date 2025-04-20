@@ -15,7 +15,7 @@ import org.jetbrains.compose.resources.StringResource
  */
 enum class ButtonSeverity(val fillColor: Color, val outlineColor: Color, val contentColor: Color) {
     NEUTRAL(Palette.FillLightPrimary, Palette.FillLightPrimary, Palette.FullBlack),
-    NEUTRAL_FILLED(Palette.FillLightPrimary, Palette.FillLightPrimary, Palette.FullBlack),
+    DIMMED(Palette.Glass00, Palette.FillLightPrimary, Palette.FillLightPrimary),
     PREFERRED(Palette.FillYellow, Palette.FillYellow, Palette.FullBlack),
     DESTRUCTIVE_MINOR(Palette.FillRed, Palette.FillRed, Palette.FullWhite),
     DESTRUCTIVE(Palette.FillRed, Palette.FillRed, Palette.FullWhite)
@@ -37,9 +37,9 @@ enum class GameResult(val string: StringResource, val color: Color) {
  * This is for the TurnTable to keep track of Player Turn States of the Local Player.
  */
 enum class PlayerTurnStates(val string: StringResource) {
-    THEIR_TURN(Res.string.game_turn_state_good),
-    NOT_THEIR_TURN(Res.string.game_turn_state_bad),
-    ROUND_FINISHED(Res.string.game_turn_state_over);
+    LOCAL_PLAYER_TURN(Res.string.game_turn_state_good),
+    REMOTE_PLAYER_TURN(Res.string.game_turn_state_bad),
+    LOCAL_PLAYER_ROUND_DONE(Res.string.game_turn_state_over);
 
     private var player: String = "Unnamed"
 

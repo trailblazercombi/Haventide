@@ -1,4 +1,4 @@
-package app.trailblazercombi.haventide.game2.jetpack.gamescreen.panels.components
+package app.trailblazercombi.haventide.game2.jetpack.gamescreen.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -13,7 +13,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import app.trailblazercombi.haventide.game.mechanisms.PhoenixMechanism
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.PhoenixMechanism
 import app.trailblazercombi.haventide.resources.GameScreenTopBubbleStyle
 import app.trailblazercombi.haventide.resources.Palette
 import org.jetbrains.compose.resources.painterResource

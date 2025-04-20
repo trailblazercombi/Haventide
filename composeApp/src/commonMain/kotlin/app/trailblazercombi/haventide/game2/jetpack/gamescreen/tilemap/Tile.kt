@@ -6,16 +6,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.compositeOver
-import app.trailblazercombi.haventide.game.arena.TileData
+import app.trailblazercombi.haventide.game2.data.tilemap.TileData
 import app.trailblazercombi.haventide.game2.jetpack.extensions.handleHover
+import app.trailblazercombi.haventide.game2.viewModel.GameLoopViewModel
 import app.trailblazercombi.haventide.resources.TileStyle.CornerRounding
 import app.trailblazercombi.haventide.resources.TileStyle.OutlineThickness
 import app.trailblazercombi.haventide.resources.TileStyle.Padding
@@ -25,15 +23,15 @@ import app.trailblazercombi.haventide.resources.UniversalColorizer.NO_INTERACTIO
 
 /**
  * This is the UI layer of [TileData].
- * @param tileData The [TileData] to be rendered. Pass `null` to render a hole.
+ * @param viewModel The central [GameLoopViewModel]. Contains click states and similar.
+ * @param tileData The [TileData] to be rendered. Contains intrinsic data. __DO NOT MODIFY__. Pass `null` to render a hole.
  */
 @Composable
-fun Tile(tileData: TileData? = null, modifier: Modifier = Modifier) {
+fun Tile(viewModel: GameLoopViewModel, tileData: TileData? = null, modifier: Modifier = Modifier) {
     if (tileData != null) {
-        val clickState by tileData.clickStateColorizer.collectAsState()
-        val highlightState by tileData.highlightStateColorizer.collectAsState()
-        val hoverState by tileData.hoverStateColorizer.collectAsState()
-        val mechanisms by tileData.mechanismStackState.collectAsState()
+        val clickState by viewModel.tileClickStateFor(tileData)!!.collectAsState()
+        val highlightState by viewModel.tileHighlightStateFor(tileData)!!.collectAsState()
+        var hoverState by remember { mutableStateOf(NO_INTERACTIONS) }
 
         Box( // Full tile scope
             contentAlignment = Alignment.Center,
@@ -43,17 +41,11 @@ fun Tile(tileData: TileData? = null, modifier: Modifier = Modifier) {
                 .clickable(
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() },
-                    onClick = {
-                        tileData.tileClickEvent()
-                    }
+                    onClick = { viewModel.processTileClickEvent(tileData) }
                 )
                 .handleHover(
-                    onEnter = {
-                        tileData.updateHoverState(HOVER_GLASS)
-                    },
-                    onExit = {
-                        tileData.updateHoverState(NO_INTERACTIONS)
-                    }
+                    onEnter = { hoverState = HOVER_GLASS },
+                    onExit = { hoverState = NO_INTERACTIONS }
                 )
         ) {
             Box( // The rendered outline
@@ -72,7 +64,7 @@ fun Tile(tileData: TileData? = null, modifier: Modifier = Modifier) {
                         .compositeOver(clickState.fillColor)
                     )
             )
-            MechanismStack(mechanisms, modifier.align(Alignment.Center))
+            MechanismStack(tileData.getMechanismStack(), modifier.align(Alignment.Center))
         }
     } else {
         Spacer(modifier.width(TileSize).height(TileSize))

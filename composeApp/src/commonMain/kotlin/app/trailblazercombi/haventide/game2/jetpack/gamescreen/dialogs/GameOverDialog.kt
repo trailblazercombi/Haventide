@@ -19,24 +19,21 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import app.trailblazercombi.haventide.game.arena.GameLoopViewModel
 import app.trailblazercombi.haventide.game2.jetpack.universal.DialogGenerics
+import app.trailblazercombi.haventide.game2.viewModel.GameLoopViewModel
 import app.trailblazercombi.haventide.resources.*
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun GameOverDialog(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
     val openDialog by viewModel.gameOverDialog.collectAsState()
-    val openDialogResult by viewModel.gameOverDialogResult.collectAsState()
+    val gameResult by viewModel.gameResult.collectAsState()
 
     val screenWidth by viewModel.screenWidth.collectAsState()
 
     DialogGenerics(
         openDialogState = viewModel.gameOverDialog,
-        onDismissRequest = {
-            viewModel.gameOverDialog.value = false
-            // [NAVHOST] TODO Navigate to summary screen
-        },
+        onDismissRequest = { viewModel.navigateToMatchResultScreen(gameResult) },
     )
 
     AnimatedVisibility(openDialog, enter = scaleIn(), exit = scaleOut()) {
@@ -50,14 +47,14 @@ fun GameOverDialog(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) 
                 modifier = modifier
             ) {
                 Surface(
-                    color = Palette.Abyss90.compositeOver(openDialogResult.color),
+                    color = Palette.Abyss90.compositeOver(gameResult.color),
                     shape = RoundedCornerShape(
                         if (screenWidth > ScreenSizeThresholds.StopStretchingGameOverDialogToScreenEdge)
                             GameScreenDialogBoxStyle.OuterCornerRounding
                         else 0.dp
                     ),
                     contentColor = Palette.FullWhite,
-                    border = BorderStroke(GameScreenDialogBoxStyle.OutlineThickness, openDialogResult.color),
+                    border = BorderStroke(GameScreenDialogBoxStyle.OutlineThickness, gameResult.color),
                     elevation = GameScreenDialogBoxStyle.Elevation,
                     modifier = modifier
                         .fillMaxWidth()
@@ -76,7 +73,7 @@ fun GameOverDialog(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) 
                             .padding(GameScreenDialogBoxStyle.GameOverInnerPadding),
                     ) {
                         Text(
-                            text = stringResource(resource = openDialogResult.string),
+                            text = stringResource(resource = gameResult.string),
                             color = Palette.FullWhite,
                             style = TextStyle(
                                 fontWeight = FontWeight.Bold,

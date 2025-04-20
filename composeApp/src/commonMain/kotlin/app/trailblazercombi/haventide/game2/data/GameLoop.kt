@@ -1,12 +1,15 @@
 package app.trailblazercombi.haventide.game2.data
 
+import app.trailblazercombi.haventide.game2.data.tilemap.Position
+import app.trailblazercombi.haventide.game2.data.tilemap.TileData
 import app.trailblazercombi.haventide.game2.data.tilemap.TileMapData
 import app.trailblazercombi.haventide.game2.data.turntable.LocalPlayerInGame
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.PhoenixMechanism
 import app.trailblazercombi.haventide.game2.data.turntable.PlayerInGame
 import app.trailblazercombi.haventide.game2.data.turntable.TurnTable
+import app.trailblazercombi.haventide.game2.viewModel.GameLoopViewModel
 import app.trailblazercombi.haventide.playerdata.PlayerProfile
 import app.trailblazercombi.haventide.resources.GameResult
-import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.PhoenixMechanism
 
 /**
  * This defines the entire Game Loop.
@@ -15,23 +18,21 @@ import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.PhoenixMecha
  */
 class GameLoop(player1: PlayerProfile, player2: PlayerProfile) {
 
-    private var gameResult: GameResult = GameResult.GAME_ONGOING
-        set(value) {
-            if (gameIsOver) throw IllegalStateException(
-                "Cannot change the fate of the game. (GameLoop::gameResult)"
-            )
+    var gameResult: GameResult = GameResult.GAME_ONGOING
+        private set(value) {
             field = value
-        }
-    private var gameIsOver = false
-        set(value) {
-            if (field && !value) throw IllegalArgumentException(
-                "Cannot change the fate of the game. (GameLoop::gameIsOver)"
-            )
-            field = value
+            viewModel.gameResult.value = value
         }
 
-    private val turnTable = TurnTable(this)
-    private val tileMap = TileMapData(this)
+    var gameIsOver = false
+        private set(value) {
+            field = value
+            viewModel.gameIsOver.value = value
+        }
+
+    val turnTable = TurnTable(this)
+    val tileMap = TileMapData(this)
+    val viewModel: GameLoopViewModel
 
     private val player1: PlayerInGame = player1.toPlayerInGame(turnTable = turnTable, local = true)
     private val player2: PlayerInGame = player2.toPlayerInGame(turnTable = turnTable)
@@ -39,6 +40,8 @@ class GameLoop(player1: PlayerProfile, player2: PlayerProfile) {
     init {
         turnTable.initialize(this.player1, this.player2)
         tileMap.initialize(this.player1, this.player2)
+        viewModel = GameLoopViewModel(this)
+        turnTable.startGame()
     }
 
     /**
@@ -46,7 +49,7 @@ class GameLoop(player1: PlayerProfile, player2: PlayerProfile) {
      * @see LocalPlayerInGame
      */
     // [MULTIPLAYER] TODO Fix this to work properly once multiplayer is involved...
-    fun localPlayer() = player1
+    fun localPlayer(): PlayerInGame = player1
 
     internal fun declareWinner(winner: PlayerInGame, forfeit: Boolean = false) {
         gameOver(
@@ -65,6 +68,7 @@ class GameLoop(player1: PlayerProfile, player2: PlayerProfile) {
     private fun gameOver(result: GameResult) {
         this.gameResult = result
         this.gameIsOver = true
+        viewModel.showGameOverDialog()
     }
 
     /**
@@ -87,5 +91,23 @@ class GameLoop(player1: PlayerProfile, player2: PlayerProfile) {
         else declareWinner(player1, true)
         // TODO Propagate to the other client
         // FIXME needs a more robust approach anyways
+    }
+
+    /**
+     * Exposes [TileMapData.getAll]
+     */
+    fun getAllTiles(): Map<Position, TileData?> = tileMap.getAll()
+
+    /**
+     * Check if the game is over.
+     * If so, make the game over.
+     * If not, keep the game running.
+     */
+    fun checkGameResult() {
+        if (player1.hasPhoenixes() && player2.hasPhoenixes()) return
+
+        if (player1.hasPhoenixes()) declareWinner(player1, false)
+        else if (player2.hasPhoenixes()) declareWinner(player2, false)
+        else declareDraw()
     }
 }

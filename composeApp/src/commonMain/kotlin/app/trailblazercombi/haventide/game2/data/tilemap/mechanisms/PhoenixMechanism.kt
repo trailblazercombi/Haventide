@@ -10,7 +10,7 @@ import app.trailblazercombi.haventide.resources.*
 
 class PhoenixMechanism(
     parentTile: TileData,
-    private val template: MechanismTemplate.Phoenix,
+    val template: MechanismTemplate.Phoenix,
     teamAffiliation: Team,
     override val modificators: MutableList<Modificator> = mutableListOf()
 ) : Mechanism(parentTile, teamAffiliation), ModificatorHandler, HitPointsHandler, MovementEnabled {
@@ -20,7 +20,7 @@ class PhoenixMechanism(
     private var energyPoints = 0
     private val maxEnergyPoints = template.maxEnergyPoints
     private val neededEnergyPoints = template.energyForUltimate
-    private val teamIcon = teamAffiliation.icon
+    val teamIcon = teamAffiliation.icon
 
     override fun onZeroHitPoints() {
         this.destruct()

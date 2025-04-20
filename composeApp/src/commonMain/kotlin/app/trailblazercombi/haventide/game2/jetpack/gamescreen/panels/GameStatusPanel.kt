@@ -14,25 +14,24 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import app.trailblazercombi.haventide.game.arena.GameLoopViewModel
 import app.trailblazercombi.haventide.game2.jetpack.extensions.intrinsicWidth
-import app.trailblazercombi.haventide.game2.jetpack.gamescreen.panels.components.PhoenixMiniatureStrip
+import app.trailblazercombi.haventide.game2.jetpack.gamescreen.components.PhoenixMiniatureStrip
+import app.trailblazercombi.haventide.game2.viewModel.GameLoopViewModel
 import app.trailblazercombi.haventide.resources.*
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun GameStatusPanel(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
-    val roundCount by viewModel.roundCount.collectAsState()
-    val backdropColor by viewModel.backdropColor.collectAsState()
-
     val screenWidth by viewModel.screenWidth.collectAsState()
 
+    val roundCount by viewModel.roundNumber.collectAsState()
     val localPlayerTurn by viewModel.localPlayerTurn.collectAsState()
-    val allies by viewModel.alliedPhoenixEntries.collectAsState()
-    val enemies by viewModel.enemyPhoenixEntries.collectAsState()
+    val localPlayerRoundOver by viewModel.localPlayerRoundOver.collectAsState()
+
+    val alliedPhoenixes by viewModel.alliedPhoenixes.collectAsState()
+    val enemyPhoenixes by viewModel.enemyPhoenixes.collectAsState()
 
     Box(
         contentAlignment = Alignment.TopCenter,
@@ -47,18 +46,18 @@ fun GameStatusPanel(viewModel: GameLoopViewModel, modifier: Modifier = Modifier)
             shape = if (screenWidth > ScreenSizeThresholds.FloatTopStatusBarAsBubble) RoundedCornerShape(
                 GameScreenTopBubbleStyle.CornerRounding
             ) else RoundedCornerShape(0.dp),
-            color = GameScreenTopBubbleStyle.FillColorModifier.compositeOver(backdropColor),
+            color = GameScreenTopBubbleStyle.FillColorModifier,
             contentColor = Palette.FullWhite,
             border = BorderStroke(
                 GameScreenTopBubbleStyle.OutlineThickness,
-                GameScreenTopBubbleStyle.OutlineColorModifier.compositeOver(backdropColor)
+                GameScreenTopBubbleStyle.OutlineColorModifier
             ),
             elevation = GameScreenTopBubbleStyle.Elevation,
             modifier = modifier
                 .clickable(
                     indication = LocalIndication.current,
                     interactionSource = remember { MutableInteractionSource() },
-                    onClick = { viewModel.pauseMenuDialog.value = true }
+                    onClick = { viewModel.showPauseMenuDialog() }
                 )
                 .intrinsicWidth()
                 .height(
@@ -73,7 +72,7 @@ fun GameStatusPanel(viewModel: GameLoopViewModel, modifier: Modifier = Modifier)
                     .fillMaxHeight()
                     .padding(0.dp, GameScreenTopBubbleStyle.InnerOffset)
             ) {
-                PhoenixMiniatureStrip(allies, viewModel)
+                PhoenixMiniatureStrip(viewModel, alliedPhoenixes)
             }
             Box( // ENEMIES
                 contentAlignment = Alignment.BottomEnd,
@@ -81,7 +80,7 @@ fun GameStatusPanel(viewModel: GameLoopViewModel, modifier: Modifier = Modifier)
                     .fillMaxHeight()
                     .padding(0.dp, GameScreenTopBubbleStyle.InnerOffset)
             ) {
-                PhoenixMiniatureStrip(enemies, viewModel)
+                PhoenixMiniatureStrip(viewModel, enemyPhoenixes)
             }
             // HERE STARTS THE ROUND COUNTER / TEAM TO MOVE DISPLAY
             if (screenWidth > ScreenSizeThresholds.FloatTopStatusBarAsBubble) {
@@ -104,7 +103,11 @@ fun GameStatusPanel(viewModel: GameLoopViewModel, modifier: Modifier = Modifier)
                             )
                     )
                     Text(
-                        text = stringResource(localPlayerTurn.string, localPlayerTurn.retrieve()),
+                        text = stringResource(
+                            if (localPlayerRoundOver) Res.string.game_turn_state_over
+                            else if (localPlayerTurn) Res.string.game_turn_state_good
+                            else Res.string.game_turn_state_bad
+                        ),
                         textAlign = TextAlign.Center,
                         fontSize = GameScreenTopBubbleStyle.TeamTurnTextSize,
                         lineHeight = GameScreenTopBubbleStyle.TeamTurnTextSize,
@@ -126,7 +129,9 @@ fun GameStatusPanel(viewModel: GameLoopViewModel, modifier: Modifier = Modifier)
                 ) {
                     Text(
                         text = stringResource(Res.string.game_turn_state_round_counter, roundCount) +
-                                " / ${stringResource(localPlayerTurn.string, localPlayerTurn.retrieve())}",
+                                " / ${stringResource(if (localPlayerRoundOver) Res.string.game_turn_state_over
+                                else if (localPlayerTurn) Res.string.game_turn_state_good
+                                else Res.string.game_turn_state_bad)}",
                         textAlign = TextAlign.Center,
                         fontSize = GameScreenTopBubbleStyle.UnifiedRoundTeamTextSize,
                         lineHeight = GameScreenTopBubbleStyle.UnifiedRoundTeamTextSize,

@@ -12,6 +12,19 @@ class LocalPlayerInGame(profile: PlayerProfile, turnTable: TurnTable) : PlayerIn
 
     override fun executeAbility(ability: AbilityTemplate, doer: Mechanism, target: TileData, consume: List<Die>) {
         super.executeAbility(ability, doer, target, consume)
+        pushLocalPlayerDiceStackToViewModel()
         // [NETWORK] TODO Make sure this propagates to the opponent's client
+    }
+
+    override fun onTurnStart() {
+        super.onTurnStart()
+        pushLocalPlayerDiceStackToViewModel()
+    }
+
+    /**
+     * Pushes Dice Updates to the TurnTable, then to the ViewModel.
+     */
+    private fun pushLocalPlayerDiceStackToViewModel() {
+        turnTable.pushLocalPlayerDiceStackToViewModel(getDice())
     }
 }

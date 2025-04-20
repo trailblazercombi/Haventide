@@ -30,10 +30,19 @@
     <string name="game_turn_state_round_counter">Round %1$d</string>
 
     <string name="game_button_end_round">End Round</string>
+    <string name="game_button_confirm_move">Confirm!</string>
 
-    <string name="game_button_dice_counter_wide">%1$d + %2$d</string>
-    <string name="game_button_dice_counter_narrow1">%1$d</string>
-    <string name="game_button_dice_counter_narrow2">%1$d</string>
+    <string name="ability_move">Move!</string>
+    <string name="ability_construct">Build!</string>
+    <string name="ability_attack">Attack!</string>
+    <string name="ability_restore">Heal!</string>
+    <string name="ability_impair">Impair!</string>
+    <string name="ability_support">Support!</string>
+
+
+    <string name="game_button_dice_counter_wide">%1$d/%2$d+%3$d/%4$d</string>
+    <string name="game_button_dice_counter_narrow1">%1$d/%2$d</string>
+    <string name="game_button_dice_counter_narrow2">%1$d/%2$d</string>
 
     <string name="die_type_vanguard">Vanguard</string>
     <string name="die_type_sentinel">Sentinel</string>

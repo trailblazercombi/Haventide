@@ -5,9 +5,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import app.trailblazercombi.haventide.game.arena.TileData
-import app.trailblazercombi.haventide.game.mechanisms.ComposableMechanism
-import app.trailblazercombi.haventide.game.mechanisms.Mechanism
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.Mechanism
 import app.trailblazercombi.haventide.resources.TileStyle.TileSize
 
 /**

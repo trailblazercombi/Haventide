@@ -13,7 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
-import app.trailblazercombi.haventide.game.mechanisms.PhoenixMechanism
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.PhoenixMechanism
+import app.trailblazercombi.haventide.game2.viewModel.GameLoopViewModel
 import app.trailblazercombi.haventide.resources.Palette
 import app.trailblazercombi.haventide.resources.PhoenixBallStyle
 import app.trailblazercombi.haventide.resources.PhoenixBallStyle.AffiliationIconInnerPadding

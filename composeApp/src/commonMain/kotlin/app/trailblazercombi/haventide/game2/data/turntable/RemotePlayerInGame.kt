@@ -12,6 +12,8 @@ class RemotePlayerInGame(profile: PlayerProfile, turnTable: TurnTable) : PlayerI
     }
 
     override fun onTurnStart() {
+        turnTable.endRoundAndNextPlayerTurn()
         // [NETWORK] FIXME Remove this later, placeholder only
+        // FIXME This looks pretty broken right now, but you need to make networking first...
     }
 }

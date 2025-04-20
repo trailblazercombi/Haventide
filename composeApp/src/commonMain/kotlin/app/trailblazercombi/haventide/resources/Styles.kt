@@ -1,5 +1,6 @@
 package app.trailblazercombi.haventide.resources
 
+import androidx.compose.material.Button
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -70,8 +71,9 @@ object DieStyle {
     val CornerRounding = 4.dp
     val OutlineThickness = 0.dp
     val Separation = 3.dp
-    val PanelPadding = 4.dp
     val EndRoundButtonSeverity = ButtonSeverity.PREFERRED
+    val CounterButtonSeverity = ButtonSeverity.DIMMED
+    val ConfirmButtonSeverity = ButtonSeverity.NEUTRAL
 }
 
 object DiceCounterStyle {

@@ -5,8 +5,8 @@ import app.trailblazercombi.haventide.game2.data.GameLoop
 import app.trailblazercombi.haventide.game2.data.turntable.PlayerInGame
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.Mechanism
 import app.trailblazercombi.haventide.game2.data.turntable.Team
-import app.trailblazercombi.haventide.resources.MechanismTemplate
 import app.trailblazercombi.haventide.game2.data.turntable.NeutralFaction
+import app.trailblazercombi.haventide.resources.MechanismTemplate
 
 /**
  * This is the map data class in all its glory.
@@ -26,10 +26,10 @@ class TileMapData(val gameLoop: GameLoop) {
 
     // [LOAD FROM FILE] TODO Size does not need to be a property,
     //                   and also, read this from file, including the backdrop color.
-    private val columns = 10; private val rows = 10
+    val columns = 10; val rows = 10
 
     @Suppress("JoinDeclarationAndAssignment")
-    private val backdropColor: Color
+    val backdropColor: Color
     private val tiles: Map<Position, TileData?>
 
     init {
@@ -100,4 +100,9 @@ class TileMapData(val gameLoop: GameLoop) {
             // FIXME Check if this fails if shit goes south (and the Mechie cannot be added to Tile)
         }
     }
+
+    /**
+     * @return All tiles as a copy of the map.
+     */
+    fun getAll() = tiles.toMap()
 }

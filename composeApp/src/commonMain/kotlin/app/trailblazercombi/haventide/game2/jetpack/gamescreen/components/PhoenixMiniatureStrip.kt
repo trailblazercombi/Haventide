@@ -1,4 +1,4 @@
-package app.trailblazercombi.haventide.game2.jetpack.gamescreen.panels.components
+package app.trailblazercombi.haventide.game2.jetpack.gamescreen.components
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
@@ -6,17 +6,17 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.min
-import app.trailblazercombi.haventide.game.arena.GameLoopViewModel
-import app.trailblazercombi.haventide.game.mechanisms.PhoenixMechanism
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.PhoenixMechanism
+import app.trailblazercombi.haventide.game2.viewModel.ScreenSizeProvider
 import app.trailblazercombi.haventide.resources.GameScreenTopBubbleStyle
 import app.trailblazercombi.haventide.resources.ScreenSizeThresholds
 
 @Composable
 fun PhoenixMiniatureStrip(
-    allies: List<PhoenixMechanism>,
-    viewModel: GameLoopViewModel
+    screenSizeProvider: ScreenSizeProvider,
+    allies: List<PhoenixMechanism>
 ) {
-    val screenWidth by viewModel.screenWidth.collectAsState()
+    val screenWidth by screenSizeProvider.screenWidth.collectAsState()
 
     Row {
         allies.forEach {

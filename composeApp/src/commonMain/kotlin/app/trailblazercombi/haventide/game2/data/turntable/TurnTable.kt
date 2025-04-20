@@ -1,6 +1,7 @@
 package app.trailblazercombi.haventide.game2.data.turntable
 
 import app.trailblazercombi.haventide.game2.data.GameLoop
+import kotlin.math.round
 
 /**
  * This class holds the current state of the game's turns.
@@ -17,9 +18,19 @@ class TurnTable(private val gameLoop: GameLoop) {
     var isInitialized = false
         private set
 
+    var roundCount = 1
+        private set(value) {
+            field = value
+            gameLoop.viewModel.roundNumber.value = value // update ViewModel
+        }
+
     private val thisTurnArray: MutableList<PlayerInGame> = mutableListOf()
     private val nextTurnArray: MutableList<PlayerInGame> = mutableListOf()
     private var currentPlayerIndex = 0
+        set(value) {
+            field = value
+            gameLoop.viewModel.currentPlayer.value = currentPlayer() // update ViewModel
+        }
 
     /**
      * Initialize the turn table by filling in the player profiles.
@@ -34,6 +45,11 @@ class TurnTable(private val gameLoop: GameLoop) {
         thisTurnArray.addAll(players)
         thisTurnArray.forEach { it.startRound() }
         isInitialized = true
+    }
+
+    fun startGame() {
+        thisTurnArray[currentPlayerIndex].onTurnStart()
+        gameLoop.viewModel.processStartRoundEvent()
     }
 
     /**
@@ -87,16 +103,22 @@ class TurnTable(private val gameLoop: GameLoop) {
     }
 
     private fun nextRound() {
+        roundCount++
         thisTurnArray.clear()
         thisTurnArray.addAll(nextTurnArray)
         nextTurnArray.clear()
         currentPlayerIndex = 0
         thisTurnArray.forEach { it.startRound() }
+        gameLoop.viewModel.processStartRoundEvent()
     }
 
     override fun toString(): String {
         return "TurnTable for $gameLoop: " +
             if (isInitialized) "$thisTurnArray -> $nextTurnArray, current player ${currentPlayer()}"
             else "Not initialized"
+    }
+
+    fun pushLocalPlayerDiceStackToViewModel(list: List<Die>) {
+        gameLoop.viewModel.pushDiceChanges(list)
     }
 }

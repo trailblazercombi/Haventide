@@ -239,7 +239,8 @@ enum class AbilityTemplates(val template: AbilityTemplate) {
             scatteredCost = 1,
             range = sqrt(2.toDouble()),
             executionCheck = { doer, target -> doer.canMove(target) },
-            execution = { doer, target -> doer.move(target) }
+            execution = { doer, target -> doer.move(target) },
+            abilityVerb = AbilityVerb.MOVE
         )
     ),
     BASIC_STRIKE(
@@ -250,6 +251,7 @@ enum class AbilityTemplates(val template: AbilityTemplate) {
             executionCheck = { doer, target -> (target.findTeams() - doer.teamAffiliation).isNotEmpty() },
             execution = { doer, target ->
                 ImmediateEffecterTemplates.DamageInvokerTemplates.BASIC_STRIKE.template.build(target, doer.teamAffiliation) },
+            abilityVerb = AbilityVerb.ATTACK
         )
     ),
     BARRIER(
@@ -264,6 +266,7 @@ enum class AbilityTemplates(val template: AbilityTemplate) {
             ) },
             execution = { doer, target ->
                 ImmediateEffecterTemplates.MechanismSummonerTemplates.BARRIER_MAKER.template.build(target, doer.teamAffiliation) },
+            abilityVerb = AbilityVerb.BUILD
         )
     )
 }
@@ -275,4 +278,14 @@ data class AbilityTemplate(
     val range: Double,
     val executionCheck: (Mechanism, TileData) -> Boolean,
     val execution: (Mechanism, TileData) -> Unit,
+    val abilityVerb: AbilityVerb
 )
+
+enum class AbilityVerb(val string: StringResource) {
+    MOVE(Res.string.ability_move),
+    BUILD(Res.string.ability_construct),
+    ATTACK(Res.string.ability_attack),
+    HEAL(Res.string.ability_restore),
+    IMPAIR(Res.string.ability_impair),
+    BUFF(Res.string.ability_support),
+}
