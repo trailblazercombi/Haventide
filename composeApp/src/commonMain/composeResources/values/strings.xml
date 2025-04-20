@@ -9,7 +9,7 @@
     <string name="game_over_dialog_result_forfeit">MATCH FORFEITED</string>
     <string name="game_over_dialog_result_contumation">VICTORY BY FORFEIT</string>
 
-    <string name="game_over_dialog_confirm_button">Tap or click on the blank area to continue</string>
+    <string name="game_over_dialog_confirm_button">Tap or click anywhere on the blank area to continue</string>
 
     <string name="yes_no_dialog_forfeit_title">You haven't lost the match yet.</string>
     <string name="yes_no_dialog_forfeit_yes">Yes, forfeit the match</string>
@@ -25,8 +25,8 @@
     <string name="pause_dialog_forfeit_button">Forfeit</string>
 
     <string name="game_turn_state_good">Your turn</string>
-    <string name="game_turn_state_bad">%1$s's turn</string>
-    <string name="game_turn_state_over">Waiting for the opponent to finish...</string>
+    <string name="game_turn_state_bad">Opponent's turn</string>
+    <string name="game_turn_state_over">Your round is finished</string>
     <string name="game_turn_state_round_counter">Round %1$d</string>
 
     <string name="game_button_end_round">End Round</string>

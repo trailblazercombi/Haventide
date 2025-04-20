@@ -60,8 +60,8 @@ object GameScreenTopBubbleStyle {
     val RoundCounterTextSize = 12.sp
     val UnifiedRoundTeamTextSize = 14.sp
     val TeamTurnTextSize = 16.sp
-    val FillColorModifier = Palette.Abyss30
-    val OutlineColorModifier = Palette.Glass30
+    val FillColorModifier = Palette.Abyss90
+    val OutlineColorModifier = Palette.Glass90
 }
 
 object DieStyle {
@@ -83,7 +83,7 @@ object DiceCounterStyle {
 
 object ScreenSizeThresholds {
     // NOTE: The description always matches the behaviour of value > field.
-    val SpreadDiceStackOnSingleLine = 728.dp
+    val SpreadDiceStackOnSingleLine = 635.dp
     val FloatTopStatusBarAsBubble = 576.dp
     val StopStretchingGameOverDialogToScreenEdge = 780.dp
     val StopStackingYesNoDialogVertically = 604.dp
