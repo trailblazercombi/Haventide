@@ -6,8 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.NotificationManagerCompat
-import app.trailblazercombi.haventide.game.arena.GameLoop
-import app.trailblazercombi.haventide.game.arena.PlaceholderPlayers
+import app.trailblazercombi.haventide.game2.data.GameLoop
+import app.trailblazercombi.haventide.resources.PlaceholderPlayers
 
 class MainActivity : ComponentActivity() {
     val gameLoop = GameLoop(
