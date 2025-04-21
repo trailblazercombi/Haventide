@@ -19,13 +19,19 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import app.trailblazercombi.haventide.AppScreens
 import app.trailblazercombi.haventide.game2.jetpack.universal.DialogGenerics
 import app.trailblazercombi.haventide.game2.viewModel.GameLoopViewModel
 import app.trailblazercombi.haventide.resources.*
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun GameOverDialog(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
+fun GameOverDialog(
+    viewModel: GameLoopViewModel,
+    navController: NavHostController,
+    modifier: Modifier = Modifier
+) {
     val openDialog by viewModel.gameOverDialog.collectAsState()
     val gameResult by viewModel.gameResult.collectAsState()
 
@@ -33,7 +39,11 @@ fun GameOverDialog(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) 
 
     DialogGenerics(
         openDialogState = viewModel.gameOverDialog,
-        onDismissRequest = { viewModel.navigateToMatchResultScreen(gameResult) },
+        onDismissRequest = {
+            navController.navigate(AppScreens.MatchResult.name) {
+                popUpTo(AppScreens.MatchPlaying.name) { inclusive = true }
+            }
+        },
     )
 
     AnimatedVisibility(openDialog, enter = scaleIn(), exit = scaleOut()) {

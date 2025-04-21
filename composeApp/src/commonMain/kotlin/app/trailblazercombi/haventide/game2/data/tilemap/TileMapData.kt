@@ -6,7 +6,10 @@ import app.trailblazercombi.haventide.game2.data.turntable.PlayerInGame
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.Mechanism
 import app.trailblazercombi.haventide.game2.data.turntable.Team
 import app.trailblazercombi.haventide.game2.data.turntable.NeutralFaction
+import app.trailblazercombi.haventide.game2.jetpack.gamescreen.tilemap.Tile
 import app.trailblazercombi.haventide.resources.MechanismTemplate
+import app.trailblazercombi.haventide.resources.Palette
+import java.util.Scanner
 
 /**
  * This is the map data class in all its glory.
@@ -15,7 +18,7 @@ import app.trailblazercombi.haventide.resources.MechanismTemplate
  * It __does not__ deal with [Mechanism] or the actions or abilities
  * -> [Mechanism] and [TileData] talk that out between themselves.
  */
-class TileMapData(val gameLoop: GameLoop) {
+class TileMapData(private val gameLoop: GameLoop, mapData: String) {
     /**
      * Check if the TileMap was already initialized.
      * @return `true` if [initialize] was called on `this` previously.
@@ -24,27 +27,73 @@ class TileMapData(val gameLoop: GameLoop) {
     var isInitialized = false
         private set
 
-    // [LOAD FROM FILE] TODO Size does not need to be a property,
-    //                   and also, read this from file, including the backdrop color.
-    val columns = 10; val rows = 10
-
-    @Suppress("JoinDeclarationAndAssignment")
     val backdropColor: Color
     private val tiles: Map<Position, TileData?>
 
     init {
-        // [LOAD FROM FILE] TODO Read from a file instead
-        //                   and make sure there is at least one tile from the edge left blank...
-        backdropColor = Color(0xFF381428)
-
+        val scanner = Scanner(mapData)
         val tempTile = mutableMapOf<Position, TileData?>()
-        for (y in 0 until rows) {
-            for (x in 0 until columns) {
-                val position = Position(x, y)
-                tempTile[position] = TileData(this, position)
+        var tempBGC: Color = Palette.FillDarkPrimary
+
+        var readMap = false
+        var mapY = 0
+        var mapX = 0
+
+        while (scanner.hasNextLine()) {
+            val line = scanner.nextLine().split(" ")
+            if (readMap) {
+                line.forEach {
+                    val posXY = Position(mapX, mapY)
+                    var addTile: TileData? = null
+                    when (it) {
+                        "###" -> addTile = null
+                        "..." -> addTile = TileData(this, posXY)
+                        "1:1" -> {
+                            addTile = TileData(this, posXY)
+                            addTile.addMechanism(gameLoop.getPhoenix(1, 1)
+                                .build(addTile, gameLoop.player1.team))
+                        }
+                        "1:2" -> {
+                            addTile = TileData(this, posXY)
+                            addTile.addMechanism(gameLoop.getPhoenix(1, 2)
+                                .build(addTile, gameLoop.player1.team))
+                        }
+                        "1:3" -> {
+                            addTile = TileData(this, posXY)
+                            addTile.addMechanism(gameLoop.getPhoenix(1, 3)
+                                .build(addTile, gameLoop.player1.team))
+                        }
+                        "2:1" -> {
+                            addTile = TileData(this, posXY)
+                            addTile.addMechanism(gameLoop.getPhoenix(2, 1)
+                                .build(addTile, gameLoop.player2.team))
+                        }
+                        "2:2" -> {
+                            addTile = TileData(this, posXY)
+                            addTile.addMechanism(gameLoop.getPhoenix(2, 2)
+                                .build(addTile, gameLoop.player2.team))
+                        }
+                        "2:3" -> {
+                            addTile = TileData(this, posXY)
+                            addTile.addMechanism(gameLoop.getPhoenix(2, 3)
+                                .build(addTile, gameLoop.player2.team))
+                        }
+                    }
+                    tempTile[posXY] = addTile
+                    mapX++
+                }
+                mapX = 0; mapY++
+            } else {
+                when (line.first()) {
+                    "backdrop" -> tempBGC = Color(line[1].removePrefix("0x").toLong(16))
+                    "tiles" -> readMap = true
+                }
             }
         }
+
+        scanner.close()
         tiles = tempTile.toMap()
+        backdropColor = tempBGC
     }
 
     /**
@@ -54,11 +103,11 @@ class TileMapData(val gameLoop: GameLoop) {
     fun initialize(vararg players: PlayerInGame) {
         if (isInitialized) throw IllegalStateException("TileMapData is already initialized")
 
-        var i = 0 // [MAPS] FIXME this is so janky
-        players.forEach {
-            it.initialize(get(3, 3 * i)!!, get(4, 3 * i)!!, get(5, 3 * i)!!)
-            i++
-        }
+//        var i = 0 // [MAPS] FIXME this is so janky
+//        players.forEach {
+//            it.initialize(get(3, 3 * i)!!, get(4, 3 * i)!!, get(5, 3 * i)!!)
+//            i++
+//        }
 
         isInitialized = true
     }
@@ -105,4 +154,22 @@ class TileMapData(val gameLoop: GameLoop) {
      * @return All tiles as a copy of the map.
      */
     fun getAll() = tiles.toMap()
+
+    /**
+     * @return The number of rows this map has
+     */
+    fun rows() = 13 // FIXME Needs more robust approach
+
+    /**
+     * @return THe number of columns this map has
+     */
+    fun columns() = 13 // FIXME Needs more robust approach
+
+    override fun toString(): String {
+        val sb = StringBuilder()
+        tiles.values.forEach {
+            sb.append(it.toString())
+        }
+        return sb.toString()
+    }
 }

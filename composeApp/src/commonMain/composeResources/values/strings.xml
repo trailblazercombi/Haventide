@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">Haventide</string>
 
+    <string name="nav_main_menu">Main Menu</string>
+    <string name="nav_match_start">Match Start</string>
+    <string name="nav_match_playing">Playing</string>
+    <string name="nav_match_result">Match Result</string>
+
     <string name="game_over_dialog_result_good">VICTORY</string>
     <string name="game_over_dialog_result_neutral">DRAW</string>
     <string name="game_over_dialog_result_bad">DEFEAT</string>

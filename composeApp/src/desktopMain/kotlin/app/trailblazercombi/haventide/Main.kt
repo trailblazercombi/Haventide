@@ -6,15 +6,11 @@ import app.trailblazercombi.haventide.game2.data.GameLoop
 import app.trailblazercombi.haventide.resources.PlaceholderPlayers
 
 fun main() = application {
-    val gameLoop = GameLoop(
-        PlaceholderPlayers.PLAYER_ONE.toProfile(),
-        PlaceholderPlayers.PLAYER_TWO.toProfile()
-    )
 
     Window(
         onCloseRequest = ::exitApplication,
         title = "Haventide",
     ) {
-        App(gameLoop)
+        App()
     }
 }

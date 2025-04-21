@@ -85,7 +85,7 @@ enum class PlaceholderPlayers(
         PhoenixTemplates.SYLVIA.template
     );
 
-    fun toProfile() = PlayerProfile(playerName, setOf(member1, member2, member3))
+    fun toProfile() = PlayerProfile(playerName, listOf(member1, member2, member3))
 }
 
 enum class TargetType { ALLY, ENEMY, EMPTY_TILE }

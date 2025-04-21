@@ -3,6 +3,7 @@ package app.trailblazercombi.haventide.game2.data
 import app.trailblazercombi.haventide.game2.data.tilemap.Position
 import app.trailblazercombi.haventide.game2.data.tilemap.TileData
 import app.trailblazercombi.haventide.game2.data.tilemap.TileMapData
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.Mechanism
 import app.trailblazercombi.haventide.game2.data.turntable.LocalPlayerInGame
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.PhoenixMechanism
 import app.trailblazercombi.haventide.game2.data.turntable.PlayerInGame
@@ -10,13 +11,19 @@ import app.trailblazercombi.haventide.game2.data.turntable.TurnTable
 import app.trailblazercombi.haventide.game2.viewModel.GameLoopViewModel
 import app.trailblazercombi.haventide.playerdata.PlayerProfile
 import app.trailblazercombi.haventide.resources.GameResult
+import app.trailblazercombi.haventide.resources.MechanismTemplate
 
 /**
  * This defines the entire Game Loop.
  * Yes, the entire thing.
  * Yes, from the start to the end.
  */
-class GameLoop(player1: PlayerProfile, player2: PlayerProfile) {
+class GameLoop(
+    mapData: String,
+    localPlayer: PlayerProfile,
+    remotePlayer: PlayerProfile,
+    localPlayerStarts: Boolean
+) {
 
     var gameResult: GameResult = GameResult.GAME_ONGOING
         private set(value) {
@@ -31,11 +38,21 @@ class GameLoop(player1: PlayerProfile, player2: PlayerProfile) {
         }
 
     val turnTable = TurnTable(this)
-    val tileMap = TileMapData(this)
-    val viewModel: GameLoopViewModel
+    val player1: PlayerInGame
+    val player2: PlayerInGame
 
-    private val player1: PlayerInGame = player1.toPlayerInGame(turnTable = turnTable, local = true)
-    private val player2: PlayerInGame = player2.toPlayerInGame(turnTable = turnTable)
+    init {
+        if (localPlayerStarts) {
+            player1 = localPlayer.toPlayerInGame(turnTable = turnTable, local = true)
+            player2 = remotePlayer.toPlayerInGame(turnTable = turnTable)
+        } else {
+            player2 = localPlayer.toPlayerInGame(turnTable = turnTable, local = true)
+            player1 = remotePlayer.toPlayerInGame(turnTable = turnTable)
+        }
+    }
+
+    val tileMap = TileMapData(this, mapData)
+    val viewModel: GameLoopViewModel
 
     init {
         turnTable.initialize(this.player1, this.player2)
@@ -109,5 +126,14 @@ class GameLoop(player1: PlayerProfile, player2: PlayerProfile) {
         if (player1.hasPhoenixes()) declareWinner(player1, false)
         else if (player2.hasPhoenixes()) declareWinner(player2, false)
         else declareDraw()
+    }
+
+    internal fun getPhoenix(playerNumber: Int, phoenixNumber: Int): MechanismTemplate.Phoenix {
+        val player: PlayerInGame = when (playerNumber) {
+            1 -> player1
+            2 -> player2
+            else -> throw IllegalArgumentException("Player $playerNumber does not exist")
+        }
+        return player.profile.activeRoster[phoenixNumber - 1]
     }
 }

@@ -15,7 +15,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
  *
  * There is no delegation to the data layer. PERIOD.
  */
-class GameLoopViewModel(private val gameLoop: GameLoop) : ViewModel(), ScreenSizeProvider {
+class GameLoopViewModel(
+    private val gameLoop: GameLoop,
+) : ViewModel(), ScreenSizeProvider {
 ///////////////////////////////////////////////////////////////////////
 // REFERENCES TO PASS AROUND
     val mapData = gameLoop.tileMap
@@ -424,12 +426,6 @@ class GameLoopViewModel(private val gameLoop: GameLoop) : ViewModel(), ScreenSiz
      * @return Whether or not the local player still has any dice.
      */
     fun playerHasDiceLeft() = localDiceStates.getKeys().isNotEmpty()
-
-///////////////////////////////////////////////////////////////////////
-// NAVIGATION ELSEWHERE
-    fun navigateToMatchResultScreen(result: GameResult) {
-        TODO("There are no other screens yet.")
-    }
 }
 
 // :3

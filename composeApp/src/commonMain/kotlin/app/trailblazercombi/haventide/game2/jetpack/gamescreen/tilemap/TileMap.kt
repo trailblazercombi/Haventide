@@ -33,9 +33,9 @@ fun TileMap(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
             .scrolling(scrollStateX, scrollStateY)
     ) {
         Column {
-            for (y in 0 until viewModel.mapData.rows) {
+            for (y in 0 until viewModel.mapData.rows()) {
                 Row {
-                    for (x in 0 until viewModel.mapData.columns) {
+                    for (x in 0 until viewModel.mapData.columns()) {
                         // Starting from this point, we have tile coordinates.
                         Tile(viewModel, viewModel.mapData[x, y])
                     }

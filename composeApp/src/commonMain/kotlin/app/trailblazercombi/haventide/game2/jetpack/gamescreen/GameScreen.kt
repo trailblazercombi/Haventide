@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavHostController
 import app.trailblazercombi.haventide.game2.data.GameLoop
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.dialogs.EndRoundDialog
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.dialogs.ForfeitConfirmationDialog
@@ -23,7 +24,11 @@ import app.trailblazercombi.haventide.resources.yes_no_dialog_forfeit_yes
 import app.trailblazercombi.haventide.resources.ButtonSeverity
 
 @Composable
-fun GameScreen(viewModel: GameLoopViewModel, gameLoop: GameLoop, modifier: Modifier = Modifier) {
+fun GameScreen(
+    viewModel: GameLoopViewModel,
+    navController: NavHostController,
+    modifier: Modifier = Modifier
+) {
 //    val viewModel by remember { mutableStateOf(GameLoopViewModel(gameLoop)) }
 
     BoxWithConstraints(Modifier.fillMaxSize()) {
@@ -48,7 +53,7 @@ fun GameScreen(viewModel: GameLoopViewModel, gameLoop: GameLoop, modifier: Modif
     EndRoundDialog(viewModel)
 //    StartRoundDialog(viewModel)
     ForfeitConfirmationDialog(viewModel)
-    GameOverDialog(viewModel)
+    GameOverDialog(viewModel, navController)
 
     // Once all is done, start the game - TODO Make it better
     viewModel.updateTileHighlights()

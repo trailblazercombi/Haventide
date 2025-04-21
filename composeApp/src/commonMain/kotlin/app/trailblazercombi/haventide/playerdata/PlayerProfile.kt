@@ -14,7 +14,7 @@ import app.trailblazercombi.haventide.resources.MechanismTemplate
  */
 data class PlayerProfile(
     val name: String,
-    val activeRoster: Set<MechanismTemplate.Phoenix>
+    val activeRoster: List<MechanismTemplate.Phoenix>
     // [MENUS] TODO Add more info related to the profile itself
     //  Profile picture
     //  Medals

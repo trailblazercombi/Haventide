@@ -10,15 +10,11 @@ import app.trailblazercombi.haventide.game2.data.GameLoop
 import app.trailblazercombi.haventide.resources.PlaceholderPlayers
 
 class MainActivity : ComponentActivity() {
-    val gameLoop = GameLoop(
-        PlaceholderPlayers.PLAYER_ONE.toProfile(),
-        PlaceholderPlayers.PLAYER_TWO.toProfile()
-    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            App(gameLoop)
+            App()
         }
     }
 
@@ -37,6 +33,7 @@ class MainActivity : ComponentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         // Hell do I know what kind of cleanup will I need to perform
+        // TODO If a game is running, tell the other client to quit
     }
 }
 

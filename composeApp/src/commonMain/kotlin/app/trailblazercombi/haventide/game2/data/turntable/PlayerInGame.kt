@@ -24,7 +24,7 @@ open class PlayerInGame(val profile: PlayerProfile, protected val turnTable: Tur
 
     private var isActive = false
 
-    protected open val team = Team()
+    open val team = Team()
     private val dice = DiceStack()
 
     /**
