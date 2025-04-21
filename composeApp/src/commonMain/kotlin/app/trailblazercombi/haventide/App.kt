@@ -1,11 +1,8 @@
 package app.trailblazercombi.haventide
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.modifier.modifierLocalOf
-import app.trailblazercombi.haventide.game2.data.GameLoop
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.GameScreen
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -18,7 +15,6 @@ import app.trailblazercombi.haventide.matchLoad.data.MatchState
 import app.trailblazercombi.haventide.matchLoad.jetpack.MatchBeginScreen
 import app.trailblazercombi.haventide.matchLoad.jetpack.MatchResultScreen
 import app.trailblazercombi.haventide.resources.*
-import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 @Preview
@@ -34,6 +30,8 @@ fun App(
         modifier = modifier.fillMaxSize(),
     ) {
         composable (route = AppScreens.MatchStart.name) {
+            GlobalStateHolder.currentMatch.value = MatchState.Loading
+
             MatchBeginScreen(
                 navController,
                 MatchInfo(
@@ -54,7 +52,7 @@ fun App(
         composable (route = AppScreens.MatchResult.name) {
             MatchResultScreen(
                 (currentMatch as? MatchState.Ready)?.gameLoop?.gameResult ?:
-                throw IllegalStateException("Cannot create a MatchResult screen when the match is ong"),
+                throw IllegalStateException("Cannot create a MatchResult screen while the match is ongoing"),
             )
         }
     }
