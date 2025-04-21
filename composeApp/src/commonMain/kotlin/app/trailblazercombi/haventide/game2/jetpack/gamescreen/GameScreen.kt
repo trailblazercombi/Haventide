@@ -8,6 +8,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import app.trailblazercombi.haventide.game2.data.GameLoop
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.dialogs.EndRoundDialog
+import app.trailblazercombi.haventide.game2.jetpack.gamescreen.dialogs.ForfeitConfirmationDialog
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.dialogs.GameOverDialog
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.dialogs.PauseMenuDialog
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.panels.DiceInfoPanel
@@ -46,21 +47,7 @@ fun GameScreen(viewModel: GameLoopViewModel, gameLoop: GameLoop, modifier: Modif
     PauseMenuDialog(viewModel)
     EndRoundDialog(viewModel)
 //    StartRoundDialog(viewModel)
-    YesNoDialog(
-        screenSizeProvider = viewModel,
-        openDialogState = viewModel.forfeitConfirmationDialog,
-        title = Res.string.yes_no_dialog_forfeit_title,
-        acceptLabel = Res.string.yes_no_dialog_forfeit_yes,
-        declineLabel = Res.string.yes_no_dialog_forfeit_no,
-        onAccept = {
-            viewModel.hideForfeitConfirmationDialog()
-            viewModel.hidePauseMenuDialog()
-            viewModel.processForfeitMatchEvent()
-        },
-        onDecline = { viewModel.hideForfeitConfirmationDialog() },
-        acceptSeverity = ButtonSeverity.DESTRUCTIVE,
-        declineSeverity = ButtonSeverity.NEUTRAL,
-    )
+    ForfeitConfirmationDialog(viewModel)
     GameOverDialog(viewModel)
 
     // Once all is done, start the game - TODO Make it better
