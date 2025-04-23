@@ -1,0 +1,35 @@
+    DEVICE A | DEVICE B     ::
+             |              ::
+----- Listen >------------- :: Device A is in Listening Mode (Yang).
+-------------< Pair RQ ---- :: Device B broadcasts its IP address (Yin).
+             |              ::     Message = "PAIR <port>"     // IP address from DatagramPacket.address
+--- Pair ACK >------------- :: Device A collects the IP of Device B and sends a pairing request to that address.
+             |              ::     Message = "PAIR_ACK"        // IP address from DatagramPacket.address
+             |              ::
+             |              ::     Device A now has: B's IP address and common port
+             |              ::     Device B now has: A's IP address and common port
+             |              ::
+---- Play RQ >------------- :: Device A sends a "Let's Play" request to Device B.
+             |              ::     Message = "PLAY <Map name> <Phoenix roster> <I start (bool)>"
+-------------< Play ACK --- :: Device B collects the "Let's Play" request and sends a confirmation.
+             |              ::     Message = "PLAY_ACK <Phoenix roster>"
+Play ACK ACK >------------- :: Device A collects the enemy Phoenix Roster and sends (yet another) confirmation.
+             |              ::     Message = "PLAY_ACK_ACK"
+             |              ::
+             |              ::     The game can begin now.
+             |              ::     Both devices construct the game screen.
+             |              ::     The player who was set to start the game can make a move now.
+             |              ::
+----------------------------::
+             |              ::
+------- Move > ------------ :: Device whose human is now playing sends a "Move done" message.
+             |              ::     Message = "MOVE <ability template> <target tile>"
+------------ < Move ACK --- :: The opponent's device returns a confirmation.
+             |              ::     Message = "MOVE_ACK"
+             |              ::
+----------------------------::
+             |              ::
+---- Forfeit > ------------ :: Device whose human is now playing sends a "The coward forfeited" message.
+             |              ::     Message = "FORFEIT"
+------------ < Forfeit ACK  :: The opponent's device returns a confirmation.
+             |              ::     Message = "FORFEIT_ACK"

@@ -73,13 +73,13 @@ enum class PlaceholderPlayers(
     private val member3: MechanismTemplate.Phoenix
 ) {
     PLAYER_TWO(
-        "You",
+        "Player",
         PhoenixTemplates.FINNIAN.template,
         PhoenixTemplates.YUMIO.template,
         PhoenixTemplates.MALACHAI.template
     ),
     PLAYER_ONE(
-        "Opponent",
+        "Spieler",
         PhoenixTemplates.AYUNA.template,
         PhoenixTemplates.AYUMI.template,
         PhoenixTemplates.SYLVIA.template
