@@ -1,9 +1,7 @@
 package app.trailblazercombi.haventide.netcode
 
-import app.trailblazercombi.haventide.AppScreens
 import app.trailblazercombi.haventide.Global
 import app.trailblazercombi.haventide.playerdata.PlayerProfile
-import app.trailblazercombi.haventide.resources.PlaceholderPlayers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
