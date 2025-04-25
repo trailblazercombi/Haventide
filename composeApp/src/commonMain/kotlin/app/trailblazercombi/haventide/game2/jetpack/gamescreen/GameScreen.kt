@@ -29,13 +29,14 @@ fun GameScreen(
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
-//    val viewModel by remember { mutableStateOf(GameLoopViewModel(gameLoop)) }
+    println("GAME SCREEN ONLINE!!!")
 
+    // This just figures out the current screen size...
     BoxWithConstraints(Modifier.fillMaxSize()) {
         LaunchedEffect(maxWidth, maxHeight) {
             viewModel.screenWidth.value = maxWidth
             viewModel.screenHeight.value = maxHeight
-            println("WiM $maxWidth x $maxHeight")
+            println("[GS WiM] $maxWidth x $maxHeight")
         }
     }
 
@@ -55,6 +56,7 @@ fun GameScreen(
     ForfeitConfirmationDialog(viewModel)
     GameOverDialog(viewModel, navController)
 
-    // Once all is done, start the game - TODO Make it better
-    viewModel.updateTileHighlights()
+    LaunchedEffect(Unit) {
+        viewModel.updateTileHighlights()
+    }
 }

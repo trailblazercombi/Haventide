@@ -7,11 +7,13 @@ import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.Mechanism
 import app.trailblazercombi.haventide.game2.data.turntable.LocalPlayerInGame
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.PhoenixMechanism
 import app.trailblazercombi.haventide.game2.data.turntable.PlayerInGame
+import app.trailblazercombi.haventide.game2.data.turntable.RemotePlayerInGame
 import app.trailblazercombi.haventide.game2.data.turntable.TurnTable
 import app.trailblazercombi.haventide.game2.viewModel.GameLoopViewModel
 import app.trailblazercombi.haventide.playerdata.PlayerProfile
 import app.trailblazercombi.haventide.resources.GameResult
 import app.trailblazercombi.haventide.resources.MechanismTemplate
+import java.rmi.Remote
 
 /**
  * This defines the entire Game Loop.
@@ -49,24 +51,32 @@ class GameLoop(
             player2 = localPlayer.toPlayerInGame(turnTable = turnTable, local = true)
             player1 = remotePlayer.toPlayerInGame(turnTable = turnTable)
         }
+        println("[G.LOOP] Players online! Player 1: $player1, Player 2: $player2")
     }
 
     val tileMap = TileMapData(this, mapData)
     val viewModel: GameLoopViewModel
 
     init {
+        println("[G.LOOP] Starting game loop...")
         turnTable.initialize(this.player1, this.player2)
         tileMap.initialize(this.player1, this.player2)
         viewModel = GameLoopViewModel(this)
         turnTable.startGame()
+        println("[G.LOOP] Game Loop Online!")
     }
 
     /**
      * @return The __local__ player that's currently present in the game.
      * @see LocalPlayerInGame
      */
-    // [MULTIPLAYER] TODO Fix this to work properly once multiplayer is involved...
-    fun localPlayer(): PlayerInGame = player1
+    fun localPlayer(): PlayerInGame = player1 as? LocalPlayerInGame ?: player2
+
+    /**
+     * @return The __remote__ player that's currently present in the game.
+     * @see RemotePlayerInGame
+     */
+    fun remotePlayer() = player1 as? RemotePlayerInGame ?: player2
 
     internal fun declareWinner(winner: PlayerInGame, forfeit: Boolean = false) {
         gameOver(
@@ -96,7 +106,7 @@ class GameLoop(
     /**
      * Get all [PhoenixMechanism] that do not belong to [LocalPlayerInGame].
      */
-    fun compileEnemyPhoenixes() = compilePhoenixes(player2) // TODO Needs to be more robust...
+    fun compileEnemyPhoenixes() = compilePhoenixes(remotePlayer()) // TODO Needs to be more robust...
 
     private fun compilePhoenixes(player: PlayerInGame) = player.compilePhoenixes()
 
@@ -104,10 +114,9 @@ class GameLoop(
      * Declare the match forfeited by the specified [PlayerInGame].
      */
     fun forfeitMatch(player: PlayerInGame) {
-        if (player == localPlayer()) declareWinner(player2, true)
-        else declareWinner(player1, true)
+        if (player == localPlayer()) declareWinner(remotePlayer(), true)
+        else declareWinner(localPlayer(), true)
         // TODO Propagate to the other client
-        // FIXME needs a more robust approach anyways
     }
 
     /**

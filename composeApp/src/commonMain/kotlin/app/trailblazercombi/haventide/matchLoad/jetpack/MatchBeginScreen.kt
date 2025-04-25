@@ -1,53 +1,106 @@
 package app.trailblazercombi.haventide.matchLoad.jetpack
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Button
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import app.trailblazercombi.haventide.GlobalStateHolder
-import app.trailblazercombi.haventide.matchLoad.data.MatchInfo
-import app.trailblazercombi.haventide.netcode.*
-import app.trailblazercombi.haventide.netcode.NetworkStatus.*
+import app.trailblazercombi.haventide.AppScreens
+import app.trailblazercombi.haventide.Global
+import app.trailblazercombi.haventide.netcode.Handshaker
+import app.trailblazercombi.haventide.netcode.NetPairing
+import app.trailblazercombi.haventide.netcode.TcpClient
+import app.trailblazercombi.haventide.netcode.TcpServer
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
+import kotlin.random.Random
+
+//import app.trailblazercombi.haventide.netcode.NetworkResolver.pairYang
+//import app.trailblazercombi.haventide.netcode.NetworkResolver.pairYin
+//import app.trailblazercombi.haventide.netcode.NetworkResolver.sendMessage
+//import app.trailblazercombi.haventide.netcode.NetworkResolver.startListening
+//import app.trailblazercombi.haventide.netcode.NetworkResolver.unpair
+
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun MatchBeginScreen(navController: NavHostController, matchInfo: MatchInfo) {
+fun MatchBeginScreen(navController: NavHostController, modifier: Modifier = Modifier) {
 
-    val netStat by GlobalStateHolder.networkStatus.collectAsState()
-    val lastMsg by GlobalStateHolder.lastMessage.collectAsState()
+    val gameLoop by Global.gameLoop.collectAsState()
+    val paired by TcpClient.paired.collectAsState()
+    val gameStarting by Handshaker.gameIsRequested.collectAsState()
 
-    val scope = rememberCoroutineScope()
+    val latestMsg by TcpServer.latestMessage.collectAsState()
+    val latestServer by TcpClient.latestMessage.collectAsState()
+    val serverRunning by TcpServer.serverRunning.collectAsState()
 
-    var netAlreadyRunning by remember { mutableStateOf(false) }
+    val inputCode = remember { mutableStateOf("") }
+    val message = remember { mutableStateOf("") }
 
-    scope.launch {
-        sendBroadcast(message = "Hey, let's play a game!")
-        listenToBroadcast {
-            GlobalStateHolder.networkStatus.value = Connected(it)
-            // TODO: You have the IP address syncing now, so make use of it for purposes beyond you...
-//            GlobalStateHolder.tcpListener.value = TcpListener()
-//            GlobalStateHolder.tcpSpeaker.value = TcpSpeaker((netStat as? NetworkStatus.Connected)!!.peerInet4)
+    val createGameScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+    var createGameJob: Job? = null
+    var waitingJob: Job? = null
+
+    Column (modifier.padding(32.dp)) {
+        TextField(
+            enabled = !paired,
+            value = inputCode.value,
+            onValueChange = { inputCode.value = it },
+            label = { Text("Enter pairing code") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        TextField(
+            enabled = !paired,
+            value = NetPairing.inetToCode(NetPairing.localInet()),
+            onValueChange = {},
+            label = { Text("Your pairing code") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Button(
+            enabled = !paired,
+            onClick = { TcpClient.launch(NetPairing.codeToInet(inputCode.value)) },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Pair!")
+        }
+
+        Button(
+            enabled = paired && !gameStarting,
+            onClick = {
+                createGameJob = createGameScope.launch {
+                    val mapName = Handshaker.randomMapName()
+                    val mePlayer = Global.localPlayer
+                    val meStart = Random.nextBoolean()
+                    TcpClient.sendToServer("GEEMU_START $mapName ${mePlayer.rosterAsPacket()} $meStart")
+                    waitingJob = Handshaker.requestGameFromLocal(mapName, mePlayer, meStart)
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Start Game!")
+        }
+
+        LaunchedEffect(gameLoop) {
+            if (gameLoop != null) navController.navigate(AppScreens.GameScreen.name)
+        }
+
+        Button(
+            enabled = !serverRunning,
+            onClick = { TcpServer.launch() },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Start Server")
         }
     }
-
-    Column {
-        Text("Current network status: $netStat")
-        Text("Diect network traffic status: $lastMsg")
-    }
-
-//    LaunchedEffect(Unit) {
-//        val rawData = Res.readBytes(matchInfo.matchMap).decodeToString()
-//        val gameLoop = GameLoop(
-//            mapData = rawData,
-//            localPlayer = matchInfo.localPlayer,
-//            remotePlayer = matchInfo.remotePlayer,
-//            localPlayerStarts = matchInfo.localPlayerStarts,
-//        )
-//        GlobalStateHolder.currentMatch.value = MatchState.Ready(gameLoop)
-//        navController.navigate(AppScreens.MatchPlaying.name) {
-//            popUpTo(AppScreens.MatchStart.name) { inclusive = true }
-//        }
-//    }
 }

@@ -23,7 +23,7 @@ import kotlin.math.sqrt
  */
 enum class PhoenixTemplates(val template: MechanismTemplate.Phoenix) {
     AYUNA(
-        MechanismTemplate.Phoenix(
+        MechanismTemplate.Phoenix("AYUNA",
             fullName = Res.string.phoenix_ayuna_long_name,
             shortName = Res.string.phoenix_ayuna_short_name,
             accentColor = Color(0xFFD91410),
@@ -32,7 +32,7 @@ enum class PhoenixTemplates(val template: MechanismTemplate.Phoenix) {
         )
     ),
     AYUMI(
-        MechanismTemplate.Phoenix(
+        MechanismTemplate.Phoenix("AYUMI",
             fullName = Res.string.phoenix_ayumi_long_name,
             shortName = Res.string.phoenix_ayumi_short_name,
             accentColor = Color(0xFF098432),
@@ -41,7 +41,7 @@ enum class PhoenixTemplates(val template: MechanismTemplate.Phoenix) {
         )
     ),
     SYLVIA(
-        MechanismTemplate.Phoenix(
+        MechanismTemplate.Phoenix("SYLVIA",
             fullName = Res.string.phoenix_sylvia_long_name,
             shortName = Res.string.phoenix_sylvia_short_name,
             accentColor = Color(0xFF67406D),
@@ -50,7 +50,7 @@ enum class PhoenixTemplates(val template: MechanismTemplate.Phoenix) {
         )
     ),
     MALACHAI(
-        MechanismTemplate.Phoenix(
+        MechanismTemplate.Phoenix("MALACHAI",
             fullName = Res.string.phoenix_malachai_long_name,
             shortName = Res.string.phoenix_malachai_short_name,
             accentColor = Color(0xFF3B3B93),
@@ -59,7 +59,7 @@ enum class PhoenixTemplates(val template: MechanismTemplate.Phoenix) {
         )
     ),
     FINNIAN(
-        MechanismTemplate.Phoenix(
+        MechanismTemplate.Phoenix("FINNIAN",
             fullName = Res.string.phoenix_finnian_long_name,
             shortName = Res.string.phoenix_finnian_short_name,
             accentColor = Color(0xFF25B97F),
@@ -68,7 +68,7 @@ enum class PhoenixTemplates(val template: MechanismTemplate.Phoenix) {
         )
     ),
     YUMIO(
-        MechanismTemplate.Phoenix(
+        MechanismTemplate.Phoenix("YUMIO",
             fullName = Res.string.phoenix_yumio_long_name,
             shortName = Res.string.phoenix_yumio_short_name,
             accentColor = Color(0xFF2169AD),
@@ -77,7 +77,7 @@ enum class PhoenixTemplates(val template: MechanismTemplate.Phoenix) {
         )
     ),
     TORRENT(
-        MechanismTemplate.Phoenix(
+        MechanismTemplate.Phoenix("TORRENT",
             fullName = Res.string.phoenix_torrent_long_name,
             shortName = Res.string.phoenix_torrent_short_name,
             accentColor = Color(0xFF465376),
@@ -154,6 +154,7 @@ sealed class MechanismTemplate {
      * @see [app.trailblazercombi.haventide.game.mechanisms.Phoenixes]
      */
     data class Phoenix(
+        val gameId: String,
         val fullName: StringResource,
         val shortName: StringResource,
         val accentColor: Color,

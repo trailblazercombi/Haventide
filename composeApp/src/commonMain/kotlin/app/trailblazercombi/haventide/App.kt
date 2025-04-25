@@ -10,8 +10,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import app.trailblazercombi.haventide.matchLoad.data.MatchInfo
-import app.trailblazercombi.haventide.matchLoad.data.MatchState
 import app.trailblazercombi.haventide.matchLoad.jetpack.MatchBeginScreen
 import app.trailblazercombi.haventide.matchLoad.jetpack.MatchResultScreen
 import app.trailblazercombi.haventide.resources.*
@@ -22,7 +20,7 @@ fun App(
     navController: NavHostController = rememberNavController(),
     modifier: Modifier = Modifier,
 ) {
-    val currentMatch by GlobalStateHolder.currentMatch.collectAsState()
+    val gameLoop by Global.gameLoop.collectAsState()
 
     NavHost(
         navController = navController,
@@ -30,29 +28,19 @@ fun App(
         modifier = modifier.fillMaxSize(),
     ) {
         composable (route = AppScreens.MatchStart.name) {
-            GlobalStateHolder.currentMatch.value = MatchState.Loading
-
-            MatchBeginScreen(
-                navController,
-                MatchInfo(
-                    matchMap = "files/maps/parkingLot",
-                    localPlayer = PlaceholderPlayers.PLAYER_ONE.toProfile(),
-                    remotePlayer = PlaceholderPlayers.PLAYER_TWO.toProfile(),
-                    localPlayerStarts = true
-                )
-            )
+            MatchBeginScreen(navController)
         }
-        composable (route = AppScreens.MatchPlaying.name) {
+        composable (route = AppScreens.GameScreen.name) {
+            val viewModel = gameLoop?.viewModel ?: return@composable
             GameScreen(
-                (currentMatch as? MatchState.Ready)?.gameLoop?.viewModel ?:
-                throw IllegalStateException("Cannot create a GameScreen when the GameLoop is not ready"),
+                viewModel,
                 navController
             )
         }
         composable (route = AppScreens.MatchResult.name) {
             MatchResultScreen(
-                (currentMatch as? MatchState.Ready)?.gameLoop?.gameResult ?:
-                throw IllegalStateException("Cannot create a MatchResult screen while the match is ongoing"),
+                gameLoop?.gameResult
+                    ?: throw IllegalStateException("Cannot create a MatchResult screen while the match is ongoing"),
             )
         }
     }
@@ -61,6 +49,6 @@ fun App(
 enum class AppScreens(val title: StringResource) {
     MainMenu(Res.string.nav_main_menu),
     MatchStart(Res.string.nav_match_start),
-    MatchPlaying(Res.string.nav_match_playing),
+    GameScreen(Res.string.nav_match_playing),
     MatchResult(Res.string.nav_match_result)
 }

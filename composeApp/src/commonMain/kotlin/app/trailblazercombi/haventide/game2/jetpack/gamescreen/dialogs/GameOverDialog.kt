@@ -41,7 +41,7 @@ fun GameOverDialog(
         openDialogState = viewModel.gameOverDialog,
         onDismissRequest = {
             navController.navigate(AppScreens.MatchResult.name) {
-                popUpTo(AppScreens.MatchPlaying.name) { inclusive = true }
+                popUpTo(AppScreens.GameScreen.name) { inclusive = true }
             }
         },
     )
