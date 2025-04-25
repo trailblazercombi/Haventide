@@ -21,6 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import app.trailblazercombi.haventide.AppScreens
+import app.trailblazercombi.haventide.game2.jetpack.gamescreen.components.TapToDismissLabel
 import app.trailblazercombi.haventide.game2.jetpack.universal.DialogGenerics
 import app.trailblazercombi.haventide.game2.viewModel.GameLoopViewModel
 import app.trailblazercombi.haventide.resources.*
@@ -100,16 +101,5 @@ fun GameOverDialog(
         }
     }
 
-    AnimatedVisibility(openDialog, enter = fadeIn(), exit = fadeOut()) {
-        Box (modifier.fillMaxSize()) {
-            Text(
-                text = stringResource(resource = Res.string.game_over_dialog_confirm_button),
-                textAlign = TextAlign.Center,
-                color = Palette.FullGrey,
-                modifier = modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(0.dp, GameScreenDialogBoxStyle.TapAnywhereLabelOffset)
-            )
-        }
-    }
+    TapToDismissLabel(viewModel.gameOverDialog)
 }
