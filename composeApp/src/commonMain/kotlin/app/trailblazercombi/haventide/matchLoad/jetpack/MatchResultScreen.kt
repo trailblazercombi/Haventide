@@ -12,4 +12,11 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun MatchResultScreen(gameResult: GameResult) {
     Text(stringResource(gameResult.string))
+
+    // TODO Close the TcpClient and Server once the game is finished
+    //  (!!! do not necesseraily close them here !!!)
+    //  (...but I won't stop you, I'm just a note)
+    //                                       \ (\_/)
+    //                                        ( •_•)
+    //                                        / > \
 }
