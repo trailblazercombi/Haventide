@@ -1,31 +1,37 @@
 package app.trailblazercombi.haventide.game2.data
 
+import app.trailblazercombi.haventide.Global
 import app.trailblazercombi.haventide.game2.data.tilemap.Position
 import app.trailblazercombi.haventide.game2.data.tilemap.TileData
 import app.trailblazercombi.haventide.game2.data.tilemap.TileMapData
-import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.Mechanism
 import app.trailblazercombi.haventide.game2.data.turntable.LocalPlayerInGame
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.PhoenixMechanism
+import app.trailblazercombi.haventide.game2.data.turntable.Die
 import app.trailblazercombi.haventide.game2.data.turntable.PlayerInGame
 import app.trailblazercombi.haventide.game2.data.turntable.RemotePlayerInGame
 import app.trailblazercombi.haventide.game2.data.turntable.TurnTable
 import app.trailblazercombi.haventide.game2.viewModel.GameLoopViewModel
+import app.trailblazercombi.haventide.netcode.TcpClient
 import app.trailblazercombi.haventide.playerdata.PlayerProfile
+import app.trailblazercombi.haventide.resources.AbilityTemplates
 import app.trailblazercombi.haventide.resources.GameResult
 import app.trailblazercombi.haventide.resources.MechanismTemplate
-import java.rmi.Remote
 
 /**
  * This defines the entire Game Loop.
  * Yes, the entire thing.
  * Yes, from the start to the end.
  */
-class GameLoop(
+class
+GameLoop(
     mapData: String,
     localPlayer: PlayerProfile,
     remotePlayer: PlayerProfile,
-    localPlayerStarts: Boolean
+    private val localPlayerStarts: Boolean
 ) {
+    init {
+        Global.gameLoop.value = this
+    }
 
     var gameResult: GameResult = GameResult.GAME_ONGOING
         private set(value) {
@@ -33,50 +39,44 @@ class GameLoop(
             viewModel.gameResult.value = value
         }
 
-    var gameIsOver = false
+    var gameIsOver: Boolean = false
         private set(value) {
             field = value
             viewModel.gameIsOver.value = value
         }
 
     val turnTable = TurnTable(this)
-    val player1: PlayerInGame
-    val player2: PlayerInGame
 
-    init {
-        if (localPlayerStarts) {
-            player1 = localPlayer.toPlayerInGame(turnTable = turnTable, local = true)
-            player2 = remotePlayer.toPlayerInGame(turnTable = turnTable)
-        } else {
-            player2 = localPlayer.toPlayerInGame(turnTable = turnTable, local = true)
-            player1 = remotePlayer.toPlayerInGame(turnTable = turnTable)
-        }
-        println("[G.LOOP] Players online! Player 1: $player1, Player 2: $player2")
-    }
+    val localPlayer: LocalPlayerInGame = localPlayer.toPlayerInGame(turnTable, true) as LocalPlayerInGame
+    val remotePlayer: RemotePlayerInGame = remotePlayer.toPlayerInGame(turnTable) as RemotePlayerInGame
+
+//    init {
+//        if (localPlayerStarts) {
+//            player1 = localPlayer.toPlayerInGame(turnTable = turnTable, local = true)
+//            player2 = remotePlayer.toPlayerInGame(turnTable = turnTable)
+//        } else {
+//            player2 = localPlayer.toPlayerInGame(turnTable = turnTable, local = true)
+//            player1 = remotePlayer.toPlayerInGame(turnTable = turnTable)
+//        }
+//        println("[G.LOOP] Players online! Player 1: $player1, Player 2: $player2")
+//    }
 
     val tileMap = TileMapData(this, mapData)
     val viewModel: GameLoopViewModel
 
     init {
         println("[G.LOOP] Starting game loop...")
-        turnTable.initialize(this.player1, this.player2)
-        tileMap.initialize(this.player1, this.player2)
+        if (localPlayerStarts) {
+            turnTable.initialize(this.localPlayer, this.remotePlayer)
+            tileMap.initialize(this.localPlayer, this.remotePlayer)
+        } else {
+            turnTable.initialize(this.remotePlayer, this.localPlayer)
+            tileMap.initialize(this.remotePlayer, this.localPlayer)
+        }
         viewModel = GameLoopViewModel(this)
         turnTable.startGame()
         println("[G.LOOP] Game Loop Online!")
     }
-
-    /**
-     * @return The __local__ player that's currently present in the game.
-     * @see LocalPlayerInGame
-     */
-    fun localPlayer(): PlayerInGame = player1 as? LocalPlayerInGame ?: player2
-
-    /**
-     * @return The __remote__ player that's currently present in the game.
-     * @see RemotePlayerInGame
-     */
-    fun remotePlayer() = player1 as? RemotePlayerInGame ?: player2
 
     internal fun declareWinner(winner: PlayerInGame, forfeit: Boolean = false) {
         gameOver(
@@ -98,15 +98,18 @@ class GameLoop(
         viewModel.showGameOverDialog()
     }
 
+    fun firstPlayer() = if (localPlayerStarts) localPlayer else remotePlayer
+    fun secondPlayer() = if (localPlayerStarts) remotePlayer else localPlayer
+
     /**
      * Get all [PhoenixMechanism] of the current [LocalPlayerInGame].
      */
-    fun compileAlliedPhoenixes() = compilePhoenixes(localPlayer())
+    fun compileAlliedPhoenixes() = compilePhoenixes(localPlayer)
 
     /**
      * Get all [PhoenixMechanism] that do not belong to [LocalPlayerInGame].
      */
-    fun compileEnemyPhoenixes() = compilePhoenixes(remotePlayer()) // TODO Needs to be more robust...
+    fun compileEnemyPhoenixes() = compilePhoenixes(remotePlayer)
 
     private fun compilePhoenixes(player: PlayerInGame) = player.compilePhoenixes()
 
@@ -114,9 +117,12 @@ class GameLoop(
      * Declare the match forfeited by the specified [PlayerInGame].
      */
     fun forfeitMatch(player: PlayerInGame) {
-        if (player == localPlayer()) declareWinner(remotePlayer(), true)
-        else declareWinner(localPlayer(), true)
-        // TODO Propagate to the other client
+        if (player === localPlayer) {
+            declareWinner(remotePlayer, true)
+            TcpClient.sendToRemoteServer("YATTA_BOSSHU")
+        } else {
+            declareWinner(localPlayer, true)
+        }
     }
 
     /**
@@ -130,19 +136,53 @@ class GameLoop(
      * If not, keep the game running.
      */
     fun checkGameResult() {
-        if (player1.hasPhoenixes() && player2.hasPhoenixes()) return
+        if (localPlayer.hasPhoenixes() && remotePlayer.hasPhoenixes()) return
 
-        if (player1.hasPhoenixes()) declareWinner(player1, false)
-        else if (player2.hasPhoenixes()) declareWinner(player2, false)
+        if (localPlayer.hasPhoenixes()) declareWinner(localPlayer, false)
+        else if (remotePlayer.hasPhoenixes()) declareWinner(remotePlayer, false)
         else declareDraw()
     }
 
     internal fun getPhoenix(playerNumber: Int, phoenixNumber: Int): MechanismTemplate.Phoenix {
         val player: PlayerInGame = when (playerNumber) {
-            1 -> player1
-            2 -> player2
+            1 -> if (localPlayerStarts) localPlayer else remotePlayer
+            2 -> if (localPlayerStarts) remotePlayer else localPlayer
             else -> throw IllegalArgumentException("Player $playerNumber does not exist")
         }
         return player.profile.activeRoster[phoenixNumber - 1]
+    }
+
+    // EXPOSURES FOR TCP
+    fun remotePlayerMove(template: String, doer: String, target: String) {
+        val ability = AbilityTemplates.valueOf(template.uppercase()).template
+        val doer = remotePlayer.findDoer(doer)
+        val coords = target.split('+').map { it.toInt() }
+        val target = tileMap[coords[0], coords[1]] ?: throw IllegalArgumentException("$target does not exist")
+        remotePlayer.executeAbility(ability, doer, target)
+    }
+
+    fun remotePlayerFinishedRound() {
+        TODO("Finish round of remote player")
+    }
+
+    fun remotePlayerForfeited() {
+        declareWinner(localPlayer, true)
+    }
+
+    /**
+     * Interfaces [GameLoopViewModel.processForfeitMatchEvent].
+     */
+    fun processForfeitMatchEvent() {
+        forfeitMatch(localPlayer)
+        TcpClient.sendToRemoteServer("YATTA_BOSSHU")
+    }
+
+    /**
+     * Interfaces [GameLoopViewModel.pushDiceChanges].
+     */
+    fun pushDiceChanges(dice: List<Die>) = viewModel.pushDiceChanges(dice)
+
+    internal fun remotePlayerDisconnected() {
+        declareDraw()
     }
 }

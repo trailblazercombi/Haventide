@@ -41,19 +41,19 @@ class TurnTable(private val gameLoop: GameLoop) {
      * @throws IllegalStateException If called on a previously initialized [TurnTable].
      */
     fun initialize(vararg players: PlayerInGame) {
-        val players = players.toList()
+        val players = players.toList().distinct()
         println("[T.TABLE] Initalizing TurnTable with $players...")
         if (isInitialized) throw IllegalStateException("TurnTable is already initialized")
         thisTurnArray.addAll(players)
-        thisTurnArray.forEach { it.startRound() }
         isInitialized = true
         println("[T.TABLE] TurnTable initialized!")
     }
 
     fun startGame() {
         println("[T.TABLE] Starting the game! The first player is ${currentPlayer()}")
-        currentPlayer().onTurnStart()
+        thisTurnArray.forEach { it.startRound() }
         gameLoop.viewModel.processStartRoundEvent()
+        currentPlayer().onTurnStart()
     }
 
     /**
@@ -122,7 +122,7 @@ class TurnTable(private val gameLoop: GameLoop) {
             else "Not initialized"
     }
 
-    fun pushLocalPlayerDiceStackToViewModel(list: List<Die>) {
-        gameLoop.viewModel.pushDiceChanges(list)
-    }
+//    fun pushLocalPlayerDiceStackToViewModel(list: List<Die>) {
+//        gameLoop.viewModel.pushDiceChanges(list)
+//    }
 }

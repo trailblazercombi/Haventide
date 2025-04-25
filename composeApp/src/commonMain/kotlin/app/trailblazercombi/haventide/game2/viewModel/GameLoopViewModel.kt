@@ -7,6 +7,7 @@ import app.trailblazercombi.haventide.game2.data.tilemap.TileData
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.Mechanism
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.PhoenixMechanism
 import app.trailblazercombi.haventide.game2.data.turntable.Die
+import app.trailblazercombi.haventide.netcode.TcpClient
 import app.trailblazercombi.haventide.resources.*
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -93,7 +94,7 @@ class GameLoopViewModel(
     fun processTileClickEvent(tile: TileData) {
         tileSelected3 = null
 
-        if (currentPlayer.value !== gameLoop.localPlayer()) {
+        if (currentPlayer.value !== gameLoop.localPlayer) {
             tileSelected3 = tile
             resetAbilityPreview()
         } else if (abilityPreview.value != null && tile == tileSelected2) { // If a move is ready and you click the white tile again
@@ -154,7 +155,7 @@ class GameLoopViewModel(
 
     internal fun updateTileHighlights() {
         resetTileHighlights()
-        if (currentPlayer.value !== gameLoop.localPlayer()) {
+        if (localPlayerTurn.value) {
             tileSelected3?.let { tileStates.getClick(it)?.value = UniversalColorizer.CLICKED_TERTIARY }
             return
         }
@@ -188,16 +189,16 @@ class GameLoopViewModel(
     }
 
     private fun findAvailableTiles1(): Set<TileData> {
-        if (currentPlayer.value != gameLoop.localPlayer()) return emptySet()
+        if (!localPlayerTurn.value) return emptySet()
 
         val result = mutableSetOf<TileData>()
-        gameLoop.localPlayer().compilePhoenixes().forEach { phoenix -> phoenix.parentTile.let { result.add(it) }
+        gameLoop.localPlayer.compilePhoenixes().forEach { phoenix -> phoenix.parentTile.let { result.add(it) }
         }
         return result.toSet()
     }
 
     private fun findAvailableTiles2(): Set<TileData> {
-        if (currentPlayer.value != gameLoop.localPlayer()) return emptySet()
+        if (!localPlayerTurn.value) return emptySet()
         if (tileSelected1 == null) return emptySet()
         val localPhoenix = tileSelected1?.getPhoenix() ?: return emptySet()
 
@@ -229,14 +230,15 @@ class GameLoopViewModel(
         turnTable.nextPlayerTurn()
         updateTileHighlights()
 
-        localPlayerTurn.value = turnTable.currentPlayer() == gameLoop.localPlayer()
+        localPlayerTurn.value = turnTable.currentPlayer() === gameLoop.localPlayer
     }
 
     /**
      * Invoke upon user deciding to end the round.
      */
     fun processEndRoundEvent() {
-        if (turnTable.currentPlayer() == gameLoop.localPlayer())
+        println("Processing end round event! ${gameLoop.localPlayer}")
+        if (turnTable.currentPlayer() === gameLoop.localPlayer)
             localPlayerRoundOver.value = true
 
         gameLoop.checkGameResult()
@@ -247,8 +249,9 @@ class GameLoopViewModel(
      * Invoke upon new round starting.
      */
     fun processStartRoundEvent() {
+        println("Starting round! The first player is ${turnTable.currentPlayer()}")
         localPlayerRoundOver.value = false
-        localPlayerTurn.value = turnTable.currentPlayer() == gameLoop.localPlayer()
+        localPlayerTurn.value = turnTable.currentPlayer() == gameLoop.localPlayer
     }
 
     /**
@@ -263,10 +266,10 @@ class GameLoopViewModel(
     }
 
     /**
-     * Invoke upon user accepting to FORFEIT the match.
+     * Invoke upon local user accepting to FORFEIT the match.
      */
     fun processForfeitMatchEvent() {
-        gameLoop.forfeitMatch(gameLoop.localPlayer())
+        gameLoop.processForfeitMatchEvent()
     }
 
     /**
@@ -426,6 +429,11 @@ class GameLoopViewModel(
      * @return Whether or not the local player still has any dice.
      */
     fun playerHasDiceLeft() = localDiceStates.getKeys().isNotEmpty()
+
+    // INIT
+    init {
+        updateTileHighlights()
+    }
 }
 
 // :3

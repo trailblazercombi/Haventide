@@ -1,5 +1,6 @@
 package app.trailblazercombi.haventide.game2.data.turntable
 
+import app.trailblazercombi.haventide.Global
 import app.trailblazercombi.haventide.game2.data.tilemap.TileData
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.Mechanism
 import app.trailblazercombi.haventide.playerdata.PlayerProfile
@@ -45,7 +46,7 @@ open class PlayerInGame(val profile: PlayerProfile, protected val turnTable: Tur
      *
      * Sets the player status to `active` and rolls new dice.
      */
-    fun startRound() {
+    open fun startRound() {
         isActive = true
         dice.roll(8)
     }
@@ -125,6 +126,13 @@ open class PlayerInGame(val profile: PlayerProfile, protected val turnTable: Tur
      * Exposes [DiceStack.getDice]
      */
     protected fun getDice() = dice.getDice()
+
+    /**
+     * Finds the [Mechanism] asked for.
+     */
+    fun findDoer(string: String): Mechanism {
+        TODO()
+    }
 
     override fun toString() = "Player ${profile.name}"
 }

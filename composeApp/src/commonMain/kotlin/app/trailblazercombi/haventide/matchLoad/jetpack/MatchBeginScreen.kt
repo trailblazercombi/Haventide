@@ -82,7 +82,7 @@ fun MatchBeginScreen(navController: NavHostController, modifier: Modifier = Modi
                     val mapName = Handshaker.randomMapName()
                     val mePlayer = Global.localPlayer
                     val meStart = Random.nextBoolean()
-                    TcpClient.sendToServer("GEEMU_START $mapName ${mePlayer.rosterAsPacket()} $meStart")
+                    TcpClient.sendToRemoteServer("GEEMU_START $mapName ${mePlayer.rosterAsPacket()} $meStart")
                     waitingJob = Handshaker.requestGameFromLocal(mapName, mePlayer, meStart)
                 }
             },

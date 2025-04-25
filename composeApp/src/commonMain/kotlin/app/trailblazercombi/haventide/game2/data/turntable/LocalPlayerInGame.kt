@@ -1,5 +1,6 @@
 package app.trailblazercombi.haventide.game2.data.turntable
 
+import app.trailblazercombi.haventide.Global
 import app.trailblazercombi.haventide.game2.data.tilemap.TileData
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.Mechanism
 import app.trailblazercombi.haventide.playerdata.PlayerProfile
@@ -12,21 +13,28 @@ class LocalPlayerInGame(profile: PlayerProfile, turnTable: TurnTable) : PlayerIn
 
     override fun executeAbility(ability: AbilityTemplate, doer: Mechanism, target: TileData, consume: List<Die>) {
         super.executeAbility(ability, doer, target, consume)
-        pushLocalPlayerDiceStackToViewModel()
+        Global.gameLoop.value!!.pushDiceChanges(getDice())
         // [NETWORK] TODO Make sure this propagates to the opponent's client
     }
 
     override fun onTurnStart() {
         super.onTurnStart()
-        pushLocalPlayerDiceStackToViewModel()
+        println("[LocalPIG] On Turn Start!")
+        Global.gameLoop.value!!.viewModel.updateTileHighlights()
     }
 
-    /**
-     * Pushes Dice Updates to the TurnTable, then to the ViewModel.
-     */
-    private fun pushLocalPlayerDiceStackToViewModel() {
-        turnTable.pushLocalPlayerDiceStackToViewModel(getDice())
+    override fun startRound() {
+        super.startRound()
+        println("[LocalPIG] Start Round!")
+        Global.gameLoop.value!!.pushDiceChanges(getDice())
     }
+
+    //    /**
+//     * Pushes Dice Updates to the TurnTable, then to the ViewModel.
+//     */
+//    private fun pushLocalPlayerDiceStackToViewModel() {
+//        turnTable.pushLocalPlayerDiceStackToViewModel(getDice())
+//    }
 
     override fun toString() = "Local ${super.toString()}"
 }

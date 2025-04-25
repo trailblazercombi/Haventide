@@ -26,11 +26,7 @@ object Handshaker {
     private var gameRequested = GameRqState.NONE
         set(value) {
             field = value
-            if (field == GameRqState.NONE) {
-                gameIsRequested.value = false
-            } else {
-                gameIsRequested.value = true
-            }
+            gameIsRequested.value = field != GameRqState.NONE
         }
 
     val gameIsRequested = MutableStateFlow(false)
@@ -66,7 +62,7 @@ object Handshaker {
         gameRequested = GameRqState.LOCAL
         this.mapName = mapName
         this.localPlayer = localPlayer
-        this.localPlayerStarts = !playerStarts
+        this.localPlayerStarts = playerStarts
         waitingJob = waitingScope.launch { while (Handshaker.remotePlayer != null) delay(110) }
         return waitingJob!!
     }

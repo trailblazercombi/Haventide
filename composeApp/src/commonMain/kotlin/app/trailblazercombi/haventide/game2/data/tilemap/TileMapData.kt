@@ -52,32 +52,32 @@ class TileMapData(private val gameLoop: GameLoop, mapData: String) {
                         "1:1" -> {
                             addTile = TileData(this, posXY)
                             addTile.addMechanism(gameLoop.getPhoenix(1, 1)
-                                .build(addTile, gameLoop.player1.team))
+                                .build(addTile, gameLoop.firstPlayer().team))
                         }
                         "1:2" -> {
                             addTile = TileData(this, posXY)
                             addTile.addMechanism(gameLoop.getPhoenix(1, 2)
-                                .build(addTile, gameLoop.player1.team))
+                                .build(addTile, gameLoop.firstPlayer().team))
                         }
                         "1:3" -> {
                             addTile = TileData(this, posXY)
                             addTile.addMechanism(gameLoop.getPhoenix(1, 3)
-                                .build(addTile, gameLoop.player1.team))
+                                .build(addTile, gameLoop.firstPlayer().team))
                         }
                         "2:1" -> {
                             addTile = TileData(this, posXY)
                             addTile.addMechanism(gameLoop.getPhoenix(2, 1)
-                                .build(addTile, gameLoop.player2.team))
+                                .build(addTile, gameLoop.secondPlayer().team))
                         }
                         "2:2" -> {
                             addTile = TileData(this, posXY)
                             addTile.addMechanism(gameLoop.getPhoenix(2, 2)
-                                .build(addTile, gameLoop.player2.team))
+                                .build(addTile, gameLoop.secondPlayer().team))
                         }
                         "2:3" -> {
                             addTile = TileData(this, posXY)
                             addTile.addMechanism(gameLoop.getPhoenix(2, 3)
-                                .build(addTile, gameLoop.player2.team))
+                                .build(addTile, gameLoop.secondPlayer().team))
                         }
                     }
                     tempTile[posXY] = addTile
@@ -103,9 +103,7 @@ class TileMapData(private val gameLoop: GameLoop, mapData: String) {
      */
     fun initialize(vararg players: PlayerInGame) {
         if (isInitialized) throw IllegalStateException("TileMapData is already initialized")
-
-
-
+        // Left here for past neccessity and future eventuality...
         isInitialized = true
     }
 

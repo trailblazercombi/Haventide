@@ -12,6 +12,7 @@ object Global {
     val localPlayer: PlayerProfile = PlaceholderPlayers.PLAYER_ONE.toProfile() // FIXME Dynamic allocation later
 
     fun createGameLoop(mapName: String, localPlayer: PlayerProfile, remotePlayer: PlayerProfile, localPlayerStarts: Boolean) {
-        gameLoop.value = GameLoop(mapData = mapName, localPlayer = localPlayer, remotePlayer = remotePlayer, localPlayerStarts = localPlayerStarts)
+        /* gameLoop.value = SELF ASSIGNING */
+        GameLoop(mapData = mapName, localPlayer = localPlayer, remotePlayer = remotePlayer, localPlayerStarts = localPlayerStarts)
     }
 }

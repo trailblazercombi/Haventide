@@ -26,7 +26,7 @@ fun EndRoundButton(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) 
         ), border = BorderStroke(
             DieStyle.OutlineThickness, DieStyle.EndRoundButtonSeverity.outlineColor
         ), modifier = modifier.padding(DieStyle.Separation).height(
-            DieStyle.DieSize * if (screenWidth > ScreenSizeThresholds.SpreadDiceStackOnSingleLine) 1 else 2
+            DieStyle.DieSize * (if (screenWidth > ScreenSizeThresholds.SpreadDiceStackOnSingleLine) 1 else 2)
         ).width(
             DieStyle.DieSize * (if (screenWidth > ScreenSizeThresholds.SpreadDiceStackOnSingleLine) 4 else 3)
                     + DieStyle.Separation + 3.dp

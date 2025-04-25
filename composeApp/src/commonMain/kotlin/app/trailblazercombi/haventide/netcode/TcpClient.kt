@@ -5,7 +5,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.io.BufferedReader
@@ -89,7 +88,7 @@ object TcpClient {
         }
     }
 
-    fun sendToServer(message: String) {
+    fun sendToRemoteServer(message: String) {
         socketScope.launch(Dispatchers.IO) {
             try {
                 writer?.println(message) ?: println("[TCP] Writer does not exist")
@@ -105,6 +104,12 @@ object TcpClient {
 
     fun stop() {
         println("[TCP] Stopping TCP Client...")
+
+        // If there is a game ongoing, forfeit it
+        val loop = Global.gameLoop.value
+        if (loop?.gameIsOver == false) { loop.remotePlayerDisconnected() }
+
+        // Close the socket
         val stopJob = socketScope.launch(Dispatchers.IO) {
             socket?.close()
             paired.value = false
@@ -112,6 +117,8 @@ object TcpClient {
             isOpen = false
             println("[TCP] Socket closed")
         }
+
+        // Cancel the coroutine
         stopJob.invokeOnCompletion {
             println("[TCP] Cancelling Socket Scope Job")
             clientJob?.cancel()
@@ -124,6 +131,7 @@ object TcpClient {
      * Handles messages recieved by the client from REMOTE SERVERS.
      */
     private fun onMessageRecieved(message: String) {
+        println("Server responded: $message")
         val args = message.split(' ')
 //        assert(args[0] == "ACK")
 //        when (args[1]) {

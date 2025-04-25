@@ -90,7 +90,7 @@ object TcpServer {
     fun stop() {
         // Unpair the client
         println("[TCPS] Stopping TCP Server...")
-        TcpClient.sendToServer("MOSHI_STOP")
+        TcpClient.sendToRemoteServer("MOSHI_STOP")
         TcpClient.stop()
         println("[TCPS] Client terminated.")
 
@@ -116,6 +116,7 @@ object TcpServer {
      * Terminology:
      * - もし (Moshi) - "Hello" - Pairing and pairing reply handshakes
      * - ゲーム (Geemu) - "Game" - Game initialization handshakes
+     * - やった (Yatta) - "Did it" - Move reporting between peers
      */
     private fun onMessageRecieved(message: String) {
         val args = message.split(' ')
@@ -131,7 +132,7 @@ object TcpServer {
                     remotePlayer = PlayerProfile(args = args[2]),
                     playerStarts = args[3].toBoolean()
                 )
-                TcpClient.sendToServer(message = "GEEMU_WEMOVE ${Global.localPlayer.rosterAsPacket()}")
+                TcpClient.sendToRemoteServer(message = "GEEMU_WEMOVE ${Global.localPlayer.rosterAsPacket()}")
                 Handshaker.finishRemoteGameRequest(Global.localPlayer)
 //                waitingJob!!.invokeOnCompletion {
 //                    Global.navController!!.navigate(AppScreens.GameScreen.name)
@@ -140,6 +141,11 @@ object TcpServer {
             "GEEMU_WEMOVE" -> {
                 Handshaker.finishLocalGameRequest(PlayerProfile(args = args[1]))
             }
+            // やったやった: Template (as AbilityTemplates.instance), Doer (as PhoenixTemplates.instance), target (as x+y)
+            "YATTA_YATTA" -> { Global.gameLoop.value?.remotePlayerMove(args[1], args[2], args[3]) }
+            "YATTA_FINISH" -> { Global.gameLoop.value?.remotePlayerFinishedRound() }
+            "YATTA_BOSSHU" -> { Global.gameLoop.value?.remotePlayerForfeited() }
+            "YATTA_DOROWU" -> { Global.gameLoop.value?.remotePlayerDisconnected() }
         }
     }
 }
