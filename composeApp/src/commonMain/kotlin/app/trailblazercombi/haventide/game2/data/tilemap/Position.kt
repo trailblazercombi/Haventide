@@ -29,9 +29,7 @@ data class Position(val x: Int, val y: Int) {
         return true
     }
 
-    override fun toString(): String {
-        return "Position [$x, $y]"
-    }
+    override fun toString() = "$x+$y"
 
     /**
      * Extract the position to [density pixels][Dp], taking into account [TileSize].

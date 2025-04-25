@@ -138,9 +138,7 @@ object TcpServer {
 //                    Global.navController!!.navigate(AppScreens.GameScreen.name)
 //                }
             }
-            "GEEMU_WEMOVE" -> {
-                Handshaker.finishLocalGameRequest(PlayerProfile(args = args[1]))
-            }
+            "GEEMU_WEMOVE" -> { Handshaker.finishLocalGameRequest(PlayerProfile(args = args[1])) }
             // やったやった: Template (as AbilityTemplates.instance), Doer (as PhoenixTemplates.instance), target (as x+y)
             "YATTA_YATTA" -> { Global.gameLoop.value?.remotePlayerMove(args[1], args[2], args[3]) }
             "YATTA_FINISH" -> { Global.gameLoop.value?.remotePlayerFinishedRound() }

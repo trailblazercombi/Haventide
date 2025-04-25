@@ -19,7 +19,10 @@ import org.jetbrains.compose.resources.stringResource
 fun EndRoundButton(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
     val screenWidth by viewModel.screenWidth.collectAsState()
 
+    val localPlayerTurn by viewModel.localPlayerTurn.collectAsState()
+
     Button(
+        enabled = localPlayerTurn,
         onClick = { viewModel.showEndRoundDialog() }, colors = ButtonDefaults.buttonColors(
             backgroundColor = DieStyle.EndRoundButtonSeverity.fillColor,
             contentColor = DieStyle.EndRoundButtonSeverity.contentColor,

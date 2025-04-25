@@ -236,6 +236,7 @@ enum class AbilityTemplates(val template: AbilityTemplate) {
     // Basic universal abilities
     BASIC_MOVE(
         AbilityTemplate(
+            name = "BASIC_MOVE",
             alignedCost = 0,
             scatteredCost = 1,
             range = sqrt(2.toDouble()),
@@ -246,6 +247,7 @@ enum class AbilityTemplates(val template: AbilityTemplate) {
     ),
     BASIC_STRIKE(
         AbilityTemplate(
+            name = "BASIC_STRIKE",
             alignedCost = 0,
             scatteredCost = 2,
             range = 2.65,
@@ -257,6 +259,7 @@ enum class AbilityTemplates(val template: AbilityTemplate) {
     ),
     BARRIER(
         AbilityTemplate(
+            name = "BARRIER",
             alignedCost = 2,
             scatteredCost = 2,
             range = 3.27,
@@ -273,6 +276,7 @@ enum class AbilityTemplates(val template: AbilityTemplate) {
 }
 
 data class AbilityTemplate(
+    val name: String,
     val alignedCost: Int,
     val scatteredCost: Int,
     val energyCost: Int = 0,

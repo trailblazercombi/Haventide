@@ -62,7 +62,7 @@ class GameLoopViewModel(
 
 ///////////////////////////////////////////////////////////////////////
 // TILE STATE MANAGEMENT
-    private val tileStates: TileStateMap = generateTileStates(gameLoop)
+    private val tileHighlights: TileHighlightStateMap = generateTileStates(gameLoop)
 
     val abilityPreview: MutableStateFlow<AbilityPreview?> = MutableStateFlow(null)
 
@@ -81,12 +81,12 @@ class GameLoopViewModel(
     /**
      * @return The Click State for the specified [TileData] as [MutableStateFlow].
      */
-    fun tileClickStateFor(tile: TileData) = tileStates.getClick(tile)
+    fun tileClickStateFor(tile: TileData) = tileHighlights.getClick(tile)
 
     /**
      * @return The Highlight State for the specified [TileData] as [MutableStateFlow].
      */
-    fun tileHighlightStateFor(tile: TileData) = tileStates.getHighlight(tile)
+    fun tileHighlightStateFor(tile: TileData) = tileHighlights.getHighlight(tile)
 
     /**
      * Invoke upon user clicking a tile.
@@ -155,34 +155,35 @@ class GameLoopViewModel(
 
     internal fun updateTileHighlights() {
         resetTileHighlights()
-        if (localPlayerTurn.value) {
-            tileSelected3?.let { tileStates.getClick(it)?.value = UniversalColorizer.CLICKED_TERTIARY }
+        println("[GLWM] Updating Tile Highlights...")
+        if (!localPlayerTurn.value) {
+            tileSelected3?.let { tileHighlights.getClick(it)?.value = UniversalColorizer.CLICKED_TERTIARY }
             return
         }
 
         // Deal with selected tile highlights
-        tileSelected1?.let { tileStates.getClick(it)?.value = UniversalColorizer.CLICKED_PRIMARY }
-        tileSelected2?.let { tileStates.getClick(it)?.value = UniversalColorizer.CLICKED_SECONDARY }
-        tileSelected3?.let { tileStates.getClick(it)?.value = UniversalColorizer.CLICKED_TERTIARY }
+        tileSelected1?.let { tileHighlights.getClick(it)?.value = UniversalColorizer.CLICKED_PRIMARY }
+        tileSelected2?.let { tileHighlights.getClick(it)?.value = UniversalColorizer.CLICKED_SECONDARY }
+        tileSelected3?.let { tileHighlights.getClick(it)?.value = UniversalColorizer.CLICKED_TERTIARY }
 
         // Mark available tiles
         tilesAvailable1 = findAvailableTiles1()
         tilesAvailable2 = findAvailableTiles2()
 
         // Deal with tile highlights
-        tilesAvailable1.forEach { tileStates.getHighlight(it)?.value = UniversalColorizer.HIGHLIGHT_PRIMARY }
-        tilesAvailable2.forEach { tileStates.getHighlight(it)?.value = UniversalColorizer.HIGHLIGHT_SECONDARY }
+        tilesAvailable1.forEach { tileHighlights.getHighlight(it)?.value = UniversalColorizer.HIGHLIGHT_PRIMARY }
+        tilesAvailable2.forEach { tileHighlights.getHighlight(it)?.value = UniversalColorizer.HIGHLIGHT_SECONDARY }
     }
 
     private fun resetTileHighlights() {
         tilesAvailable1 = emptySet()
         tilesAvailable2 = emptySet()
 
-        tileSelected1?.let { tileStates.getClick(it)?.value = UniversalColorizer.NO_INTERACTIONS_WITH_OUTLINE }
-        tileSelected2?.let { tileStates.getClick(it)?.value = UniversalColorizer.NO_INTERACTIONS_WITH_OUTLINE }
-        tileSelected3?.let { tileStates.getClick(it)?.value = UniversalColorizer.NO_INTERACTIONS_WITH_OUTLINE }
+        tileSelected1?.let { tileHighlights.getClick(it)?.value = UniversalColorizer.NO_INTERACTIONS_WITH_OUTLINE }
+        tileSelected2?.let { tileHighlights.getClick(it)?.value = UniversalColorizer.NO_INTERACTIONS_WITH_OUTLINE }
+        tileSelected3?.let { tileHighlights.getClick(it)?.value = UniversalColorizer.NO_INTERACTIONS_WITH_OUTLINE }
 
-        tileStates.unpack().values.forEach {
+        tileHighlights.unpack().values.forEach {
             it.first.value = UniversalColorizer.NO_INTERACTIONS_WITH_OUTLINE
             it.second.value = UniversalColorizer.NO_INTERACTIONS
         }
@@ -223,18 +224,14 @@ class GameLoopViewModel(
 // TURN TABLE FLOW EVENTS
 
     /**
-     * Invoke upon user finishing a move.
+     * Exposes [GameLoop.processEndMoveEvent]
      */
     private fun processEndMoveEvent() {
-        gameLoop.checkGameResult()
-        turnTable.nextPlayerTurn()
-        updateTileHighlights()
-
-        localPlayerTurn.value = turnTable.currentPlayer() === gameLoop.localPlayer
+        gameLoop.processEndMoveEvent()
     }
 
     /**
-     * Invoke upon user deciding to end the round.
+     * Invoke upon LOCAL user deciding to end the round.
      */
     fun processEndRoundEvent() {
         println("Processing end round event! ${gameLoop.localPlayer}")
@@ -243,6 +240,8 @@ class GameLoopViewModel(
 
         gameLoop.checkGameResult()
         turnTable.endRoundAndNextPlayerTurn()
+        TcpClient.sendToRemoteServer("YATTA_FINISH")
+        localPlayerTurn.value = turnTable.currentPlayer() === gameLoop.localPlayer
         updateTileHighlights()
     }
     /**
@@ -255,14 +254,16 @@ class GameLoopViewModel(
     }
 
     /**
-     * Invoke upon an Ability played.
+     * Invoke upon an Ability played by the LOCAL player.
      */
     private fun processAbilityInvokeEvent(): Boolean {
-        if (abilityPreview.value == null) return false
-        if (countedDiceMatch()) {
-            currentPlayer.value.executeAbility(abilityPreview.value!!)
-            return true
-        } else return false
+        val apv = abilityPreview.value
+        if (apv == null) return false
+        if (!countedDiceMatch()) return false
+        currentPlayer.value.executeAbility(apv)
+        // やったやった: Template (as AbilityTemplates.instance), Doer (as PhoenixTemplates.instance), target (as x+y)
+        TcpClient.sendToRemoteServer("YATTA_YATTA ${apv.template.name} ${apv.doer} ${apv.target.position}")
+        return true
     }
 
     /**
@@ -274,6 +275,7 @@ class GameLoopViewModel(
 
     /**
      * External processor for invoking abilities.
+     * This one specifically is for the [app.trailblazercombi.haventide.game2.jetpack.gamescreen.components.ConfirmAbilityButton].
      */
     fun processExternalAbilityExecution() {
         if (!processAbilityInvokeEvent()) return
@@ -431,9 +433,7 @@ class GameLoopViewModel(
     fun playerHasDiceLeft() = localDiceStates.getKeys().isNotEmpty()
 
     // INIT
-    init {
-        updateTileHighlights()
-    }
+    init { updateTileHighlights() }
 }
 
 // :3

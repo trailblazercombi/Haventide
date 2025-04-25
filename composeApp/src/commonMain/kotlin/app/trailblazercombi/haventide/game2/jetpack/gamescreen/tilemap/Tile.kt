@@ -64,7 +64,7 @@ fun Tile(viewModel: GameLoopViewModel, tileData: TileData? = null, modifier: Mod
                         .compositeOver(clickState.fillColor)
                     )
             )
-            MechanismStack(tileData.getMechanismStack(), modifier.align(Alignment.Center))
+            MechanismStack(tileData, modifier.align(Alignment.Center))
         }
     } else {
         Spacer(modifier.width(TileSize).height(TileSize))

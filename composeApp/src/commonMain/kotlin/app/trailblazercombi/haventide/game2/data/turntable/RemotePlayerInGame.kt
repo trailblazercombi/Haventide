@@ -1,5 +1,6 @@
 package app.trailblazercombi.haventide.game2.data.turntable
 
+import app.trailblazercombi.haventide.Global
 import app.trailblazercombi.haventide.game2.data.tilemap.TileData
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.Mechanism
 import app.trailblazercombi.haventide.playerdata.PlayerProfile
@@ -11,9 +12,7 @@ class RemotePlayerInGame(profile: PlayerProfile, turnTable: TurnTable) : PlayerI
         // [NETWORK] TODO Figure out what this needs to do...
     }
 
-    override fun onTurnStart() {
-        // FIXME This looks pretty broken right now, but you need to make networking first...
-    }
+    override fun onTurnStart() {}
 
     override fun toString() = "Remote ${super.toString()}"
 }

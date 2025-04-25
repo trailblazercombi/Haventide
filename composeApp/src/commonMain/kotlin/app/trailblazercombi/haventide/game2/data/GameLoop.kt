@@ -4,6 +4,7 @@ import app.trailblazercombi.haventide.Global
 import app.trailblazercombi.haventide.game2.data.tilemap.Position
 import app.trailblazercombi.haventide.game2.data.tilemap.TileData
 import app.trailblazercombi.haventide.game2.data.tilemap.TileMapData
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.Mechanism
 import app.trailblazercombi.haventide.game2.data.turntable.LocalPlayerInGame
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.PhoenixMechanism
 import app.trailblazercombi.haventide.game2.data.turntable.Die
@@ -154,15 +155,22 @@ GameLoop(
 
     // EXPOSURES FOR TCP
     fun remotePlayerMove(template: String, doer: String, target: String) {
+        println("[R.PL.MO] Remote player moved! Template $template, Doer $doer, Target $target")
         val ability = AbilityTemplates.valueOf(template.uppercase()).template
         val doer = remotePlayer.findDoer(doer)
         val coords = target.split('+').map { it.toInt() }
         val target = tileMap[coords[0], coords[1]] ?: throw IllegalArgumentException("$target does not exist")
-        remotePlayer.executeAbility(ability, doer, target)
+        // This is the same as the local player...
+        remotePlayer.executeAbility(ability, doer as Mechanism, target)
+        processEndMoveEvent()
     }
 
     fun remotePlayerFinishedRound() {
-        TODO("Finish round of remote player")
+        println("[P.PL.FR] Remote player finished round!")
+        remotePlayer.finishRound()
+        turnTable.endRoundAndNextPlayerTurn()
+        viewModel.localPlayerTurn.value = turnTable.currentPlayer() === localPlayer
+        viewModel.updateTileHighlights()
     }
 
     fun remotePlayerForfeited() {
@@ -182,7 +190,23 @@ GameLoop(
      */
     fun pushDiceChanges(dice: List<Die>) = viewModel.pushDiceChanges(dice)
 
+    internal fun localPlayerDisconnected() {
+        declareDraw()
+    }
+
     internal fun remotePlayerDisconnected() {
         declareDraw()
+        TcpClient.sendToRemoteServer("YATTA_DOROWU")
+    }
+
+    /**
+     * Invoke upon ANY user finishing a move.
+     */
+    fun processEndMoveEvent() {
+        checkGameResult()
+        turnTable.nextPlayerTurn()
+
+        viewModel.localPlayerTurn.value = turnTable.currentPlayer() === localPlayer
+        viewModel.updateTileHighlights()
     }
 }

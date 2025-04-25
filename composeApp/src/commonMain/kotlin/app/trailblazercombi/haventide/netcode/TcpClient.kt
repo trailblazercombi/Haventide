@@ -107,7 +107,7 @@ object TcpClient {
 
         // If there is a game ongoing, forfeit it
         val loop = Global.gameLoop.value
-        if (loop?.gameIsOver == false) { loop.remotePlayerDisconnected() }
+        if (loop?.gameIsOver == false) { loop.localPlayerDisconnected() }
 
         // Close the socket
         val stopJob = socketScope.launch(Dispatchers.IO) {

@@ -8,9 +8,9 @@ import app.trailblazercombi.haventide.game2.data.tilemap.TileData
  * A supporting function that generates tileStates from the GameLoop for the viewModel.
  * It expects the TileMap to be fully initialized.
  */
-fun generateTileStates(gameLoop: GameLoop): TileStateMap {
+fun generateTileStates(gameLoop: GameLoop): TileHighlightStateMap {
     val tiles: Map<Position, TileData?> = gameLoop.getAllTiles()
-    val result = MutableTileStateMap()
+    val result = MutableTileHighlightStateMap()
     tiles.values.forEach { result.put(it) }
     return result.toTileStateMap()
 }

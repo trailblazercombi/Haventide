@@ -130,8 +130,9 @@ open class PlayerInGame(val profile: PlayerProfile, protected val turnTable: Tur
     /**
      * Finds the [Mechanism] asked for.
      */
-    fun findDoer(string: String): Mechanism {
-        TODO()
+    fun findDoer(string: String): PhoenixMechanism? {
+        team.forEach { if (string == (it as? PhoenixMechanism)?.template?.gameId) return it }
+        return null
     }
 
     override fun toString() = "Player ${profile.name}"

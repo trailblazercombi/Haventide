@@ -81,4 +81,8 @@ class PhoenixMechanism(
     private fun isInRange(it: AbilityTemplate, target: TileData): Boolean {
         return this.parentTile.distanceTo(target) <= it.range
     }
+
+    override fun toString(): String {
+        return template.gameId.uppercase()
+    }
 }

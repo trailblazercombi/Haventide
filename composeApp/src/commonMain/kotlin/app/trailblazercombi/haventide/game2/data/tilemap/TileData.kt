@@ -5,6 +5,7 @@ import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.PhoenixMecha
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.immediate.ImmediateEffecter
 import app.trailblazercombi.haventide.game2.data.turntable.Team
 import app.trailblazercombi.haventide.resources.MechanismTemplate
+import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
  * This is the class representing a single tile on the map,
@@ -15,6 +16,8 @@ class TileData(
     val parentMap: TileMapData,
     internal val position: Position,
     private val mechanismStack: MutableSet<Mechanism> = mutableSetOf(),
+
+    val mechanismStackStack: MutableStateFlow<Set<Mechanism>> = MutableStateFlow(emptySet())
 ) {
 
     //  About the CHECKING SYSTEM:
@@ -38,6 +41,7 @@ class TileData(
     fun addMechanism(mechanism: Mechanism) {
         if (canAddMechanism(mechanism)) {
             mechanismStack.add(mechanism)
+            updateStackStack()
         }
     }
 
@@ -50,6 +54,7 @@ class TileData(
     fun removeMechanism(mechanism: Mechanism) {
         if (canRemoveMechanism(mechanism)) {
             mechanismStack.remove(mechanism)
+            updateStackStack()
         }
     }
 
@@ -156,5 +161,9 @@ class TileData(
      */
     fun distanceTo(other: TileData): Double {
         return this.position.distanceTo(other.position)
+    }
+
+    private fun updateStackStack() {
+        this.mechanismStackStack.value = mechanismStack.toSet()
     }
 }

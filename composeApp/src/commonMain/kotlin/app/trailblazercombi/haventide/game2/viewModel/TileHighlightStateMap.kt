@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
  *
  * This is the Immutable variant.
  */
-class TileStateMap : StateMapForTiles {
+class TileHighlightStateMap : HighlightStateMapForTiles {
     val data: Map<TileData, Pair<MutableStateFlow<UniversalColorizer>, MutableStateFlow<UniversalColorizer>>>
 
     @Suppress("ConvertSecondaryConstructorToPrimary")
@@ -23,7 +23,7 @@ class TileStateMap : StateMapForTiles {
     override fun getHighlight(tile: TileData) = data[tile]?.second
     override fun setClick(tile: TileData, newClick: UniversalColorizer) { getClick(tile)?.value = newClick }
     override fun setHighlight(tile: TileData, newHighlight: UniversalColorizer) { getHighlight(tile)?.value = newHighlight }
-    override fun toTileStateMap() = TileStateMap(data)
-    override fun toMutableTileStateMap(): MutableTileStateMap = MutableTileStateMap(data.toMutableMap())
+    override fun toTileStateMap() = TileHighlightStateMap(data)
+    override fun toMutableTileStateMap(): MutableTileHighlightStateMap = MutableTileHighlightStateMap(data.toMutableMap())
     override fun unpack() = data.toMap()
 }
