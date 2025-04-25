@@ -20,7 +20,7 @@ fun App(
     navController: NavHostController = rememberNavController(),
     modifier: Modifier = Modifier,
 ) {
-    val currentMatch by GlobalState.currentGame.collectAsState()
+    val gameLoop by Global.gameLoop.collectAsState()
 
     NavHost(
         navController = navController,
@@ -30,9 +30,8 @@ fun App(
         composable (route = AppScreens.MatchStart.name) {
             MatchBeginScreen(navController)
         }
-        composable (route = AppScreens.MatchPlaying.name) {
-            println("Trying this crap")
-            val viewModel = currentMatch?.viewModel ?: return@composable
+        composable (route = AppScreens.GameScreen.name) {
+            val viewModel = gameLoop?.viewModel ?: return@composable
             GameScreen(
                 viewModel,
                 navController
@@ -40,7 +39,7 @@ fun App(
         }
         composable (route = AppScreens.MatchResult.name) {
             MatchResultScreen(
-                currentMatch?.gameResult
+                gameLoop?.gameResult
                     ?: throw IllegalStateException("Cannot create a MatchResult screen while the match is ongoing"),
             )
         }
@@ -50,6 +49,6 @@ fun App(
 enum class AppScreens(val title: StringResource) {
     MainMenu(Res.string.nav_main_menu),
     MatchStart(Res.string.nav_match_start),
-    MatchPlaying(Res.string.nav_match_playing),
+    GameScreen(Res.string.nav_match_playing),
     MatchResult(Res.string.nav_match_result)
 }

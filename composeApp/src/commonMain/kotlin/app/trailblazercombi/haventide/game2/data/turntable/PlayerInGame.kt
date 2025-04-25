@@ -125,4 +125,6 @@ open class PlayerInGame(val profile: PlayerProfile, protected val turnTable: Tur
      * Exposes [DiceStack.getDice]
      */
     protected fun getDice() = dice.getDice()
+
+    override fun toString() = "Player ${profile.name}"
 }

@@ -29,4 +29,6 @@ data class PlayerProfile(val name: String, val activeRoster: List<MechanismTempl
     )
 
     fun rosterAsPacket() = "${activeRoster[0].gameId}+${activeRoster[1].gameId}+${activeRoster[2].gameId}"
+
+    override fun toString() = "Player $name"
 }

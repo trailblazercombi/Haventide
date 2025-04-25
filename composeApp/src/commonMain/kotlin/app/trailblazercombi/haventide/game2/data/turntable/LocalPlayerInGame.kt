@@ -27,4 +27,6 @@ class LocalPlayerInGame(profile: PlayerProfile, turnTable: TurnTable) : PlayerIn
     private fun pushLocalPlayerDiceStackToViewModel() {
         turnTable.pushLocalPlayerDiceStackToViewModel(getDice())
     }
+
+    override fun toString() = "Local ${super.toString()}"
 }

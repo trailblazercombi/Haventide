@@ -31,7 +31,8 @@ class TileMapData(private val gameLoop: GameLoop, mapData: String) {
     private val tiles: Map<Position, TileData?>
 
     init {
-        val scanner = Scanner(mapData)
+        println("[T.MAP] Starting TileMap for $mapData")
+        val scanner = Scanner(mapData.unpackToMap()) // mapData is String and I'm passing "composeResources/files/maps/parkingLot"
         val tempTile = mutableMapOf<Position, TileData?>()
         var tempBGC: Color = Palette.FillDarkPrimary
 
@@ -103,11 +104,7 @@ class TileMapData(private val gameLoop: GameLoop, mapData: String) {
     fun initialize(vararg players: PlayerInGame) {
         if (isInitialized) throw IllegalStateException("TileMapData is already initialized")
 
-//        var i = 0 // [MAPS] FIXME this is so janky
-//        players.forEach {
-//            it.initialize(get(3, 3 * i)!!, get(4, 3 * i)!!, get(5, 3 * i)!!)
-//            i++
-//        }
+
 
         isInitialized = true
     }

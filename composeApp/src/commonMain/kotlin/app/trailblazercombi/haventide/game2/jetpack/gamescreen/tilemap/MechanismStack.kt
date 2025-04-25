@@ -23,5 +23,4 @@ fun MechanismStack(mechanisms: Set<Mechanism>, modifier: Modifier = Modifier) {
             ComposableMechanism(it, Modifier.align(Alignment.Center))
         }
     }
-    // [LATER...] TODO Smarter approach, because this will look so stupid
 }
