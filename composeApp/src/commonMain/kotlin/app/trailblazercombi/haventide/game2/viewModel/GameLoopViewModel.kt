@@ -31,6 +31,7 @@ class GameLoopViewModel(
 // DIALOGS OPEN MANAGEMENT
     val gameOverDialog = MutableStateFlow(false)
     fun showGameOverDialog() { gameOverDialog.value = true }
+    // Hiding this dialog moves the player to the Match Result screen
 
     val pauseMenuDialog = MutableStateFlow(false)
     fun showPauseMenuDialog() { pauseMenuDialog.value = true }
