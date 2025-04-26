@@ -139,11 +139,17 @@ object TcpServer {
 //                }
             }
             "GEEMU_WEMOVE" -> { Handshaker.finishLocalGameRequest(PlayerProfile(args = args[1])) }
+            // ゲームドロー Remote player offered draw
+            "GEEMU_DOROWU" -> { Global.gameLoop.value?.remotePlayerOfferedDraw() }
+            "DOROWU_OKE" -> { Global.gameLoop.value?.declareDraw() }
+            "DOROWU_NAI" -> { Global.gameLoop.value?.remotePlayerRefusedDraw() }
             // やったやった: Template (as AbilityTemplates.instance), Doer (as PhoenixTemplates.instance), target (as x+y)
             "YATTA_YATTA" -> { Global.gameLoop.value?.remotePlayerMove(args[1], args[2], args[3]) }
             "YATTA_FINISH" -> { Global.gameLoop.value?.remotePlayerFinishedRound() }
             "YATTA_BOSSHU" -> { Global.gameLoop.value?.remotePlayerForfeited() }
+            // やったドロー: Remote player disconnected due to network or device failure
             "YATTA_DOROWU" -> { Global.gameLoop.value?.remotePlayerDisconnected() }
+            // TODO "Remote player shat on your draw offer"
         }
     }
 }

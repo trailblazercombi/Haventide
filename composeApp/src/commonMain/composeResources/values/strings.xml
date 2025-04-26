@@ -13,7 +13,6 @@
 
     <string name="game_over_dialog_result_forfeit">MATCH FORFEITED</string>
     <string name="game_over_dialog_result_contumation">VICTORY BY FORFEIT</string>
-
     <string name="game_over_dialog_confirm_button">Tap or click anywhere on the blank area to continue</string>
 
     <string name="yes_no_dialog_forfeit_title">You haven't lost the match yet.</string>
@@ -29,6 +28,14 @@
     <string name="pause_dialog_settings_shortcut_button">Settings</string>
     <string name="pause_dialog_forfeit_button">Forfeit</string>
 
+    <string name="offer_draw_dialog_offered">Draw offered. Please wait...</string>
+    <string name="offer_draw_dialog_refused">Your opponent refused the draw.</string>
+    <string name="offer_draw_dialog_accepted">Your opponent accepted the draw.</string>
+
+    <string name="accept_draw_dialog_title">Your opponent offered you a draw.</string>
+    <string name="accept_draw_dialog_yes">Yes, accept draw</string>
+    <string name="accept_draw_dialog_no">Cancel and keep playing</string>
+
     <string name="game_turn_state_good">Your turn</string>
     <string name="game_turn_state_bad">Opponent's turn</string>
     <string name="game_turn_state_over">Your round is finished</string>
@@ -43,7 +50,6 @@
     <string name="ability_restore">Heal!</string>
     <string name="ability_impair">Impair!</string>
     <string name="ability_support">Support!</string>
-
 
     <string name="game_button_dice_counter_wide">%1$d/%2$d+%3$d/%4$d</string>
     <string name="game_button_dice_counter_narrow1">%1$d/%2$d</string>

@@ -8,9 +8,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import app.trailblazercombi.haventide.game2.data.GameLoop
+import app.trailblazercombi.haventide.game2.jetpack.gamescreen.dialogs.AcceptDrawDialog
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.dialogs.EndRoundDialog
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.dialogs.ForfeitConfirmationDialog
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.dialogs.GameOverDialog
+import app.trailblazercombi.haventide.game2.jetpack.gamescreen.dialogs.OfferDrawDialog
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.dialogs.PauseMenuDialog
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.panels.DiceInfoPanel
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.tilemap.TileMap
@@ -54,6 +56,8 @@ fun GameScreen(
     EndRoundDialog(viewModel)
 //    StartRoundDialog(viewModel)
     ForfeitConfirmationDialog(viewModel)
+    OfferDrawDialog(viewModel)
+    AcceptDrawDialog(viewModel)
     GameOverDialog(viewModel, navController)
 
     LaunchedEffect(Unit) {

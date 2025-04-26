@@ -194,6 +194,10 @@ GameLoop(
         declareDraw()
     }
 
+    internal fun remotePlayerOfferedDraw() {
+        viewModel.showAcceptDrawDialog()
+    }
+
     internal fun remotePlayerDisconnected() {
         declareDraw()
         TcpClient.sendToRemoteServer("YATTA_DOROWU")
@@ -208,5 +212,9 @@ GameLoop(
 
         viewModel.localPlayerTurn.value = turnTable.currentPlayer() === localPlayer
         viewModel.updateTileHighlights()
+    }
+
+    internal fun remotePlayerRefusedDraw() {
+        viewModel.remotePlayerRefusedDraw()
     }
 }

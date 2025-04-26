@@ -57,7 +57,7 @@ fun PauseMenuDialog(viewModel: GameLoopViewModel, modifier: Modifier = Modifier)
                     ) {
                         /* RETURN   */ MenuButton({ viewModel.hidePauseMenuDialog() },
                         Res.string.pause_dialog_return_button, ButtonSeverity.NEUTRAL)
-                        /* DRAW     */ MenuButton({ TODO("Cannot yet OFFER DRAW") },
+                        /* DRAW     */ MenuButton({ viewModel.showOfferDrawDialog() },
                         Res.string.pause_dialog_offer_draw_button, ButtonSeverity.NEUTRAL)
                         /* FORFEIT  */ MenuButton(onClick = { viewModel.showForfeitConfirmationDialog() },
                         Res.string.pause_dialog_forfeit_button, ButtonSeverity.DESTRUCTIVE_MINOR)

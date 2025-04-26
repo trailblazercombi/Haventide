@@ -45,6 +45,14 @@ class GameLoopViewModel(
     fun showEndRoundDialog() { endRoundDialog.value = true }
     fun hideEndRoundDialog() { endRoundDialog.value = false }
 
+    val offerDrawDialog = MutableStateFlow(false)
+    fun showOfferDrawDialog() { offerDrawDialog.value = true }
+    fun hideOfferDrawDialog() { offerDrawDialog.value = false }
+
+    val acceptDrawDialog = MutableStateFlow(false)
+    fun showAcceptDrawDialog() { acceptDrawDialog.value = true }
+    fun hideAcceptDrawDialog() { acceptDrawDialog.value = false }
+
 ///////////////////////////////////////////////////////////////////////
 // THE GAME'S RESULT -- pulled direct from GameLoop...
     val gameResult = MutableStateFlow(gameLoop.gameResult)
@@ -291,6 +299,9 @@ class GameLoopViewModel(
         updateTileHighlights()
     }
 
+    val drawOffered = MutableStateFlow(false)
+    val drawRefused = MutableStateFlow(false)
+
 ///////////////////////////////////////////////////////////////////////
 // DICE ECONOMY -- only for local player!!!
     val localDiceList = MutableStateFlow(emptyList<Die>())
@@ -432,6 +443,20 @@ class GameLoopViewModel(
      * @return Whether or not the local player still has any dice.
      */
     fun playerHasDiceLeft() = localDiceStates.getKeys().isNotEmpty()
+
+    /**
+     * Exposes [GameLoop.declareDraw]
+     */
+    fun declareDraw() {
+        gameLoop.declareDraw()
+    }
+
+    /**
+     * Remote player refused draw.
+     */
+    fun remotePlayerRefusedDraw() {
+        drawRefused.value = true
+    }
 
     // INIT
     init { updateTileHighlights() }
