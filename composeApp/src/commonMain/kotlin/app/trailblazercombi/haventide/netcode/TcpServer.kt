@@ -1,6 +1,8 @@
 package app.trailblazercombi.haventide.netcode
 
+import androidx.lifecycle.viewmodel.compose.viewModel
 import app.trailblazercombi.haventide.Global
+import app.trailblazercombi.haventide.game2.jetpack.gamescreen.GameScreen
 import app.trailblazercombi.haventide.playerdata.PlayerProfile
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -81,7 +83,11 @@ object TcpServer {
         println("[TCPS] Starting TCP Server...")
         serverJob = socketScope.launch(Dispatchers.IO) {
             println("[TCPS] Launching TCP Coroutine...")
-            main(arrayOf())
+            try {
+                main(arrayOf())
+            } catch (_: IllegalStateException) {
+                TODO("The client tried to connect to itself...")
+            }
             println("[TCPS] TCP Coroutine finished after @JVM Static Main.")
         }
         println("[TCP] TCP Server started.")

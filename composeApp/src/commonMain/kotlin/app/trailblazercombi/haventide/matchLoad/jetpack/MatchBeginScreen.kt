@@ -16,12 +16,16 @@ import app.trailblazercombi.haventide.netcode.Handshaker
 import app.trailblazercombi.haventide.netcode.NetPairing
 import app.trailblazercombi.haventide.netcode.TcpClient
 import app.trailblazercombi.haventide.netcode.TcpServer
+import app.trailblazercombi.haventide.resources.Res
+import app.trailblazercombi.haventide.resources.diagnostic_cannot_pair_to_itself
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
 import kotlin.random.Random
 
 //import app.trailblazercombi.haventide.netcode.NetworkResolver.pairYang
@@ -50,6 +54,8 @@ fun MatchBeginScreen(navController: NavHostController, modifier: Modifier = Modi
     var createGameJob: Job? = null
     var waitingJob: Job? = null
 
+    var diagnosticMessage: StringResource? by remember { mutableStateOf(null) }
+
     Column (modifier.padding(32.dp)) {
         TextField(
             enabled = !paired,
@@ -69,7 +75,13 @@ fun MatchBeginScreen(navController: NavHostController, modifier: Modifier = Modi
 
         Button(
             enabled = !paired,
-            onClick = { TcpClient.launch(NetPairing.codeToInet(inputCode.value)) },
+            onClick = {
+                val inetAddress = NetPairing.codeToInet(inputCode.value)
+                if (inetAddress == NetPairing.localInet()) {
+                    diagnosticMessage = Res.string.diagnostic_cannot_pair_to_itself
+                }
+                TcpClient.launch(inetAddress)
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Pair!")
@@ -93,6 +105,7 @@ fun MatchBeginScreen(navController: NavHostController, modifier: Modifier = Modi
 
         LaunchedEffect(gameLoop) {
             if (gameLoop != null) navController.navigate(AppScreens.GameScreen.name)
+            diagnosticMessage = null
         }
 
         Button(
@@ -102,5 +115,7 @@ fun MatchBeginScreen(navController: NavHostController, modifier: Modifier = Modi
         ) {
             Text("Start Server")
         }
+
+        Text(text = if (diagnosticMessage == null) "" else stringResource(diagnosticMessage!!), modifier = modifier.fillMaxWidth())
     }
 }

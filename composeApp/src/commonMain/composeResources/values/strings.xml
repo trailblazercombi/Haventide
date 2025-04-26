@@ -44,6 +44,8 @@
     <string name="game_button_end_round">End Round</string>
     <string name="game_button_confirm_move">Confirm!</string>
 
+    <string name="diagnostic_cannot_pair_to_itself">Cannot pair with itself!</string>
+
     <string name="ability_move">Move!</string>
     <string name="ability_construct">Build!</string>
     <string name="ability_attack">Attack!</string>
