@@ -79,8 +79,10 @@ fun MatchBeginScreen(navController: NavHostController, modifier: Modifier = Modi
                 val inetAddress = NetPairing.codeToInet(inputCode.value)
                 if (inetAddress == NetPairing.localInet()) {
                     diagnosticMessage = Res.string.diagnostic_cannot_pair_to_itself
+                    return@Button
                 }
                 TcpClient.launch(inetAddress)
+                diagnosticMessage = Res.string.diagnostic_pairing
             },
             modifier = Modifier.fillMaxWidth()
         ) {
