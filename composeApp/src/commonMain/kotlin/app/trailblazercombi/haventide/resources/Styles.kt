@@ -70,7 +70,7 @@ object DieStyle {
     val InnerPadding = 4.dp
     val CornerRounding = 4.dp
     val OutlineThickness = 0.dp
-    val Separation = 3.dp
+    val Separation = 4.dp
     val EndRoundButtonSeverity = ButtonSeverity.PREFERRED
     val CounterButtonSeverity = ButtonSeverity.DIMMED
     val ConfirmButtonSeverity = ButtonSeverity.NEUTRAL
