@@ -1,6 +1,5 @@
 package app.trailblazercombi.haventide.resources
 
-import androidx.compose.material.Button
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -83,6 +82,17 @@ object DiceCounterStyle {
     val CornerRounding = 4.dp
 }
 
+object CiStyle {
+    val AbilityCardWidth = 280.dp
+    val AbilityCardHeight = 84.dp
+    val AbilityCardPadding = 8.dp
+    val AbilityCardTitleSize = 26.sp
+    val AbilityCardDescriptionSize = 16.sp
+    val AbilityCardShrinkImage = 4.dp
+    val PanelOffsetFromBottom = 71.dp
+    val PanelOffsetFromBottomDouble = 119.dp
+}
+
 object ScreenSizeThresholds {
     // NOTE: The description always matches the behaviour of value > field.
     val SpreadDiceStackOnSingleLine = 635.dp
@@ -90,6 +100,7 @@ object ScreenSizeThresholds {
     val StopStretchingGameOverDialogToScreenEdge = 780.dp
     val StopStackingYesNoDialogVertically = 604.dp
     val StopStretchingYesNoDialogToScreenEdge = 380.dp
+    val UnpackCIAndShowBothSides = 600.dp
 }
 
 /**

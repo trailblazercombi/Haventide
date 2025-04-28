@@ -70,6 +70,11 @@ class GameLoopViewModel(
     val enemyPhoenixes = MutableStateFlow(gameLoop.compileEnemyPhoenixes())
 
 ///////////////////////////////////////////////////////////////////////
+// CONTEXTUAL INFORMATION
+    val showLeftCI = MutableStateFlow(false)
+    val showRightCI = MutableStateFlow(false)
+
+///////////////////////////////////////////////////////////////////////
 // TILE STATE MANAGEMENT
     private val tileHighlights: TileHighlightStateMap = generateTileStates(gameLoop)
 
@@ -271,7 +276,7 @@ class GameLoopViewModel(
         if (!countedDiceMatch()) return false
         currentPlayer.value.executeAbility(apv)
         // やったやった: Template (as AbilityTemplates.instance), Doer (as PhoenixTemplates.instance), target (as x+y)
-        TcpClient.sendToRemoteServer("YATTA_YATTA ${apv.template.name} ${apv.doer} ${apv.target.position}")
+        TcpClient.sendToRemoteServer("YATTA_YATTA ${apv.template.systemName} ${apv.doer} ${apv.target.position}")
         return true
     }
 
@@ -284,7 +289,7 @@ class GameLoopViewModel(
 
     /**
      * External processor for invoking abilities.
-     * This one specifically is for the [app.trailblazercombi.haventide.game2.jetpack.gamescreen.components.ConfirmAbilityButton].
+     * This one specifically is for the [app.trailblazercombi.haventide.game2.jetpack.gamescreen.components.buttons.ConfirmAbilityButton].
      */
     fun processExternalAbilityExecution() {
         if (!processAbilityInvokeEvent()) return

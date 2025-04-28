@@ -1,0 +1,50 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:aapt="http://schemas.android.com/aapt"
+    android:viewportWidth="3000"
+    android:viewportHeight="3000"
+    android:width="106.2992dp"
+    android:height="106.2992dp">
+    <group>
+        <clip-path
+            android:pathData="M0 0H3000V3000H0V0Z" />
+        <path
+            android:pathData="M657 375L657 657 375 657 469 938 797 938 1172 1313 1313 1172 938 797 938 469 657 375Z"
+            android:fillType="evenOdd"
+            android:fillColor="#2169AD"
+            android:strokeLineJoin="round" />
+        <path
+            android:pathData="M1688 891L891 1688 1875 1875 1688 891Z"
+            android:fillType="evenOdd"
+            android:fillColor="#2169AD"
+            android:strokeLineJoin="round" />
+        <path
+            android:pathData="M1969 1735L2016 2016 1735 1969 2204 2204 1969 1735Z"
+            android:fillType="evenOdd"
+            android:fillColor="#2169AD"
+            android:strokeLineJoin="round" />
+        <path
+            android:pathData="M2204 1969L1688 657 2063 563 2204 1969Z"
+            android:fillType="evenOdd"
+            android:fillColor="#2169AD"
+            android:strokeLineJoin="round" />
+        <path
+            android:pathData="M2204 469L2297 1969 2625 469 2204 469Z"
+            android:fillType="evenOdd"
+            android:fillColor="#2169AD"
+            android:strokeLineJoin="round" />
+        <path
+            android:pathData="M2625 1922L2391 2391 1922 2625 2625 2625 2625 1922Z"
+            android:fillType="evenOdd"
+            android:fillColor="#2169AD"
+            android:strokeLineJoin="round" />
+        <path
+            android:pathData="M1969 2204L657 1688 563 2063 1969 2204Z"
+            android:fillType="evenOdd"
+            android:fillColor="#2169AD"
+            android:strokeLineJoin="round" />
+        <path
+            android:pathData="M469 2204L1969 2297 469 2625 469 2204Z"
+            android:fillType="evenOdd"
+            android:fillColor="#2169AD"
+            android:strokeLineJoin="round" />
+    </group>
+</vector>

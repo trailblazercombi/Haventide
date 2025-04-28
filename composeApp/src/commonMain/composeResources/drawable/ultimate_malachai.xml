@@ -1,0 +1,45 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:aapt="http://schemas.android.com/aapt"
+    android:viewportWidth="3000"
+    android:viewportHeight="3000"
+    android:width="106.2992dp"
+    android:height="106.2992dp">
+    <group>
+        <clip-path
+            android:pathData="M0 0H3000V3000H0V0Z" />
+        <path
+            android:pathData="M421 562L750 421 1453 421 1453 750 1171 1031 1078 984 1171 703 890 703 656 937 562 890 421 562Z"
+            android:fillType="evenOdd"
+            android:fillColor="#3B3B93"
+            android:strokeLineJoin="round" />
+        <path
+            android:pathData="M1031 796L937 796 609 1125 609 1875 937 2203 1031 2203 890 1687 890 1312 1031 796Z"
+            android:fillType="evenOdd"
+            android:fillColor="#3B3B93"
+            android:strokeLineJoin="round" />
+        <path
+            android:pathData="M1500 843L1171 1171 1171 1828 1500 2156 1828 1828 1828 1171 1500 843Z"
+            android:fillType="evenOdd"
+            android:fillColor="#3B3B93"
+            android:strokeLineJoin="round" />
+        <path
+            android:pathData="M421 2437L750 2578 1453 2578 1453 2249 1171 1968 1078 2015 1171 2296 890 2296 656 2062 562 2109 421 2437Z"
+            android:fillType="evenOdd"
+            android:fillColor="#3B3B93"
+            android:strokeLineJoin="round" />
+        <path
+            android:pathData="M2578 562L2249 421 1546 421 1546 750 1828 1031 1921 984 1828 703 2109 703 2343 937 2437 890 2578 562Z"
+            android:fillType="evenOdd"
+            android:fillColor="#3B3B93"
+            android:strokeLineJoin="round" />
+        <path
+            android:pathData="M1968 796L2062 796 2390 1125 2390 1875 2062 2203 1968 2203 2109 1687 2109 1312 1968 796Z"
+            android:fillType="evenOdd"
+            android:fillColor="#3B3B93"
+            android:strokeLineJoin="round" />
+        <path
+            android:pathData="M2578 2437L2249 2578 1546 2578 1546 2249 1828 1968 1921 2015 1828 2296 2109 2296 2343 2062 2437 2109 2578 2437Z"
+            android:fillType="evenOdd"
+            android:fillColor="#3B3B93"
+            android:strokeLineJoin="round" />
+    </group>
+</vector>

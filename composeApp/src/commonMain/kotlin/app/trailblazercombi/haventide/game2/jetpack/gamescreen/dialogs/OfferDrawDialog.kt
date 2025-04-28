@@ -1,8 +1,6 @@
 package app.trailblazercombi.haventide.game2.jetpack.gamescreen.dialogs
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.layout.Box
@@ -12,7 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import app.trailblazercombi.haventide.game2.jetpack.gamescreen.components.TapToDismissLabel
+import app.trailblazercombi.haventide.game2.jetpack.gamescreen.components.misc.TapToDismissLabel
 import app.trailblazercombi.haventide.game2.jetpack.universal.DialogGenerics
 import app.trailblazercombi.haventide.game2.viewModel.GameLoopViewModel
 import app.trailblazercombi.haventide.netcode.TcpClient
@@ -22,8 +20,6 @@ import app.trailblazercombi.haventide.resources.Res
 import app.trailblazercombi.haventide.resources.offer_draw_dialog_offered
 import app.trailblazercombi.haventide.resources.offer_draw_dialog_refused
 import app.trailblazercombi.haventide.resources.offer_draw_dialog_accepted
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 
 @Suppress("KotlinConstantConditions")

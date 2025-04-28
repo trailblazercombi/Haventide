@@ -1,0 +1,50 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:aapt="http://schemas.android.com/aapt"
+    android:viewportWidth="3000"
+    android:viewportHeight="3000"
+    android:width="106.2992dp"
+    android:height="106.2992dp">
+    <group>
+        <clip-path
+            android:pathData="M0 0H3000V3000H0V0Z" />
+        <path
+            android:pathData="M2062 1827L1546 1827 1546 1170 2578 1170 2578 1827 2062 1827Z"
+            android:fillType="evenOdd"
+            android:fillColor="#25B97F"
+            android:strokeLineJoin="round" />
+        <path
+            android:pathData="M937 1827L421 1827 421 1170 1453 1170 1453 1827 937 1827Z"
+            android:fillType="evenOdd"
+            android:fillColor="#25B97F"
+            android:strokeLineJoin="round" />
+        <path
+            android:pathData="M1499 1077L983 1077 983 420 2015 420 2015 1077 1499 1077Z"
+            android:fillType="evenOdd"
+            android:fillColor="#25B97F"
+            android:strokeLineJoin="round" />
+        <path
+            android:pathData="M1500 2577L984 2577 984 1920 2016 1920 2016 2577 1500 2577Z"
+            android:fillType="evenOdd"
+            android:fillColor="#25B97F"
+            android:strokeLineJoin="round" />
+        <path
+            android:pathData="M2343 2577L2108 2577 2108 1920 2578 1920 2578 2577 2343 2577Z"
+            android:fillType="evenOdd"
+            android:fillColor="#25B97F"
+            android:strokeLineJoin="round" />
+        <path
+            android:pathData="M2343 1077L2108 1077 2108 420 2578 420 2578 1077 2343 1077Z"
+            android:fillType="evenOdd"
+            android:fillColor="#25B97F"
+            android:strokeLineJoin="round" />
+        <path
+            android:pathData="M655 2577L420 2577 420 1920 890 1920 890 2577 655 2577Z"
+            android:fillType="evenOdd"
+            android:fillColor="#25B97F"
+            android:strokeLineJoin="round" />
+        <path
+            android:pathData="M655 1077L420 1077 420 420 890 420 890 1077 655 1077Z"
+            android:fillType="evenOdd"
+            android:fillColor="#25B97F"
+            android:strokeLineJoin="round" />
+    </group>
+</vector>

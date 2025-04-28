@@ -10,10 +10,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import app.trailblazercombi.haventide.game2.jetpack.gamescreen.components.ConfirmAbilityButton
-import app.trailblazercombi.haventide.game2.jetpack.gamescreen.components.EndRoundButton
-import app.trailblazercombi.haventide.game2.jetpack.gamescreen.components.DiceCounter
-import app.trailblazercombi.haventide.game2.jetpack.gamescreen.components.StackOfDice
+import app.trailblazercombi.haventide.game2.jetpack.gamescreen.components.buttons.ConfirmAbilityButton
+import app.trailblazercombi.haventide.game2.jetpack.gamescreen.components.buttons.EndRoundButton
+import app.trailblazercombi.haventide.game2.jetpack.gamescreen.components.dice.DiceCounter
+import app.trailblazercombi.haventide.game2.jetpack.gamescreen.components.dice.StackOfDice
 import app.trailblazercombi.haventide.game2.viewModel.GameLoopViewModel
 import app.trailblazercombi.haventide.resources.*
 

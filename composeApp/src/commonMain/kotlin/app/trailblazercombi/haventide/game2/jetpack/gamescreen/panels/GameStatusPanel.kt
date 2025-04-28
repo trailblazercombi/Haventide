@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import app.trailblazercombi.haventide.game2.jetpack.extensions.intrinsicWidth
-import app.trailblazercombi.haventide.game2.jetpack.gamescreen.components.PhoenixMiniatureStrip
+import app.trailblazercombi.haventide.game2.jetpack.gamescreen.components.phoenix.PhoenixMiniatureStrip
 import app.trailblazercombi.haventide.game2.viewModel.GameLoopViewModel
 import app.trailblazercombi.haventide.resources.*
 import org.jetbrains.compose.resources.stringResource

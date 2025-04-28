@@ -1,4 +1,4 @@
-package app.trailblazercombi.haventide.game2.jetpack.gamescreen.components
+package app.trailblazercombi.haventide.game2.jetpack.gamescreen.components.phoenix
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable

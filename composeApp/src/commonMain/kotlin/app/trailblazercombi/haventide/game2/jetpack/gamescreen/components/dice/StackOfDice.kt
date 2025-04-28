@@ -1,4 +1,4 @@
-package app.trailblazercombi.haventide.game2.jetpack.gamescreen.components
+package app.trailblazercombi.haventide.game2.jetpack.gamescreen.components.dice
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row

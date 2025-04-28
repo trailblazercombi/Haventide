@@ -1,4 +1,4 @@
-package app.trailblazercombi.haventide.game2.jetpack.gamescreen.components
+package app.trailblazercombi.haventide.game2.jetpack.gamescreen.components.misc
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn

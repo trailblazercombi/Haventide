@@ -1,4 +1,4 @@
-package app.trailblazercombi.haventide.game2.jetpack.gamescreen.components
+package app.trailblazercombi.haventide.game2.jetpack.gamescreen.components.dice
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*

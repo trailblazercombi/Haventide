@@ -11,7 +11,6 @@ import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.im
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.immediate.ImmediateMechanismSummoner
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.immediate.ImmediateModificatorInvoker
 import app.trailblazercombi.haventide.game2.data.turntable.Team
-import app.trailblazercombi.haventide.resources.*
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
 import kotlin.math.sqrt
@@ -236,7 +235,10 @@ enum class AbilityTemplates(val template: AbilityTemplate) {
     // Basic universal abilities
     BASIC_MOVE(
         AbilityTemplate(
-            name = "BASIC_MOVE",
+            systemName = "BASIC_MOVE",
+            friendlyName = Res.string.generic_move_ability_name,
+            friendlyDescription = Res.string.generic_move_ability_description,
+            friendlyIcon = Res.drawable.basic_move,
             alignedCost = 0,
             scatteredCost = 1,
             range = sqrt(2.toDouble()),
@@ -247,7 +249,10 @@ enum class AbilityTemplates(val template: AbilityTemplate) {
     ),
     BASIC_STRIKE(
         AbilityTemplate(
-            name = "BASIC_STRIKE",
+            systemName = "BASIC_STRIKE",
+            friendlyName = Res.string.generic_strike_ability_name,
+            friendlyDescription = Res.string.generic_strike_ability_description,
+            friendlyIcon = Res.drawable.basic_strike,
             alignedCost = 0,
             scatteredCost = 2,
             range = 2.65,
@@ -257,9 +262,13 @@ enum class AbilityTemplates(val template: AbilityTemplate) {
             abilityVerb = AbilityVerb.ATTACK
         )
     ),
+    // FINNIAN
     BARRIER(
         AbilityTemplate(
-            name = "BARRIER",
+            systemName = "BARRIER",
+            friendlyName = Res.string.phoenix_finnian_ability_ultimate_name,
+            friendlyDescription = Res.string.phoenix_finnian_ability_ultimate_description,
+            friendlyIcon = Res.drawable.ability_finnian,
             alignedCost = 2,
             scatteredCost = 2,
             range = 3.27,
@@ -276,7 +285,10 @@ enum class AbilityTemplates(val template: AbilityTemplate) {
 }
 
 data class AbilityTemplate(
-    val name: String,
+    val systemName: String,
+    val friendlyName: StringResource,
+    val friendlyDescription: StringResource,
+    val friendlyIcon: DrawableResource,
     val alignedCost: Int,
     val scatteredCost: Int,
     val energyCost: Int = 0,
