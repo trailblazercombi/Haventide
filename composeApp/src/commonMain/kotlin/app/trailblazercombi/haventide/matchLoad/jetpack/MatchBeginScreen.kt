@@ -82,7 +82,6 @@ fun MatchBeginScreen(navController: NavHostController, modifier: Modifier = Modi
                     return@Button
                 }
                 TcpClient.launch(inetAddress)
-                diagnosticMessage = Res.string.diagnostic_pairing
             },
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -106,7 +105,9 @@ fun MatchBeginScreen(navController: NavHostController, modifier: Modifier = Modi
         }
 
         LaunchedEffect(gameLoop) {
-            if (gameLoop != null) navController.navigate(AppScreens.GameScreen.name)
+            if (gameLoop != null) navController.navigate(AppScreens.GameScreen.name) {
+                popUpTo(AppScreens.MatchStart.name) { inclusive = true }
+            }
             diagnosticMessage = null
         }
 
