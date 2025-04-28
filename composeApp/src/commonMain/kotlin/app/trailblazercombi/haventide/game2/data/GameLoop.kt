@@ -12,7 +12,7 @@ import app.trailblazercombi.haventide.game2.data.turntable.PlayerInGame
 import app.trailblazercombi.haventide.game2.data.turntable.RemotePlayerInGame
 import app.trailblazercombi.haventide.game2.data.turntable.TurnTable
 import app.trailblazercombi.haventide.game2.viewModel.GameLoopViewModel
-import app.trailblazercombi.haventide.netcode.TcpClient
+import app.trailblazercombi.haventide.netcode.*
 import app.trailblazercombi.haventide.playerdata.PlayerProfile
 import app.trailblazercombi.haventide.resources.AbilityTemplates
 import app.trailblazercombi.haventide.resources.GameResult
@@ -96,6 +96,8 @@ GameLoop(
     private fun gameOver(result: GameResult) {
         this.gameResult = result
         this.gameIsOver = true
+        stopTcpClient()
+        stopTcpServer()
         viewModel.showGameOverDialog()
     }
 
