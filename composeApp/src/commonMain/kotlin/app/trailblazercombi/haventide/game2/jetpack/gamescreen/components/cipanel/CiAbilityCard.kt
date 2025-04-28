@@ -2,15 +2,8 @@ package app.trailblazercombi.haventide.game2.jetpack.gamescreen.components.cipan
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.LocalContentColor
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import app.trailblazercombi.haventide.game2.viewModel.GameLoopViewModel
 import app.trailblazercombi.haventide.resources.AbilityTemplate
 import app.trailblazercombi.haventide.resources.CiStyle
@@ -40,8 +32,8 @@ import org.jetbrains.compose.resources.stringResource
 fun CiAbilityCard(
     ability: AbilityTemplate,
     onClick: () -> Unit = {},
-    contentColor: Color = Palette.FullWhite,
-    compact: Boolean = false,
+    compact: () -> Boolean = { false },
+    contentColor: Color = LocalContentColor.current,
     modifier: Modifier = Modifier
 ) {
     val painter = painterResource(ability.friendlyIcon)
@@ -49,38 +41,59 @@ fun CiAbilityCard(
     val cost = stringResource(Res.string.ability_card_dice_costs_short,
         ability.alignedCost, ability.scatteredCost)
 
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Start,
-        modifier = modifier
-            .fillMaxWidth()
-            .height(CiStyle.AbilityCardHeight)
-            .padding(CiStyle.AbilityCardPadding)
-            .clickable(onClick = onClick)
-    ) {
-        Image(
-            painter = painter, contentDescription = null,
-            colorFilter = ColorFilter.tint(contentColor),
+    if (!compact()) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start,
             modifier = modifier
-                .fillMaxHeight()
-                .padding(CiStyle.AbilityCardShrinkImage)
-        )
-        Column(
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.Center,
-            modifier = modifier.fillMaxSize()
+                .fillMaxWidth()
+                .height(CiStyle.AbilityCardHeight)
+                .padding(CiStyle.AbilityCardPadding)
+                .clickable(onClick = onClick)
         ) {
-            Text(
-                text = name,
-                fontSize = CiStyle.AbilityCardTitleSize,
-                lineHeight = CiStyle.AbilityCardTitleSize,
-                textAlign = TextAlign.Start,
+            Image(
+                painter = painter, contentDescription = null,
+                colorFilter = ColorFilter.tint(contentColor),
+                modifier = modifier
+                    .fillMaxHeight()
+                    .padding(CiStyle.AbilityCardShrinkImage)
             )
-            Text(
-                text = cost,
-                fontSize = CiStyle.AbilityCardDescriptionSize,
-                lineHeight = CiStyle.AbilityCardDescriptionSize,
-                textAlign = TextAlign.Start,
+            Column(
+                horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.Center,
+                modifier = modifier.fillMaxSize()
+            ) {
+                Text(
+                    text = name,
+                    fontSize = CiStyle.AbilityCardTitleSize,
+                    lineHeight = CiStyle.AbilityCardTitleSize,
+                    textAlign = TextAlign.Start,
+                    color = contentColor
+                )
+                Text(
+                    text = cost,
+                    fontSize = CiStyle.AbilityCardDescriptionSize,
+                    lineHeight = CiStyle.AbilityCardDescriptionSize,
+                    textAlign = TextAlign.Start,
+                    color = contentColor
+                )
+            }
+        }
+    } else { // compact = true
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = modifier
+                .fillMaxWidth()
+                .height(CiStyle.AbilityCardHeight)
+                .padding(CiStyle.AbilityCardPadding)
+                .clickable(onClick = onClick)
+        ) {
+            Image(
+                painter = painter, contentDescription = null,
+                colorFilter = ColorFilter.tint(contentColor),
+                modifier = modifier
+                    .fillMaxHeight()
+                    .padding(CiStyle.AbilityCardShrinkImage)
             )
         }
     }

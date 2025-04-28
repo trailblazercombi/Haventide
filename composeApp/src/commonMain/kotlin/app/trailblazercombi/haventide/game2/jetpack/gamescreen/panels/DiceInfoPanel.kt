@@ -2,6 +2,7 @@ package app.trailblazercombi.haventide.game2.jetpack.gamescreen.panels
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
@@ -22,12 +23,19 @@ fun DiceInfoPanel(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
     val screenWidth by viewModel.screenWidth.collectAsState()
     val abilityPreview by viewModel.abilityPreview.collectAsState()
 
-    Box (
-        contentAlignment = Alignment.BottomCenter,
-        modifier = modifier.fillMaxSize()
-    ) {
+//    Box (
+//        contentAlignment = Alignment.BottomCenter,
+//        modifier = modifier.fillMaxSize()
+//    ) {
         Surface(
-            shape = RoundedCornerShape(0.dp),
+            shape = RoundedCornerShape(
+                bottomStart =
+                    if (screenWidth > ScreenSizeThresholds.FloatBottomBarAsBubble) CiStyle.BubbleModeCornerRounding
+                    else 0.dp,
+                bottomEnd =
+                    if (screenWidth > ScreenSizeThresholds.FloatBottomBarAsBubble) CiStyle.BubbleModeCornerRounding
+                    else 0.dp,
+            ),
             color = GameScreenTopBubbleStyle.FillColorModifier,
             contentColor = Palette.FullWhite,
             border = BorderStroke(
@@ -35,7 +43,11 @@ fun DiceInfoPanel(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
                 GameScreenTopBubbleStyle.OutlineColorModifier
             ),
             elevation = GameScreenTopBubbleStyle.Elevation,
-            modifier = modifier.fillMaxWidth()
+            modifier = modifier.let {
+                if (screenWidth > ScreenSizeThresholds.FloatBottomBarAsBubble)
+                    it.width(ScreenSizeThresholds.FloatBottomBarAsBubble)
+                else it.fillMaxWidth()
+            }
         ) {
             Box (
                 contentAlignment = Alignment.Center,
@@ -71,5 +83,5 @@ fun DiceInfoPanel(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
                 }
             }
         }
-    }
+//    }
 }

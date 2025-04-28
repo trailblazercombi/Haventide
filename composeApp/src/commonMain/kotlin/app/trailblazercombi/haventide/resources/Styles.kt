@@ -65,7 +65,7 @@ object GameScreenTopBubbleStyle {
 }
 
 object DieStyle {
-    val DieSize = 48.dp
+    val DieSize = 40.dp
     val InnerPadding = 4.dp
     val CornerRounding = 4.dp
     val OutlineThickness = 0.dp
@@ -83,24 +83,27 @@ object DiceCounterStyle {
 }
 
 object CiStyle {
-    val AbilityCardWidth = 280.dp
-    val AbilityCardHeight = 84.dp
+    val MaxAbilityCardWidth = ScreenSizeThresholds.FloatBottomBarAsBubble / 3
+    val AbilityCardHeight = 64.dp
     val AbilityCardPadding = 8.dp
-    val AbilityCardTitleSize = 26.sp
-    val AbilityCardDescriptionSize = 16.sp
+    val AbilityCardTitleSize = 18.sp
+    val AbilityCardDescriptionSize = 14.sp
     val AbilityCardShrinkImage = 4.dp
     val PanelOffsetFromBottom = 71.dp
     val PanelOffsetFromBottomDouble = 119.dp
+    val BubbleModeCornerRounding = GameScreenTopBubbleStyle.CornerRounding
+    val OffsetFromEdge = GameScreenTopBubbleStyle.OffsetFromEdge
 }
 
 object ScreenSizeThresholds {
     // NOTE: The description always matches the behaviour of value > field.
-    val SpreadDiceStackOnSingleLine = 635.dp
+    val SpreadDiceStackOnSingleLine = 549.dp
     val FloatTopStatusBarAsBubble = 576.dp
     val StopStretchingGameOverDialogToScreenEdge = 780.dp
     val StopStackingYesNoDialogVertically = 604.dp
     val StopStretchingYesNoDialogToScreenEdge = 380.dp
-    val UnpackCIAndShowBothSides = 600.dp
+    val FloatBottomBarAsBubble = 990.dp
+    val UncompactCiPanel = 500.dp
 }
 
 /**
