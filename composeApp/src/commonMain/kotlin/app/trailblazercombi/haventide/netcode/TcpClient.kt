@@ -80,6 +80,9 @@ object TcpClient {
         }
     }
 
+    /**
+     * @param ipAddress The IPv4 address of the REMOTE SERVER.
+     */
     fun launch(ipAddress: String) {
         if (isOpen) return
         println("[TCP] Starting TCP Client")
