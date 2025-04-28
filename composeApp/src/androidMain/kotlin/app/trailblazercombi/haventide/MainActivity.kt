@@ -1,8 +1,10 @@
 package app.trailblazercombi.haventide
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import app.trailblazercombi.haventide.ContextHolder.initContext
 import app.trailblazercombi.haventide.netcode.TcpServer
 import kotlinx.coroutines.cancel
 
@@ -10,6 +12,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initContext(this)
 
         setContent {
             App()
@@ -31,7 +34,8 @@ class MainActivity : ComponentActivity() {
     override fun onStop() {
         super.onStop()
 
-        TcpServer.stop()
+//        TcpServer.stop()
+        // FIXME Prevent the game from ending upon device going to sleep
         // TODO This is where all clean-up goes!!!
     }
 }

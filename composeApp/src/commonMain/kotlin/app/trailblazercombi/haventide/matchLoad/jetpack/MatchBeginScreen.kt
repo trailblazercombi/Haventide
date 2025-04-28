@@ -12,10 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import app.trailblazercombi.haventide.AppScreens
 import app.trailblazercombi.haventide.Global
-import app.trailblazercombi.haventide.netcode.Handshaker
-import app.trailblazercombi.haventide.netcode.NetPairing
-import app.trailblazercombi.haventide.netcode.TcpClient
-import app.trailblazercombi.haventide.netcode.TcpServer
+import app.trailblazercombi.haventide.netcode.*
 import app.trailblazercombi.haventide.resources.Res
 import app.trailblazercombi.haventide.resources.diagnostic_cannot_pair_to_itself
 import kotlinx.coroutines.CoroutineScope
@@ -81,7 +78,7 @@ fun MatchBeginScreen(navController: NavHostController, modifier: Modifier = Modi
                     diagnosticMessage = Res.string.diagnostic_cannot_pair_to_itself
                     return@Button
                 }
-                TcpClient.launch(inetAddress)
+                startTcpClient(inetAddress)
             },
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -113,7 +110,7 @@ fun MatchBeginScreen(navController: NavHostController, modifier: Modifier = Modi
 
         Button(
             enabled = !serverRunning,
-            onClick = { TcpServer.launch() },
+            onClick = { startTcpServer() },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Start Server")
