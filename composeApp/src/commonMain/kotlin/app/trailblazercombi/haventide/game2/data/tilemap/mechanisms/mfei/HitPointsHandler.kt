@@ -95,4 +95,9 @@ interface HitPointsHandler {
      * Can also be called manually, in case it's necessary.
      */
     fun onZeroHitPoints()
+
+    /**
+     * Check if the Mechanism is still alive -> as in, still has more than 0 hit points.
+     */
+    fun isAlive(): Boolean = currentHitPoints < 0
 }
