@@ -1,9 +1,12 @@
 package app.trailblazercombi.haventide.game2.viewModel
 
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import app.trailblazercombi.haventide.game2.data.GameLoop
 import app.trailblazercombi.haventide.game2.data.tilemap.TileData
+import app.trailblazercombi.haventide.game2.data.tilemap.TileViewInfo
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.Mechanism
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.PhoenixMechanism
 import app.trailblazercombi.haventide.game2.data.turntable.Die
@@ -26,6 +29,10 @@ class GameLoopViewModel(
 
     override val screenWidth = MutableStateFlow(0.dp)
     override val screenHeight = MutableStateFlow(0.dp)
+
+    // WARNING!!! These are not updated when direct scrolling (user input)!!!
+    val stateOfScrollX = MutableStateFlow(0)
+    val stateOfScrollY = MutableStateFlow(0)
 
 ///////////////////////////////////////////////////////////////////////
 // DIALOGS OPEN MANAGEMENT
@@ -71,8 +78,8 @@ class GameLoopViewModel(
 
 ///////////////////////////////////////////////////////////////////////
 // CONTEXTUAL INFORMATION
-    val showLeftCI = MutableStateFlow(false)
-    val showRightCI = MutableStateFlow(false)
+    val leftCiInfo = MutableStateFlow<TileViewInfo?>(null)
+    val rightCiInfo = MutableStateFlow<TileViewInfo?>(null)
 
 ///////////////////////////////////////////////////////////////////////
 // TILE STATE MANAGEMENT
@@ -155,6 +162,27 @@ class GameLoopViewModel(
         }
 
         updateTileHighlights()
+        updateCiInfoDisplay()
+        updateTopBarPhoenixes()
+    }
+
+    private fun updateCiInfoDisplay() {
+        this.leftCiInfo.value = null
+        this.rightCiInfo.value = null
+        tileSelected3?.let {
+            this.leftCiInfo.value = it.getTileViewInfoPack()
+        }
+        tileSelected1?.let {
+            this.leftCiInfo.value = it.getTileViewInfoPack()
+        }
+        tileSelected2?.let {
+            this.rightCiInfo.value = it.getTileViewInfoPack()
+        }
+    }
+
+    internal fun updateTopBarPhoenixes() {
+        alliedPhoenixes.value = gameLoop.compileAlliedPhoenixes()
+        enemyPhoenixes.value = gameLoop.compileEnemyPhoenixes()
     }
 
     private fun createAbilityPreview() {
@@ -242,6 +270,7 @@ class GameLoopViewModel(
      */
     private fun processEndMoveEvent() {
         gameLoop.processEndMoveEvent()
+        updateCiInfoDisplay()
     }
 
     /**
@@ -256,7 +285,13 @@ class GameLoopViewModel(
         turnTable.endRoundAndNextPlayerTurn()
         TcpClient.sendToRemoteServer("YATTA_FINISH")
         localPlayerTurn.value = turnTable.currentPlayer() === gameLoop.localPlayer
+        tileSelected1 = null
+        tileSelected2 = null
+        tileSelected3 = null
+        deselectAllDice()
         updateTileHighlights()
+        updateTopBarPhoenixes()
+        updateCiInfoDisplay()
     }
     /**
      * Invoke upon new round starting.
@@ -302,6 +337,8 @@ class GameLoopViewModel(
         localDiceStates.resetAligned()
 
         updateTileHighlights()
+        updateCiInfoDisplay()
+        updateTopBarPhoenixes()
     }
 
     val drawOffered = MutableStateFlow(false)
@@ -441,7 +478,7 @@ class GameLoopViewModel(
 
         // Finally, update the actual consumption state
         updateAbilityPreviewDiceConsumption()
-        this.updateDiceCountStates()
+        updateDiceCountStates()
     }
 
     /**

@@ -1,5 +1,6 @@
 package app.trailblazercombi.haventide.game2.data.tilemap
 
+import app.trailblazercombi.haventide.Global
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.Mechanism
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.PhoenixMechanism
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.immediate.ImmediateEffecter
@@ -165,5 +166,14 @@ class TileData(
 
     private fun updateStackStack() {
         this.mechanismStackStack.value = mechanismStack.toSet()
+    }
+
+    fun getTileViewInfoPack(): TileViewInfo {
+        val phoenix = getPhoenix()
+        return if (phoenix != null) {
+            if (phoenix.teamAffiliation == Global.gameLoop.value?.localPlayer?.team)
+                TileViewInfo.Ally(phoenix.template, phoenix.currentHitPoints)
+            else TileViewInfo.Enemy(phoenix.template)
+        } else TileViewInfo.Empty()
     }
 }

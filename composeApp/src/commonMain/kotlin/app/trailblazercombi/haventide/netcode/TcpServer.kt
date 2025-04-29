@@ -86,7 +86,8 @@ object TcpServer {
             try {
                 main(arrayOf())
             } catch (_: IllegalStateException) {
-                TODO("The client tried to connect to itself...")
+                println("[TCPS] Tried to connect to itself, oops!")
+                stop()
             }
             println("[TCPS] TCP Coroutine finished after @JVM Static Main.")
         }

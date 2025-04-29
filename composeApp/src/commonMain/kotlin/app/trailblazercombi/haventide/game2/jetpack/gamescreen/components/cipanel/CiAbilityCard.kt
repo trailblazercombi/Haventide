@@ -1,7 +1,6 @@
 package app.trailblazercombi.haventide.game2.jetpack.gamescreen.components.cipanel
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.Text
@@ -14,7 +13,6 @@ import androidx.compose.ui.text.style.TextAlign
 import app.trailblazercombi.haventide.game2.viewModel.GameLoopViewModel
 import app.trailblazercombi.haventide.resources.AbilityTemplate
 import app.trailblazercombi.haventide.resources.CiStyle
-import app.trailblazercombi.haventide.resources.Palette
 import app.trailblazercombi.haventide.resources.Res
 import app.trailblazercombi.haventide.resources.ability_card_dice_costs_short
 import org.jetbrains.compose.resources.painterResource
@@ -31,7 +29,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun CiAbilityCard(
     ability: AbilityTemplate,
-    onClick: () -> Unit = {},
+//    onClick: () -> Unit = {},
     compact: () -> Boolean = { false },
     contentColor: Color = LocalContentColor.current,
     modifier: Modifier = Modifier
@@ -49,7 +47,7 @@ fun CiAbilityCard(
                 .fillMaxWidth()
                 .height(CiStyle.AbilityCardHeight)
                 .padding(CiStyle.AbilityCardPadding)
-                .clickable(onClick = onClick)
+//                .clickable(onClick = onClick)
         ) {
             Image(
                 painter = painter, contentDescription = null,
@@ -65,15 +63,15 @@ fun CiAbilityCard(
             ) {
                 Text(
                     text = name,
-                    fontSize = CiStyle.AbilityCardTitleSize,
-                    lineHeight = CiStyle.AbilityCardTitleSize,
+                    fontSize = CiStyle.TitleSize,
+                    lineHeight = CiStyle.TitleSize,
                     textAlign = TextAlign.Start,
                     color = contentColor
                 )
                 Text(
                     text = cost,
-                    fontSize = CiStyle.AbilityCardDescriptionSize,
-                    lineHeight = CiStyle.AbilityCardDescriptionSize,
+                    fontSize = CiStyle.DescriptionSize,
+                    lineHeight = CiStyle.DescriptionSize,
                     textAlign = TextAlign.Start,
                     color = contentColor
                 )
@@ -86,7 +84,7 @@ fun CiAbilityCard(
                 .fillMaxWidth()
                 .height(CiStyle.AbilityCardHeight)
                 .padding(CiStyle.AbilityCardPadding)
-                .clickable(onClick = onClick)
+//                .clickable(onClick = onClick)
         ) {
             Image(
                 painter = painter, contentDescription = null,

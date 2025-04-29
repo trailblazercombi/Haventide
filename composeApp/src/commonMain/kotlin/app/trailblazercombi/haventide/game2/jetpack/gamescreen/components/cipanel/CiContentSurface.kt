@@ -1,6 +1,7 @@
 package app.trailblazercombi.haventide.game2.jetpack.gamescreen.components.cipanel
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.width
@@ -27,6 +28,7 @@ fun CiContentSurface(
     outlineColor: Color = GameScreenTopBubbleStyle.OutlineColorModifier,
     contentColor: Color = Palette.FullWhite,
     modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
     content: @Composable BoxScope.() -> Unit
 ) {
     val screenWidth by screenSizeProvider.screenWidth.collectAsState()
@@ -50,7 +52,8 @@ fun CiContentSurface(
                 border = BorderStroke(
                     GameScreenTopBubbleStyle.OutlineThickness,
                     outlineColor
-                )
+                ),
+                modifier = modifier.clickable(onClick = onClick)
             ) {
                 content()
             }

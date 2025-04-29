@@ -214,6 +214,7 @@ GameLoop(
 
         viewModel.localPlayerTurn.value = turnTable.currentPlayer() === localPlayer
         viewModel.updateTileHighlights()
+        viewModel.updateTopBarPhoenixes()
     }
 
     internal fun remotePlayerRefusedDraw() {

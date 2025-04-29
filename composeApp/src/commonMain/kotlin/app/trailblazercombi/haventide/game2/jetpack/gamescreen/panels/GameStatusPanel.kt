@@ -30,9 +30,6 @@ fun GameStatusPanel(viewModel: GameLoopViewModel, modifier: Modifier = Modifier)
     val localPlayerTurn by viewModel.localPlayerTurn.collectAsState()
     val localPlayerRoundOver by viewModel.localPlayerRoundOver.collectAsState()
 
-    val alliedPhoenixes by viewModel.alliedPhoenixes.collectAsState()
-    val enemyPhoenixes by viewModel.enemyPhoenixes.collectAsState()
-
     Box(
         contentAlignment = Alignment.TopCenter,
         modifier = modifier
@@ -72,7 +69,7 @@ fun GameStatusPanel(viewModel: GameLoopViewModel, modifier: Modifier = Modifier)
                     .fillMaxHeight()
                     .padding(0.dp, GameScreenTopBubbleStyle.InnerOffset)
             ) {
-                PhoenixMiniatureStrip(viewModel, alliedPhoenixes)
+                PhoenixMiniatureStrip(viewModel, viewModel.alliedPhoenixes)
             }
             Box( // ENEMIES
                 contentAlignment = Alignment.BottomEnd,
@@ -80,7 +77,7 @@ fun GameStatusPanel(viewModel: GameLoopViewModel, modifier: Modifier = Modifier)
                     .fillMaxHeight()
                     .padding(0.dp, GameScreenTopBubbleStyle.InnerOffset)
             ) {
-                PhoenixMiniatureStrip(viewModel, enemyPhoenixes)
+                PhoenixMiniatureStrip(viewModel, viewModel.enemyPhoenixes)
             }
             // HERE STARTS THE ROUND COUNTER / TEAM TO MOVE DISPLAY
             if (screenWidth > ScreenSizeThresholds.FloatTopStatusBarAsBubble) {

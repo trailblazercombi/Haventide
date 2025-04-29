@@ -2,7 +2,6 @@ package app.trailblazercombi.haventide.game2.jetpack.gamescreen.panels
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
@@ -22,6 +21,7 @@ import app.trailblazercombi.haventide.resources.*
 fun DiceInfoPanel(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
     val screenWidth by viewModel.screenWidth.collectAsState()
     val abilityPreview by viewModel.abilityPreview.collectAsState()
+    val leftCiInfo by viewModel.leftCiInfo.collectAsState()
 
 //    Box (
 //        contentAlignment = Alignment.BottomCenter,
@@ -29,6 +29,14 @@ fun DiceInfoPanel(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
 //    ) {
         Surface(
             shape = RoundedCornerShape(
+                topStart =
+                    if (leftCiInfo != null) 0.dp
+                    else if (screenWidth > ScreenSizeThresholds.FloatBottomBarAsBubble) CiStyle.BubbleModeCornerRounding
+                    else 0.dp,
+                topEnd =
+                    if (abilityPreview != null) 0.dp
+                    else if (screenWidth > ScreenSizeThresholds.FloatBottomBarAsBubble) CiStyle.BubbleModeCornerRounding
+                    else 0.dp,
                 bottomStart =
                     if (screenWidth > ScreenSizeThresholds.FloatBottomBarAsBubble) CiStyle.BubbleModeCornerRounding
                     else 0.dp,
@@ -44,8 +52,8 @@ fun DiceInfoPanel(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
             ),
             elevation = GameScreenTopBubbleStyle.Elevation,
             modifier = modifier.let {
-                if (screenWidth > ScreenSizeThresholds.FloatBottomBarAsBubble)
-                    it.width(ScreenSizeThresholds.FloatBottomBarAsBubble)
+                if (screenWidth > ScreenSizeThresholds.MaxBottomBarWidth)
+                    it.width(ScreenSizeThresholds.MaxBottomBarWidth)
                 else it.fillMaxWidth()
             }
         ) {
@@ -57,7 +65,10 @@ fun DiceInfoPanel(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start,
                     modifier = modifier
-                        .padding(GameScreenTopBubbleStyle.InnerOffset)
+                        .padding(
+                            horizontal = GameScreenTopBubbleStyle.InnerOffset,
+                            vertical = GameScreenTopBubbleStyle.InnerOffset - DieStyle.Separation / 2
+                        )
                         .fillMaxWidth()
                 ) {
                     StackOfDice(
@@ -71,7 +82,10 @@ fun DiceInfoPanel(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.End,
                     modifier = modifier
-                        .padding(GameScreenTopBubbleStyle.InnerOffset)
+                        .padding(
+                            horizontal = GameScreenTopBubbleStyle.InnerOffset - DieStyle.Separation / 2,
+                            vertical = GameScreenTopBubbleStyle.InnerOffset - DieStyle.Separation / 2
+                        )
                         .fillMaxWidth()
                 ) {
                     if (abilityPreview != null) {

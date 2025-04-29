@@ -7,6 +7,7 @@ import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.mfei.Movemen
 import app.trailblazercombi.haventide.game2.data.tilemap.modificators.Modificator
 import app.trailblazercombi.haventide.game2.data.turntable.Team
 import app.trailblazercombi.haventide.resources.*
+import kotlinx.coroutines.flow.MutableStateFlow
 
 class PhoenixMechanism(
     parentTile: TileData,
@@ -16,6 +17,12 @@ class PhoenixMechanism(
 ) : Mechanism(parentTile, teamAffiliation), ModificatorHandler, HitPointsHandler, MovementEnabled {
     override val maxHitPoints = template.maxHitPoints
     override var currentHitPoints = maxHitPoints
+        set(value) {
+            field = value
+            health.value = value
+        }
+
+    internal val health = MutableStateFlow(currentHitPoints)
 
     private var energyPoints = 0
 //    private val maxEnergyPoints = template.maxEnergyPoints

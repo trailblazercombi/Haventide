@@ -28,11 +28,11 @@ fun PhoenixMiniature(
     Box(
         modifier = modifier
             .size(width, height)
-            .also {
-                if (phoenix.ultimateReady()) it.border(
-                    BorderStroke(GameScreenTopBubbleStyle.MiniatureUltimateBorder, Palette.FillYellow),
-                )
-            }
+//            .also {
+//                if (phoenix.ultimateReady()) it.border(
+//                    BorderStroke(GameScreenTopBubbleStyle.MiniatureUltimateBorder, Palette.FillYellow),
+//                )
+//            }
         // .padding(GameScreenTopBubbleStyle.InnerOffset)
     ) {
         Image(

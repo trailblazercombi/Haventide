@@ -25,6 +25,8 @@ object PhoenixBallStyle {
     val AffiliationIconSize = 28.dp
     val AffiliationIconOuterOffsetFromBottomRight = 12.dp
     val AffiliationIconInnerPadding = 4.dp
+    val AllyHpIndicatorWidth = 12.dp
+    val AllyHpIndicatorPadding = 12.dp
 }
 
 object GameScreenDialogBoxStyle {
@@ -54,20 +56,19 @@ object GameScreenTopBubbleStyle {
     val MiniatureWidth = 64.dp
     val MiniatureHeight = 32.dp
     val MiniatureCornerRounding = 8.dp
-    val MiniatureUltimateBorder = 8.dp
     val RoundCounterWidth = 128.dp
     val StandardButtonWidth = 256.dp
     val RoundCounterTextSize = 12.sp
     val UnifiedRoundTeamTextSize = 14.sp
     val TeamTurnTextSize = 16.sp
     val FillColorModifier = Palette.Abyss90
-    val OutlineColorModifier = Palette.Glass90
+    val OutlineColorModifier = Palette.Glass00
 }
 
 object DieStyle {
     val DieSize = 40.dp
-    val InnerPadding = 4.dp
-    val CornerRounding = 4.dp
+    val InnerPadding = 2.dp
+    val CornerRounding = 6.dp
     val OutlineThickness = 0.dp
     val Separation = 4.dp
     val EndRoundButtonSeverity = ButtonSeverity.PREFERRED
@@ -79,20 +80,21 @@ object DiceCounterStyle {
     val HorizontalTextSize = 18.sp
     val VerticalTextSize = 18.sp
     val VerticalSeparation = 6.dp
-    val CornerRounding = 4.dp
 }
 
 object CiStyle {
-    val MaxAbilityCardWidth = ScreenSizeThresholds.FloatBottomBarAsBubble / 3
+    val MaxAbilityCardWidth = 330.dp
     val AbilityCardHeight = 64.dp
     val AbilityCardPadding = 8.dp
-    val AbilityCardTitleSize = 18.sp
-    val AbilityCardDescriptionSize = 14.sp
+    val TitleSize = 18.sp
+    val DescriptionSize = 14.sp
     val AbilityCardShrinkImage = 4.dp
-    val PanelOffsetFromBottom = 71.dp
-    val PanelOffsetFromBottomDouble = 119.dp
+    val PhoenixCardShrinkImage = 12.dp
+    val PhoenixCornerRounding = 8.dp
     val BubbleModeCornerRounding = GameScreenTopBubbleStyle.CornerRounding
     val OffsetFromEdge = GameScreenTopBubbleStyle.OffsetFromEdge
+    val CiTextIconSize = 24.dp
+    val InnerPadding = 4.dp
 }
 
 object ScreenSizeThresholds {
@@ -102,8 +104,9 @@ object ScreenSizeThresholds {
     val StopStretchingGameOverDialogToScreenEdge = 780.dp
     val StopStackingYesNoDialogVertically = 604.dp
     val StopStretchingYesNoDialogToScreenEdge = 380.dp
-    val FloatBottomBarAsBubble = 990.dp
+    val FloatBottomBarAsBubble = 720.dp
     val UncompactCiPanel = 500.dp
+    val MaxBottomBarWidth = 990.dp
 }
 
 /**

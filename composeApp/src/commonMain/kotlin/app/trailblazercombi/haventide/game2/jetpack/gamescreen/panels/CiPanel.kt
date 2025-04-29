@@ -3,8 +3,10 @@ package app.trailblazercombi.haventide.game2.jetpack.gamescreen.panels
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import app.trailblazercombi.haventide.game2.data.tilemap.TileViewInfo
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.components.cipanel.CiAbilityCard
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.components.cipanel.CiContentSurface
+import app.trailblazercombi.haventide.game2.jetpack.gamescreen.components.cipanel.CiTileView
 import app.trailblazercombi.haventide.game2.viewModel.GameLoopViewModel
 import app.trailblazercombi.haventide.resources.GameScreenTopBubbleStyle
 import app.trailblazercombi.haventide.resources.Palette
@@ -18,6 +20,9 @@ fun CiPanel(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
     val screenWidth by viewModel.screenWidth.collectAsState()
     val abilityPreview by viewModel.abilityPreview.collectAsState()
 
+    val leftCiInfo by viewModel.leftCiInfo.collectAsState()
+    val rightCiInfo by viewModel.rightCiInfo.collectAsState()
+
     Row {
         CiContentSurface(
             screenSizeProvider = viewModel,
@@ -29,9 +34,9 @@ fun CiPanel(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
             contentColor = Palette.FullWhite,
             modifier = modifier
         ) {
-            CiAbilityCard(
-                ability = abilityPreview?.template ?: return@CiContentSurface,
-                compact = { screenWidth < ScreenSizeThresholds.UncompactCiPanel }
+            CiTileView(
+                tile = leftCiInfo ?: return@CiContentSurface,
+                compact = { screenWidth < ScreenSizeThresholds.UncompactCiPanel },
             )
         }
         CiContentSurface(
@@ -42,6 +47,7 @@ fun CiPanel(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
             fillColor = Palette.FillLightPrimary,
             outlineColor = Palette.FillLightPrimary,
             contentColor = Palette.FullBlack,
+            onClick = { println("Clicked on ${abilityPreview?.template}") },
             modifier = modifier
         ) {
             CiAbilityCard(
@@ -59,9 +65,9 @@ fun CiPanel(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
             contentColor = Palette.FullWhite,
             modifier = modifier
         ) {
-            CiAbilityCard(
-                ability = abilityPreview!!.template,
-                compact = { screenWidth < ScreenSizeThresholds.UncompactCiPanel }
+            CiTileView(
+                tile = rightCiInfo ?: return@CiContentSurface,
+                compact = { screenWidth < ScreenSizeThresholds.UncompactCiPanel },
             )
         }
     }

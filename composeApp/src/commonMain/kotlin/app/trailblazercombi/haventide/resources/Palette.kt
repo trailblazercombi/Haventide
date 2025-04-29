@@ -71,7 +71,7 @@ object Palette {
 //    val ShadeRed = Color(0xFFBE1601)
 
     // Green Content
-    val FillGreen = Color(0xFF2FAA6B)
+    val FillGreen = Color(0xFF4AFF73)
 //    val LightGreen = Color(0xFF56CC84)
 //    val ShadeGreen = Color(0xFF228A55)
 
