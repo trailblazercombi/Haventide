@@ -99,7 +99,7 @@ enum class PhoenixTemplates(val template: MechanismTemplate.Phoenix) {
 @Suppress("MemberVisibilityCanBePrivate")
 object ImmediateEffecterTemplates {
     enum class DamageInvokerTemplates(val template: MechanismTemplate.ImmediateEffecter.DamageInvoker) {
-        BASIC_STRIKE(MechanismTemplate.ImmediateEffecter.DamageInvoker(2000))
+        BASIC_STRIKE(MechanismTemplate.ImmediateEffecter.DamageInvoker(20))
     }
 
     enum class HealingInvokerTemplates(val template: MechanismTemplate.ImmediateEffecter.HealingInvoker) {
