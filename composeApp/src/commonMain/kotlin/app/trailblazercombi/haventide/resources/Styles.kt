@@ -94,6 +94,7 @@ object CiStyle {
     val BubbleModeCornerRounding = GameScreenTopBubbleStyle.CornerRounding
     val OffsetFromEdge = GameScreenTopBubbleStyle.OffsetFromEdge
     val CiTextIconSize = 24.dp
+    val CiTitleIconSize = 24.dp
     val InnerPadding = 4.dp
 }
 

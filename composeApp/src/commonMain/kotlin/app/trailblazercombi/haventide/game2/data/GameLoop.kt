@@ -96,9 +96,9 @@ GameLoop(
     private fun gameOver(result: GameResult) {
         this.gameResult = result
         this.gameIsOver = true
+        viewModel.showGameOverDialog()
         stopTcpClient()
         stopTcpServer()
-        viewModel.showGameOverDialog()
     }
 
     fun firstPlayer() = if (localPlayerStarts) localPlayer else remotePlayer
@@ -177,6 +177,7 @@ GameLoop(
 
     fun remotePlayerForfeited() {
         declareWinner(localPlayer, true)
+        // FIXME Sometimes doesn't work...???
     }
 
     /**

@@ -59,11 +59,14 @@ Please wait...
 
     <string name="tile_info_empty">Empty tile</string>
     <string name="tile_info_enemy">Enemy Phoenix</string>
+    <string name="ci_label_hp">HP</string>
+    <string name="ci_label_hp_values">%1$d/%2$d</string>
 
     <string name="game_button_dice_counter_wide">%1$d/%2$d+%3$d/%4$d</string>
     <string name="game_button_dice_counter_narrow1">%1$d/%2$d</string>
     <string name="game_button_dice_counter_narrow2">%1$d/%2$d</string>
     <string name="ability_card_dice_costs_short">Costs %1$d + %2$d dice</string>
+
 
     <string name="die_type_vanguard">Vanguard</string>
     <string name="die_type_sentinel">Sentinel</string>

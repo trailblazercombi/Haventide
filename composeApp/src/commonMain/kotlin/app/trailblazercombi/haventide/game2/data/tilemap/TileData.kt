@@ -172,7 +172,7 @@ class TileData(
         val phoenix = getPhoenix()
         return if (phoenix != null) {
             if (phoenix.teamAffiliation == Global.gameLoop.value?.localPlayer?.team)
-                TileViewInfo.Ally(phoenix.template, phoenix.currentHitPoints)
+                TileViewInfo.Ally(phoenix.template, phoenix.currentHitPoints, phoenix.maxHitPoints)
             else TileViewInfo.Enemy(phoenix.template)
         } else TileViewInfo.Empty()
     }
