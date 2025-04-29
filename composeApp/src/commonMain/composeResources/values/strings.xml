@@ -50,12 +50,15 @@ Please wait...
     <string name="diagnostic_cannot_pair_to_itself">Cannot pair with itself!</string>
     <string name="diagnostic_pairing">Pairing...</string>
 
-    <string name="ability_move">Move!</string>
-    <string name="ability_construct">Build!</string>
-    <string name="ability_attack">Attack!</string>
-    <string name="ability_restore">Heal!</string>
-    <string name="ability_impair">Impair!</string>
-    <string name="ability_support">Support!</string>
+    <string name="ability_move">Move</string>
+    <string name="ability_construct">Construct</string>
+    <string name="ability_attack">Attack</string>
+    <string name="ability_restore">Heal</string>
+    <string name="ability_impair">Impair</string>
+    <string name="ability_support">Support</string>
+
+    <string name="tile_info_empty">Empty tile</string>
+    <string name="tile_info_enemy">Enemy Phoenix</string>
 
     <string name="game_button_dice_counter_wide">%1$d/%2$d+%3$d/%4$d</string>
     <string name="game_button_dice_counter_narrow1">%1$d/%2$d</string>
