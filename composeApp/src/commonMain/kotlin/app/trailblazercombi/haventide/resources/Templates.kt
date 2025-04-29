@@ -160,16 +160,12 @@ sealed class MechanismTemplate {
         val profilePhoto: DrawableResource,
         val phoenixType: DieType,
         val maxHitPoints: Int = 120,
-        val maxEnergyPoints: Int = 50,
-        val energyForUltimate: Int = 50,
+//        val maxEnergyPoints: Int = 50,
+//        val energyForUltimate: Int = 50,
         val abilityBasic1: AbilityTemplate = AbilityTemplates.BASIC_MOVE.template,
         val abilityBasic2: AbilityTemplate = AbilityTemplates.BASIC_STRIKE.template,
-        // val abilityInnate1: AbilityTemplate,
-        // val abilityInnate2: AbilityTemplate,
+        // val abilityInnate: AbilityTemplate,
         // val abilityUltimate: AbilityTemplate,
-        // [ABILITY STACK] TODO Abilities
-        //  Lore pages
-        //  Et cetera
     ) : MechanismTemplate() {
         override fun build(parentTile: TileData, teamAffiliation: Team?): Mechanism {
             return PhoenixMechanism(parentTile, this,

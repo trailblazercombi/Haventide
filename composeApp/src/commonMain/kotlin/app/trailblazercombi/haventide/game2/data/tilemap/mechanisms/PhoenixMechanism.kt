@@ -18,8 +18,8 @@ class PhoenixMechanism(
     override var currentHitPoints = maxHitPoints
 
     private var energyPoints = 0
-    private val maxEnergyPoints = template.maxEnergyPoints
-    private val neededEnergyPoints = template.energyForUltimate
+//    private val maxEnergyPoints = template.maxEnergyPoints
+//    private val neededEnergyPoints = template.energyForUltimate
     val teamIcon = teamAffiliation.icon
 
     override fun onZeroHitPoints() {
@@ -32,18 +32,17 @@ class PhoenixMechanism(
         return false
     }
 
-    /**
-     * Check if the Ultimate Ability is ready, aka if the Phoenix has enough Energy to cast it.
-     */
-    fun ultimateReady() = this.energyPoints >= this.neededEnergyPoints
+//    /**
+//     * Check if the Ultimate Ability is ready, aka if the Phoenix has enough Energy to cast it.
+//     */
+//    fun ultimateReady() = this.energyPoints >= this.neededEnergyPoints
 
     private fun abilityList(): List<AbilityTemplate> {
         return listOf(
             template.abilityBasic1,
             template.abilityBasic2,
-//            template.abilityInnate1,
-//            template.abilityInnate2,
-//            template.abilityUltimate
+//            template.abilityInnate,
+//            template.abilityUltimate // TODO
         )
     }
 
