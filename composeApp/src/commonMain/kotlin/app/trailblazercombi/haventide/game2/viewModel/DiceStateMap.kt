@@ -45,6 +45,15 @@ class DiceStateMap(listOfDice: List<Die>) {
      * __NOTE:__ This one does not automatically reset anything.
      */
     fun setSelected(vararg dice: Die) {
+        setSelected(dice.toList())
+    }
+
+    /**
+     * Select dice in the StateMap (set their selected state).
+     *
+     * __NOTE:__ This one does not automatically reset anything.
+     */
+    fun setSelected(dice: List<Die>) {
         dice.forEach { die -> stateMap[die]?.let { it.second.value = true } }
     }
 

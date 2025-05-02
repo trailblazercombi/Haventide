@@ -1,7 +1,5 @@
 package app.trailblazercombi.haventide.game2.viewModel
 
-import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import app.trailblazercombi.haventide.game2.data.GameLoop
@@ -68,6 +66,7 @@ class GameLoopViewModel(
 ///////////////////////////////////////////////////////////////////////
 // TOP BUBBLE STATE MANAGEMENT
     val currentPlayer = MutableStateFlow(turnTable.currentPlayer())
+    val currentPhoenix = MutableStateFlow<PhoenixMechanism?>(null)
 
     val roundNumber = MutableStateFlow(turnTable.roundCount)
     val localPlayerTurn = MutableStateFlow(false)
@@ -86,14 +85,24 @@ class GameLoopViewModel(
     private val tileHighlights: TileHighlightStateMap = generateTileStates(gameLoop)
 
     val abilityPreview: MutableStateFlow<AbilityPreview?> = MutableStateFlow(null)
+    val availableAbilities: MutableStateFlow<List<AbilityTemplate>> = MutableStateFlow(emptyList())
 
     private var tileSelected1: TileData? = null
         set(value) {
             field = value
-            if (value != null) highlightAlignedDice(tileSelected1!!.getPhoenix()!!.template.phoenixType)
-            else localDiceStates.resetAligned()
+            highlightAlignedDice(field?.getPhoenix()?.template?.phoenixType)
+            currentPhoenix.value = field?.getPhoenix()
         }
     private var tileSelected2: TileData? = null
+        set(value) {
+            // This should be kosher somewhat, since tileSelection1 preceeds tileSelection2
+            field = value
+            if (tileSelected1 != null && field != null) {
+                availableAbilities.value =
+                    tileSelected1!!.getPhoenix()?.findAllAvailableAbilities(field!!)
+                        ?: emptyList()
+            } else availableAbilities.value = emptyList()
+        }
     private var tileSelected3: TileData? = null
 
     private var tilesAvailable1: Set<TileData> = setOf()
@@ -113,6 +122,14 @@ class GameLoopViewModel(
      * Invoke upon user clicking a tile.
      */
     fun processTileClickEvent(tile: TileData) {
+        if (tile == tileSelected3) {
+            tileSelected3 = null
+            updateTileHighlights()
+            updateCiInfoDisplay()
+            updateTopBarPhoenixes()
+            return
+        }
+
         tileSelected3 = null
 
         if (currentPlayer.value !== gameLoop.localPlayer) {
@@ -126,7 +143,7 @@ class GameLoopViewModel(
             tileSelected2 = null
             tileSelected3 = null
             resetAbilityPreview()
-            localDiceStates.resetAligned()
+//            localDiceStates.value.resetAligned()
         } else if (tileSelected1 != null) { // If a yellow tile is selected...
             when (tile) {
                 tileSelected1 -> { // ...and if you click that tile, deselect it
@@ -152,7 +169,7 @@ class GameLoopViewModel(
                 tileSelected2 = null
                 tileSelected1 = tile
                 resetAbilityPreview()
-                highlightAlignedDice(tileSelected1!!.getPhoenix()!!.template.phoenixType)
+//                highlightAlignedDice(tileSelected1!!.getPhoenix()!!.template.phoenixType)
             } else { // last resort: get rid of everything and select an unrelated grey tile
                 tileSelected1 = null
                 tileSelected2 = null
@@ -334,7 +351,7 @@ class GameLoopViewModel(
         tileSelected2 = null
         tileSelected3 = null
         resetAbilityPreview()
-        localDiceStates.resetAligned()
+//        localDiceStates.value.resetAligned()
 
         updateTileHighlights()
         updateCiInfoDisplay()
@@ -347,14 +364,15 @@ class GameLoopViewModel(
 ///////////////////////////////////////////////////////////////////////
 // DICE ECONOMY -- only for local player!!!
     val localDiceList = MutableStateFlow(emptyList<Die>())
-    private var localDiceStates = DiceStateMap(emptyList())
+    internal var localDiceStates = MutableStateFlow(DiceStateMap(emptyList()))
+        private set
 
     val alignedSelectedDiceCount = MutableStateFlow(0)
     val scatteredSelectedDiceCount = MutableStateFlow(0)
 
     private fun updateDiceCountStates() {
-        alignedSelectedDiceCount.value = localDiceStates.countAlignedSelected()
-        scatteredSelectedDiceCount.value = localDiceStates.countScatteredSelected()
+        alignedSelectedDiceCount.value = localDiceStates.value.countAlignedSelected()
+        scatteredSelectedDiceCount.value = localDiceStates.value.countScatteredSelected()
     }
 
     /**
@@ -362,36 +380,36 @@ class GameLoopViewModel(
      */
     fun pushDiceChanges(newList: List<Die>) {
         localDiceList.value = newList
-        localDiceStates = DiceStateMap(newList)
+        localDiceStates.value = DiceStateMap(localDiceList.value)
     }
 
     /**
      * Highlight all aligned dice of the specified type.
      */
-    private fun highlightAlignedDice(type: DieType) = localDiceStates.setAligned(type)
+    private fun highlightAlignedDice(type: DieType?) = localDiceStates.value.setAligned(type)
 
     /**
      * Deselect all dice.
      */
     private fun deselectAllDice() {
-        localDiceStates.resetSelected()
+        localDiceStates.value.resetSelected()
         updateDiceCountStates()
     }
 
     private fun updateAbilityPreviewDiceConsumption() {
         if (abilityPreview.value == null) return
-        abilityPreview.value!!.updateConsume(localDiceStates.getAllSelectedDice())
+        abilityPreview.value!!.updateConsume(localDiceStates.value.getAllSelectedDice())
     }
 
     /**
      * Exposes [DiceStateMap.selectedStateOf]
      */
-    fun selectedStateOf(die: Die) = localDiceStates.selectedStateOf(die)
+    fun selectedStateOf(die: Die) = localDiceStates.value.selectedStateOf(die)
 
     /**
      * Exposes [DiceStateMap.alignedStateOf]
      */
-    fun alignedStateOf(die: Die) = localDiceStates.alignedStateOf(die)
+    fun alignedStateOf(die: Die) = localDiceStates.value.alignedStateOf(die)
 
     /**
      * Invoke when the user clicks on a Die.
@@ -408,8 +426,8 @@ class GameLoopViewModel(
      */
     private fun getActualDiceCounts(): Pair<Int, Int> {
         if (abilityPreview.value == null) return 0 to 0
-        val aligned = localDiceStates.countAlignedSelected()
-        val scattered = localDiceStates.countScatteredSelected()
+        val aligned = localDiceStates.value.countAlignedSelected()
+        val scattered = localDiceStates.value.countScatteredSelected()
         return aligned to scattered // aligned + scattered = totalSelected
     }
 
@@ -452,15 +470,15 @@ class GameLoopViewModel(
         var scatteredLeft = scatteredNeeded // in fact, any dice will do
 
         // Go through the entire stack...
-        val keys = localDiceStates.getKeys()
+        val keys = localDiceStates.value.getKeys()
         keys.forEach {
             // ...find aligned dice
             if (alignedLeft > 0 && it.type == typeNeeded) {
-                localDiceStates.setSelected(it)
+                localDiceStates.value.setSelected(it)
                 alignedLeft--
                 // ...find scattered dice, prioritize the ones that are of a different type
             } else if (scatteredLeft > 0 && it.type != typeNeeded) {
-                localDiceStates.setSelected(it)
+                localDiceStates.value.setSelected(it)
                 scatteredLeft--
             }
         }
@@ -470,7 +488,7 @@ class GameLoopViewModel(
         if (scatteredLeft > 0) {
             keys.forEach {
                 if (scatteredLeft > 0 && !selectedStateOf(it)!!.value) {
-                    localDiceStates.setSelected(it)
+                    localDiceStates.value.setSelected(it)
                     scatteredLeft--
                 }
             }
@@ -484,7 +502,7 @@ class GameLoopViewModel(
     /**
      * @return Whether or not the local player still has any dice.
      */
-    fun playerHasDiceLeft() = localDiceStates.getKeys().isNotEmpty()
+    fun playerHasDiceLeft() = localDiceStates.value.getKeys().isNotEmpty()
 
     /**
      * Exposes [GameLoop.declareDraw]

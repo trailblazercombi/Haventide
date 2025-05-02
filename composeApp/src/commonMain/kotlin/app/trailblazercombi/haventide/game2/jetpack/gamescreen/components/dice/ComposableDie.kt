@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -20,6 +21,7 @@ import app.trailblazercombi.haventide.game2.data.turntable.Die
 import app.trailblazercombi.haventide.game2.viewModel.GameLoopViewModel
 import app.trailblazercombi.haventide.resources.DieStyle
 import app.trailblazercombi.haventide.resources.functions.DieHighlightState
+import kotlinx.coroutines.flow.compose
 import org.jetbrains.compose.resources.painterResource
 import app.trailblazercombi.haventide.resources.DieStyle.DieSize as dieSize
 
@@ -27,10 +29,10 @@ import app.trailblazercombi.haventide.resources.DieStyle.DieSize as dieSize
 fun ComposableDie(viewModel: GameLoopViewModel, die: Die, onClick: () -> Unit = {}, modifier: Modifier = Modifier) {
     val dieType: Painter = painterResource(die.type.icon)
 
-    val potential by viewModel.alignedStateOf(die)?.collectAsState()
-        ?: throw IllegalArgumentException("What the fuck?! ComposableDie::potential")
-    val selected by viewModel.selectedStateOf(die)?.collectAsState()
-        ?: throw IllegalArgumentException("What the fuck?! ComposableDie::selected")
+    val stateMap by viewModel.localDiceStates.collectAsState()
+
+    val potential by stateMap.alignedStateOf(die)?.collectAsState()!!
+    val selected by stateMap.selectedStateOf(die)?.collectAsState()!!
 
     Box(
         modifier = modifier.clickable(
