@@ -47,7 +47,7 @@ fun CiPanel(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
             fillColor = Palette.FillLightPrimary,
             outlineColor = Palette.FillLightPrimary,
             contentColor = Palette.FullBlack,
-            onClick = { println("Clicked on ${abilityPreview?.template}") },
+            onClick = { viewModel.showAbilityPickerDialog() },
             modifier = modifier
         ) {
             CiAbilityCard(

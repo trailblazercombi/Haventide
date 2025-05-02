@@ -83,13 +83,14 @@ object DiceCounterStyle {
 }
 
 object CiStyle {
+    val MinAbilityCardWidth = 210.dp
     val MaxAbilityCardWidth = 330.dp
     val AbilityCardHeight = 64.dp
     val AbilityCardPadding = 8.dp
     val TitleSize = 18.sp
     val DescriptionSize = 14.sp
     val AbilityCardShrinkImage = 4.dp
-    val PhoenixCardShrinkImage = 12.dp
+    val AbilityPickerOffsetFromBottom = 168.dp
     val PhoenixCornerRounding = 8.dp
     val BubbleModeCornerRounding = GameScreenTopBubbleStyle.CornerRounding
     val OffsetFromEdge = GameScreenTopBubbleStyle.OffsetFromEdge

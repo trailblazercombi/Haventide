@@ -50,6 +50,10 @@ class GameLoopViewModel(
     fun showEndRoundDialog() { endRoundDialog.value = true }
     fun hideEndRoundDialog() { endRoundDialog.value = false }
 
+    val startRoundDialog = MutableStateFlow(false)
+    fun showStartRoundDialog() { startRoundDialog.value = true }
+    fun hideStartRoundDialog() { startRoundDialog.value = false }
+
     val offerDrawDialog = MutableStateFlow(false)
     fun showOfferDrawDialog() { offerDrawDialog.value = true }
     fun hideOfferDrawDialog() { offerDrawDialog.value = false }
@@ -57,6 +61,10 @@ class GameLoopViewModel(
     val acceptDrawDialog = MutableStateFlow(false)
     fun showAcceptDrawDialog() { acceptDrawDialog.value = true }
     fun hideAcceptDrawDialog() { acceptDrawDialog.value = false }
+
+    val abilityPickerDialog = MutableStateFlow(false)
+    fun showAbilityPickerDialog() { abilityPickerDialog.value = true }
+    fun hideAbilityPickerDialog() { abilityPickerDialog.value = false }
 
 ///////////////////////////////////////////////////////////////////////
 // THE GAME'S RESULT -- pulled direct from GameLoop...
@@ -516,6 +524,20 @@ class GameLoopViewModel(
      */
     fun remotePlayerRefusedDraw() {
         drawRefused.value = true
+    }
+
+    /**
+     * Change the previewed ability of the EXISTING AbilityPreview.
+     */
+    fun processAbilityPreviewChangeEvent(template: AbilityTemplate) {
+        // Yes, by the time this is called, the Ability will be valid...
+        val doer = abilityPreview.value?.doer ?: return
+        val target = abilityPreview.value?.target ?: return
+        val consume = abilityPreview.value?.consume ?: return
+        abilityPreview.value = AbilityPreview(template, doer, target, consume)
+        autoSelectDice()
+        updateAbilityPreviewDiceConsumption()
+        updateDiceCountStates()
     }
 
     // INIT

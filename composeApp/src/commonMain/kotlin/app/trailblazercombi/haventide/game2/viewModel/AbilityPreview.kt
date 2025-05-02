@@ -12,7 +12,7 @@ import app.trailblazercombi.haventide.resources.DieType
  * A supporting class that handles the ability preview from above.
  * Only handles the local player abilities.
  */
-data class AbilityPreview(val template: AbilityTemplate, val doer: Mechanism, val target: TileData, var consume: List<Die>) {
+data class AbilityPreview(var template: AbilityTemplate, val doer: Mechanism, val target: TileData, var consume: List<Die>) {
     /**
      * @return The [DieType] of the doer, if the doer is a [PhoenixMechanism]. Otherwise, returns `null`.
      */

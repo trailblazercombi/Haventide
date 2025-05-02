@@ -54,6 +54,11 @@ class PhoenixMechanism(
     }
 
     /**
+     * @return All available abilities.
+     */
+    fun findAllAbilities() = abilityList()
+
+    /**
      * Check the target [TileData] and find available abilities.
      * @return the first [AbilityTemplate] that can be cast there.
      * Returns `null` if no Ability fits that description.
