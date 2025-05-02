@@ -27,7 +27,11 @@ fun PauseMenuDialog(viewModel: GameLoopViewModel, modifier: Modifier = Modifier)
         modifier = modifier
     )
 
-    AnimatedVisibility(openDialog, enter = slideInVertically(), exit = slideOutVertically()) {
+    AnimatedVisibility(
+        visible = openDialog,
+        enter = slideInVertically(),
+        exit = slideOutVertically()
+    ) {
         Box(
             contentAlignment = Alignment.TopCenter,
             modifier = Modifier
