@@ -75,7 +75,7 @@ object TcpClient {
             paired.value = true
 
         } catch (e: IOException) {
-            println("[TCP] Stopping client due to $e")
+            println("[TCP] Stopping client due to ${e.printStackTrace()}")
             stop()
         }
     }

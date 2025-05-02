@@ -34,7 +34,9 @@ class TcpClientService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         println("[TCS] Muwahahahahaw!!! Online!!!")
-        val hostIp = intent?.getStringExtra("host_ip") ?: "INVALID"
+        val hostIp = intent?.getStringExtra("inet")
+            ?: throw NullPointerException("[TCPCS] Something is null!!! " +
+                    "intent: $intent, hostIp: ${intent?.getStringExtra("inet")}")
         TcpClient.launch(hostIp)
 
         return START_STICKY
