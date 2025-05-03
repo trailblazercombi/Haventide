@@ -80,10 +80,12 @@ enum class InitialPlayerConfiguration(
 
 enum class TargetType(
     val icon: DrawableResource,
-    val typeCheck: (Mechanism, TileData) -> Boolean
+    val label: StringResource,
+    val typeCheck: (Mechanism, TileData) -> Boolean,
 ) {
     ALLY(
         icon = Res.drawable.ally,
+        label = Res.string.target_type_ally,
         typeCheck = { doer, target ->
             target.findTeams().contains(doer.teamAffiliation)
                 && target.canAddMechanism(DummyImmediateEffecter(target))
@@ -91,6 +93,7 @@ enum class TargetType(
     ),
     ENEMY(
         icon = Res.drawable.enemy,
+        label = Res.string.target_type_enemy,
         typeCheck = { doer, target ->
             ((target.findTeams() - doer.teamAffiliation).isNotEmpty())
                 && target.canAddMechanism(DummyImmediateEffecter(target))
@@ -98,6 +101,7 @@ enum class TargetType(
     ),
     ENEMY_OR_NEUTRAL(
         icon = Res.drawable.enemy,
+        label = Res.string.target_type_enemy_or_neutral,
         typeCheck = { doer, target ->
             ((target.findTeams() - doer.teamAffiliation).isNotEmpty() || target.findNeutralFaction())
                     && target.canAddMechanism(DummyImmediateEffecter(target))
@@ -105,6 +109,7 @@ enum class TargetType(
     ),
     EMPTY_TILE(
         icon = Res.drawable.emptytile,
+        label = Res.string.target_type_blank,
         typeCheck = { _, _ -> false } // OVERRIDE THIS SO HARD!!!
     ),
 }

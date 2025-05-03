@@ -1,13 +1,15 @@
 package app.trailblazercombi.haventide.game2.jetpack.gamescreen.dialogs
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,10 +21,9 @@ import androidx.compose.ui.unit.max
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.components.cipanel.CiAbilityCard
 import app.trailblazercombi.haventide.game2.jetpack.universal.DialogGenerics
 import app.trailblazercombi.haventide.game2.viewModel.GameLoopViewModel
+import app.trailblazercombi.haventide.resources.AbilityPickerStyle
 import app.trailblazercombi.haventide.resources.CiStyle
-import app.trailblazercombi.haventide.resources.DieStyle
 import app.trailblazercombi.haventide.resources.Palette
-import app.trailblazercombi.haventide.resources.ScreenSizeThresholds
 
 @Composable
 fun AbilityPickerDialog(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
@@ -30,6 +31,8 @@ fun AbilityPickerDialog(viewModel: GameLoopViewModel, modifier: Modifier = Modif
     val screenWidth by viewModel.screenWidth.collectAsState()
     val activePhoenix by viewModel.currentPhoenix.collectAsState()
     val abilityListAvailable by viewModel.availableAbilities.collectAsState()
+
+    val scrollState = rememberScrollState()
 
     DialogGenerics(
         openDialogState = viewModel.abilityPickerDialog,
@@ -43,12 +46,12 @@ fun AbilityPickerDialog(viewModel: GameLoopViewModel, modifier: Modifier = Modif
         exit = slideOutVertically(targetOffsetY = { it / 2 }),
     ) {
         Box(
-            contentAlignment = Alignment.BottomCenter,
+            contentAlignment = Alignment.Center,
             modifier = modifier
                 .fillMaxSize()
-                .padding(bottom = CiStyle.AbilityPickerOffsetFromBottom)
+//                .padding(bottom = CiStyle.AbilityPickerOffsetFromBottom)
         ) {
-            Column {
+            Column (modifier = modifier.verticalScroll(scrollState)) {
                 activePhoenix?.findAllAbilities()?.forEach {
                     val valid = it in abilityListAvailable
                     Surface(
@@ -60,9 +63,9 @@ fun AbilityPickerDialog(viewModel: GameLoopViewModel, modifier: Modifier = Modif
                                 min(
                                     max(
                                         screenWidth / 3,
-                                        CiStyle.MinAbilityCardWidth
+                                        AbilityPickerStyle.MinAbilityCardWidth
                                     ),
-                                    CiStyle.MaxAbilityCardWidth
+                                    AbilityPickerStyle.MaxAbilityCardWidth
                                 )
                             )
                             .padding(vertical = CiStyle.InnerPadding)
@@ -74,7 +77,8 @@ fun AbilityPickerDialog(viewModel: GameLoopViewModel, modifier: Modifier = Modif
                         CiAbilityCard(
                             ability = it,
                             contentColor = if (valid) Palette.FullBlack
-                            else Palette.Abyss60.compositeOver(Palette.FullGrey),
+                                else Palette.Abyss60.compositeOver(Palette.FullGrey),
+                            compact = if (screenWidth < AbilityPickerStyle.MinAbilityCardWidth) 1 else 0
                         )
                     }
                 }

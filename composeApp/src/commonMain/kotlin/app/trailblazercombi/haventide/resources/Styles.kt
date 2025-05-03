@@ -86,7 +86,11 @@ object CiStyle {
     val MinAbilityCardWidth = 210.dp
     val MaxAbilityCardWidth = 330.dp
     val AbilityCardHeight = 64.dp
+    val AbilityCardImageSize = 40.dp
     val AbilityCardPadding = 8.dp
+    val DescriptionLineHeight = 20.sp
+    val DescriptionLineHeightCompact = 18.sp
+    val GenericInternalSeparation = 12.dp
     val TitleSize = 18.sp
     val DescriptionSize = 14.sp
     val AbilityCardShrinkImage = 4.dp
@@ -99,6 +103,11 @@ object CiStyle {
     val InnerPadding = 4.dp
 }
 
+object AbilityPickerStyle {
+    val MaxAbilityCardWidth = 744.dp
+    val MinAbilityCardWidth = 380.dp
+}
+
 object ScreenSizeThresholds {
     // NOTE: The description always matches the behaviour of value > field.
     val SpreadDiceStackOnSingleLine = 549.dp
@@ -107,7 +116,8 @@ object ScreenSizeThresholds {
     val StopStackingYesNoDialogVertically = 604.dp
     val StopStretchingYesNoDialogToScreenEdge = 380.dp
     val FloatBottomBarAsBubble = 720.dp
-    val UncompactCiPanel = 500.dp
+    val UncompactCiPanel = 480.dp
+    val LessCompactCiPanel = 840.dp
     val MaxBottomBarWidth = 990.dp
 }
 

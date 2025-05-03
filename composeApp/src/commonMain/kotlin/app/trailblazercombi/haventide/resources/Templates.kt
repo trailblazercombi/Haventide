@@ -394,7 +394,6 @@ data class AbilityTemplate(
     val friendlyIcon: DrawableResource,
     val alignedCost: Int,
     val scatteredCost: Int,
-    val energyCost: Int = 0,
     val range: Double,
     val targetType: TargetType,
     val abilityVerb: AbilityVerb,

@@ -135,7 +135,10 @@ fun CiTileView(
                             horizontalArrangement = Arrangement.Start,
                         ) {
                             Text(
-                                text = "${stringResource(Res.string.ci_label_hp)} ${stringResource(Res.string.ci_label_hp_values)}",
+                                text = "${stringResource(Res.string.ci_label_hp)} ${
+                                    stringResource(Res.string.ci_label_hp_values, 
+                                        currentHp, tile.phoenix.maxHitPoints)
+                                }",
                                 fontSize = CiStyle.DescriptionSize,
                                 lineHeight = CiStyle.DescriptionSize,
                                 color = hpColor,

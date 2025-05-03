@@ -52,7 +52,10 @@ fun CiPanel(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
         ) {
             CiAbilityCard(
                 ability = abilityPreview!!.template,
-                compact = { screenWidth < ScreenSizeThresholds.UncompactCiPanel }
+                compact =
+                    if (screenWidth < ScreenSizeThresholds.UncompactCiPanel) 3
+                    else if (screenWidth < ScreenSizeThresholds.LessCompactCiPanel) 2
+                    else 1
             )
         }
         CiContentSurface(

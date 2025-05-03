@@ -28,10 +28,8 @@
     <string name="pause_dialog_settings_shortcut_button">Settings</string>
     <string name="pause_dialog_forfeit_button">Forfeit</string>
 
-    <string name="offer_draw_dialog_offered">
-Draw offered.
-Please wait...
-    </string>
+    <string name="offer_draw_dialog_offered">Draw offered.
+Please wait...</string>
     <string name="offer_draw_dialog_refused">Your opponent refused the draw.</string>
     <string name="offer_draw_dialog_accepted">Your opponent accepted the draw.</string>
 
@@ -65,8 +63,20 @@ Please wait...
     <string name="game_button_dice_counter_wide">%1$d/%2$d+%3$d/%4$d</string>
     <string name="game_button_dice_counter_narrow1">%1$d/%2$d</string>
     <string name="game_button_dice_counter_narrow2">%1$d/%2$d</string>
-    <string name="ability_card_dice_costs_short">Costs %1$d + %2$d dice</string>
 
+    <string name="ability_card_cost_aligned">Cost (aligned):</string>
+    <string name="ability_card_cost_scattered">Cost (scattered):</string>
+    <string name="ability_card_range">Range:</string>
+    <string name="ability_card_target_type">Valid targets:</string>
+
+    <string name="ability_card_cost_format">%1$d dice</string>
+    <string name="ability_card_range_format">%1$d tiles</string>
+
+    <string name="target_type_ally">Allies</string>
+    <string name="target_type_ally_or_neutral">Allies or Mechanisms</string>
+    <string name="target_type_enemy">Enemies</string>
+    <string name="target_type_enemy_or_neutral">Enemies or Mechanisms</string>
+    <string name="target_type_blank">Empty tiles</string>
 
     <string name="die_type_vanguard">Vanguard</string>
     <string name="die_type_sentinel">Sentinel</string>
@@ -80,102 +90,74 @@ Please wait...
     <string name="phoenix_finnian_short_name">Finnian</string>
     <string name="phoenix_finnian_long_name">Finnian</string>
     <string name="phoenix_finnian_ability_innate_name">Titan Shield</string>
-    <string name="phoenix_finnian_ability_innate_description">
-Apply Titan Shield to an ally.
+    <string name="phoenix_finnian_ability_innate_description">Apply Titan Shield to an ally.
 This shield blocks all damage from attacks targeting that ally.
-The shield dispels upon blocking damage.
-    </string>
+The shield dispels upon blocking damage.</string>
     <string name="phoenix_finnian_ability_ultimate_name">Barrier</string>
-    <string name="phoenix_finnian_ability_ultimate_description">
-Construct a 3x3 barrier that cannot be traversed.
-This barrier dispels at the end of the round.
-    </string>
+    <string name="phoenix_finnian_ability_ultimate_description">Construct a 3x3 barrier that cannot be traversed.
+This barrier dispels at the end of the round.</string>
 
     <string name="phoenix_ayuna_short_name">Ayuna</string>
     <string name="phoenix_ayuna_long_name">Kaminami Ayuna</string>
     <string name="phoenix_ayuna_ability_innate_name">Shatter</string>
-    <string name="phoenix_ayuna_ability_innate_description">
-Deal large amount of damage to an enemy.
-    </string>
+    <string name="phoenix_ayuna_ability_innate_description">Deal large amount of damage to an enemy.</string>
     <string name="phoenix_ayuna_ability_ultimate_name">Burden</string>
-    <string name="phoenix_ayuna_ability_ultimate_description">
-Mark an enemy with Burden.
+    <string name="phoenix_ayuna_ability_ultimate_description">Mark an enemy with Burden.
 While Burden lasts, all damage to the enemy is doubled and all healing to the enemy is halved.
-Burden can be dispelled by abilities that dispel debuffs.
-    </string>
-
+Burden can be dispelled by abilities that dispel debuffs.</string>
 
     <string name="phoenix_ayumi_short_name">Ayumi</string>
     <string name="phoenix_ayumi_long_name">Kaminami Ayumi</string>
     <string name="phoenix_ayumi_ability_innate_name">Blessing</string>
-    <string name="phoenix_ayumi_ability_innate_description">
-Apply Blessing to an ally.
+    <string name="phoenix_ayumi_ability_innate_description">Apply Blessing to an ally.
 While Blessing lasts, heal the ally on every turn.
-Blessing gets dispelled on the next hit from an enemy.
-    </string>
+Blessing gets dispelled on the next hit from an enemy.</string>
     <string name="phoenix_ayumi_ability_ultimate_name">Dispel Station</string>
-    <string name="phoenix_ayumi_ability_ultimate_description">
-Construct a Dispel Station.
+    <string name="phoenix_ayumi_ability_ultimate_description">Construct a Dispel Station.
 Stepping onto the station dispels all debuffs from the Phoenix.
 The Dispel Station can also be used by enemies.
-The Dispel Station can be destroyed by attacking it.
-    </string>
-
+The Dispel Station can be destroyed by attacking it.</string>
 
     <string name="phoenix_yumio_short_name">Yumio</string>
     <string name="phoenix_yumio_long_name">Tanaka Yumio</string>
     <string name="phoenix_yumio_ability_innate_name">Frostbite</string>
-    <string name="phoenix_yumio_ability_innate_description">
-Apply Frostbite to an enemy.
+    <string name="phoenix_yumio_ability_innate_description">Apply Frostbite to an enemy.
 While Frostbite lasts, the enemy takes minor damage on every turn.
 Frostbite lasts until the end of next round (this round + 1).
-Frostbite can also be dispelled by abilities that dispel debuffs.
-    </string>
+Frostbite can also be dispelled by abilities that dispel debuffs.</string>
     <string name="phoenix_yumio_ability_ultimate_name">It's Raining Icebergs</string>
-    <string name="phoenix_yumio_ability_ultimate_description">
-Apply Frostbite to all enemies in a 5x5 Permieter of the targeted tile.
-    </string>
-
+    <string name="phoenix_yumio_ability_ultimate_description">Apply Frostbite to all enemies in a 5x5 Permieter of the targeted tile.</string>
 
     <string name="phoenix_malachai_short_name">Malachai</string>
     <string name="phoenix_malachai_long_name">Malachai Vakuumin</string>
     <string name="phoenix_malachai_ability_innate_name">Marklines of The Now</string>
-    <string name="phoenix_malachai_ability_innate_description">
-Dispel all debuffs from oneself and all allies in a 5x5 Permieter.
-    </string>
+    <string name="phoenix_malachai_ability_innate_description">Dispel all debuffs from oneself and all allies in a 5x5 Permieter.</string>
     <string name="phoenix_malachai_ability_ultimate_name">Hourglass of Lifetime</string>
-    <string name="phoenix_malachai_ability_ultimate_description">
-Construct Life in a 7x7 Permieter.
+    <string name="phoenix_malachai_ability_ultimate_description">Construct Life in a 7x7 Permieter.
 At the end of round, heal all allies in the perimeter.
-The perimeter gets dispelled at the end of the round.
-    </string>
-
+The perimeter gets dispelled at the end of the round.</string>
 
     <string name="phoenix_sylvia_short_name">Sylvia</string>
     <string name="phoenix_sylvia_long_name">Sylvia</string>
     <string name="phoenix_sylvia_ability_innate_name">A (Thorny) Flower For You</string>
-    <string name="phoenix_sylvia_ability_innate_description">
-
-    </string>
+    <string name="phoenix_sylvia_ability_innate_description">Apply Thorny Petals to an enemy.
+While Thorny Petals is active, the enemy takes damage upon every ability executed by the enemy.
+This damage scales with every ability executed, up to 80 damage. This damage stacks with other modifiers.
+Thorny Petals gets dispelled at the end of round.</string>
     <string name="phoenix_sylvia_ability_ultimate_name">Say Hello To Spike</string>
-    <string name="phoenix_sylvia_ability_ultimate_description">
-Construct a trap.
+    <string name="phoenix_sylvia_ability_ultimate_description">Construct a trap.
 This trap won't be displayed to the opponent.
 When an enemy wanders into the trap, summons Spike in a 3x3 Permieter around the enemy.
-The enemy can choose to remain in place or take large amount of damage upon leaving.
-    </string>
+The enemy can choose to remain in place or take large amount of damage upon leaving.</string>
 
     <string name="phoenix_torrent_short_name">"Torrent"</string>
     <string name="phoenix_torrent_long_name">"Torrent"</string>
     <string name="phoenix_torrent_ability_innate_name">Data Phantom</string>
-    <string name="phoenix_torrent_ability_innate_description">
-Teleport to any place that you can see.
+    <string name="phoenix_torrent_ability_innate_description">Teleport to any place that you can see.
     </string>
     <string name="phoenix_torrent_ability_ultimate_name">Pulse Surge</string>
-    <string name="phoenix_torrent_ability_ultimate_description">
-Construct Pulse in a 7x7 Permieter.
+    <string name="phoenix_torrent_ability_ultimate_description">Construct Pulse in a 7x7 Permieter.
 Anyone (allies, enemies and mechanisms) in this Permieter at the end of the round gets Zapped.
-Zapped characters and mechanisms take damage and also zap anyone in a 5x5 Perimeter around them.
-    </string>
+Zapped characters and mechanisms take damage and also zap anyone in a 5x5 Perimeter around them.</string>
 
 </resources>
