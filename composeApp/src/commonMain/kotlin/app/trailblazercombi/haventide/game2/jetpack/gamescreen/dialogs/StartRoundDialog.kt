@@ -3,35 +3,20 @@ package app.trailblazercombi.haventide.game2.jetpack.gamescreen.dialogs
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.key.Key.Companion.R
 import androidx.compose.ui.text.style.TextAlign
-import app.trailblazercombi.haventide.game2.data.turntable.DiceStack
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.components.dice.StackOfDice
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.components.misc.TapToDismissLabel
 import app.trailblazercombi.haventide.game2.jetpack.universal.DialogGenerics
 import app.trailblazercombi.haventide.game2.viewModel.GameLoopViewModel
-import app.trailblazercombi.haventide.resources.CiStyle
-import app.trailblazercombi.haventide.resources.GameScreenDialogBoxStyle
-import app.trailblazercombi.haventide.resources.Palette
-import app.trailblazercombi.haventide.resources.Res
-import app.trailblazercombi.haventide.resources.game_turn_state_round_start
-import app.trailblazercombi.haventide.resources.game_turn_state_round_start_dice
+import app.trailblazercombi.haventide.resources.*
 import org.jetbrains.compose.resources.stringResource
-import javax.swing.JToolBar
 
 @Composable
 fun StartRoundDialog(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
