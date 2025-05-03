@@ -5,8 +5,10 @@ import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.mfei.HitPoin
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.mfei.ModificatorHandler
 import app.trailblazercombi.haventide.resources.ModificatorFireType
 import app.trailblazercombi.haventide.resources.ModificatorType
+import app.trailblazercombi.haventide.resources.Res
+import app.trailblazercombi.haventide.resources.ability_ayumi
 
-class Blessing(parent: ModificatorHandler) : Modificator(ModificatorType.BUFF, parent) {
+class Blessing(parent: ModificatorHandler) : Modificator(Res.drawable.ability_ayumi, ModificatorType.BUFF, parent) {
     var destroyMe: Boolean = false
 
     override fun onDamageTaken(damage: Int): Int {

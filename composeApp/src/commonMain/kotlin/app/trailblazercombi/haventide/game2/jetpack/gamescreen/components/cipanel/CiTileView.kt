@@ -58,7 +58,6 @@ fun CiTileView(
                     modifier = modifier
                         .fillMaxHeight()
                         .aspectRatio(1f)
-//                        .padding(CiStyle.PhoenixCardShrinkImage)
                         .clip(RoundedCornerShape(CiStyle.PhoenixCornerRounding))
                 )
                 if (!compact()) {
@@ -103,10 +102,10 @@ fun CiTileView(
                 }
             }
         } else if (tile is TileViewInfo.Ally) {
-            val ratio = tile.currentHp.toFloat() / tile.maxHp
+            val currentHp by tile.phoenix.health.collectAsState()
             val hpColor: Color = when {
-                ratio > 0.5 -> Palette.FillGreen
-                ratio > 0.2 -> Palette.FillYellow
+                currentHp.toFloat() / tile.phoenix.maxHitPoints > 0.5 -> Palette.FillGreen
+                currentHp.toFloat() / tile.phoenix.maxHitPoints > 0.25 -> Palette.FillYellow
                 else -> Palette.FillRed
             }
             Row (verticalAlignment = Alignment.CenterVertically) {
@@ -127,32 +126,28 @@ fun CiTileView(
                             start = CiStyle.AbilityCardPadding
                         )
                     ) {
-                        CiPhoenixName(tile)
+                        Row (modifier.fillMaxWidth()) {
+                            CiPhoenixName(tile)
+                            CiCompactModificatorRow(tile.phoenix)
+                        }
                         Row (
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Start,
                         ) {
                             Text(
-                                text = stringResource(Res.string.ci_label_hp),
+                                text = "${stringResource(Res.string.ci_label_hp)} ${stringResource(Res.string.ci_label_hp_values)}",
                                 fontSize = CiStyle.DescriptionSize,
                                 lineHeight = CiStyle.DescriptionSize,
                                 color = hpColor,
                             )
-                            Box (modifier.fillMaxWidth().height(CiStyle.CiTextIconSize)
-                                .padding(CiStyle.InnerPadding)) {
-                                LinearProgressIndicator(
-                                    progress = tile.currentHp.toFloat() / tile.maxHp,
-                                    color = Palette.FillGreen,
-                                    modifier = modifier.height(CiStyle.CiTextIconSize)
-                                )
-                            }
-                            Text(
-                                text = stringResource(Res.string.ci_label_hp_values,
-                                    tile.currentHp, tile.maxHp),
-                                fontSize = CiStyle.DescriptionSize,
-                                lineHeight = CiStyle.DescriptionSize,
+                            LinearProgressIndicator(
+                                progress = currentHp.toFloat() / tile.phoenix.maxHitPoints,
                                 color = hpColor,
+                                modifier = modifier.height(CiStyle.CiTextIconSize)
+                                    .padding(CiStyle.InnerPadding)
                             )
+//                            Box (modifier.height(CiStyle.CiTextIconSize)
+//                                .padding(CiStyle.InnerPadding)) {}
                         }
                     }
                 } else {
@@ -160,7 +155,7 @@ fun CiTileView(
                     Text(
                         text = "${stringResource(Res.string.ci_label_hp)}\n" +
                                 stringResource(Res.string.ci_label_hp_values,
-                                    tile.currentHp, tile.maxHp),
+                                    currentHp, tile.phoenix.maxHitPoints),
                         fontSize = CiStyle.DescriptionSize,
                         lineHeight = CiStyle.DescriptionSize,
                         color = hpColor

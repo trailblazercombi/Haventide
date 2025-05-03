@@ -148,7 +148,7 @@ object ImmediateEffecterTemplates {
  */
 enum class AoEEffecterTemplates(val template: MechanismTemplate) {
     BARRIER_SINGLE(MechanismTemplate.Custom { parentTile, _ -> Barrier(parentTile) }),
-    DISPEL_STATION(MechanismTemplate.Custom { parentTile, teamAffiliation -> DispelStation(parentTile, teamAffiliation) }),
+    DISPEL_STATION(MechanismTemplate.Custom { parentTile, _ -> DispelStation(parentTile) }),
 
     ;
 
@@ -275,11 +275,11 @@ enum class AbilityTemplates(val template: AbilityTemplate) {
             alignedCost = 0,
             scatteredCost = 2,
             range = 2.65,
-            targetType = TargetType.ENEMY,
+            targetType = TargetType.ENEMY_OR_NEUTRAL,
             abilityVerb = AbilityVerb.ATTACK,
             execution = { doer, target ->
                 ImmediateEffecterTemplates.DamageInvokerTemplates.BASIC_STRIKE.template.build(target, doer.teamAffiliation)
-            }
+            },
         )
     ),
     // FINNIAN
@@ -328,7 +328,7 @@ enum class AbilityTemplates(val template: AbilityTemplate) {
             alignedCost = 3,
             scatteredCost = 0,
             range = 2.65,
-            targetType = TargetType.ENEMY,
+            targetType = TargetType.ENEMY_OR_NEUTRAL,
             abilityVerb = AbilityVerb.ATTACK,
             execution = { doer, target ->
                 ImmediateEffecterTemplates.DamageInvokerTemplates.SHATTER.template.build(target, doer.teamAffiliation)

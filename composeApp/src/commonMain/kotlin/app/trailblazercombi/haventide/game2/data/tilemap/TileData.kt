@@ -137,7 +137,7 @@ class TileData(
 
     /**
      * Find and return all [teams][Team] that have a presence on this tile.
-     * [NeutralFaction] is considered to be always present.
+     * To find if [NeutralFaction] is present, use [findNeutralFaction].
      */
     fun findTeams(): Set<Team> {
         val result: MutableSet<Team> = mutableSetOf()
@@ -145,6 +145,16 @@ class TileData(
             if (it.teamAffiliation != null) result.add(it.teamAffiliation)
         }
         return result.toSet()
+    }
+
+    /**
+     * Find the presence of [Neutral Faction][app.trailblazercombi.haventide.game2.data.turntable.NeutralFaction].
+     */
+    fun findNeutralFaction(): Boolean {
+        this.mechanismStack.forEach {
+            if (it.teamAffiliation == null) return true
+        }
+        return false
     }
 
     // FUNCITON EXPOSURE
@@ -175,7 +185,7 @@ class TileData(
         val phoenix = getPhoenix()
         return if (phoenix != null) {
             if (phoenix.teamAffiliation == Global.gameLoop.value?.localPlayer?.team)
-                TileViewInfo.Ally(phoenix.template, phoenix.currentHitPoints, phoenix.maxHitPoints)
+                TileViewInfo.Ally(phoenix)
             else TileViewInfo.Enemy(phoenix.template)
         } else TileViewInfo.Empty()
     }

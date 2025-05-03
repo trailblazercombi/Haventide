@@ -3,6 +3,7 @@ package app.trailblazercombi.haventide.game2.data.tilemap.modificators
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.mfei.ModificatorHandler
 import app.trailblazercombi.haventide.resources.ModificatorFireType
 import app.trailblazercombi.haventide.resources.ModificatorType
+import org.jetbrains.compose.resources.DrawableResource
 
 /**
  * Modificator is a buff or debuff applied to a [Mechanism].
@@ -13,7 +14,7 @@ import app.trailblazercombi.haventide.resources.ModificatorType
  * condition checks ([1][fireCondition], [2][destructCondition]) and ALREADY HANDLED by [ModificatorHandler].
  * Do NOT implement additional checks!
  */
-abstract class Modificator(val modificatorType: ModificatorType, protected val parent: ModificatorHandler) {
+abstract class Modificator(val icon: DrawableResource, val modificatorType: ModificatorType, protected val parent: ModificatorHandler) {
     /**
      * Fire the modificator.
      * This is a self-contained action, meaning the modificator

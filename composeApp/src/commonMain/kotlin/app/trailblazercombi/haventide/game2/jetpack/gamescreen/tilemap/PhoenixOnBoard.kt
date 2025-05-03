@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -14,11 +13,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import app.trailblazercombi.haventide.Global
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.PhoenixMechanism
-import app.trailblazercombi.haventide.game2.viewModel.GameLoopViewModel
 import app.trailblazercombi.haventide.resources.Palette
 import app.trailblazercombi.haventide.resources.PhoenixBallStyle
 import app.trailblazercombi.haventide.resources.PhoenixBallStyle.AffiliationIconInnerPadding
@@ -35,6 +34,11 @@ fun PhoenixOnBoard(phoenix: PhoenixMechanism, modifier: Modifier = Modifier) {
     val teamIcon: Painter = painterResource(phoenix.teamIcon)
 
     val health by phoenix.health.collectAsState()
+    val hpColor: Color = when {
+        health.toFloat() / phoenix.maxHitPoints > 0.5 -> Palette.FillGreen
+        health.toFloat() / phoenix.maxHitPoints > 0.25 -> Palette.FillYellow
+        else -> Palette.FillRed
+    }
 
     Box (modifier = modifier
         .size(TileSize - TileStyle.Padding)
@@ -54,7 +58,7 @@ fun PhoenixOnBoard(phoenix: PhoenixMechanism, modifier: Modifier = Modifier) {
                 val displayValue: Float = health.toFloat() / phoenix.maxHitPoints
                 CircularProgressIndicator(
                     progress = displayValue,
-                    color = Palette.FillGreen,
+                    color = hpColor,
                     strokeWidth = PhoenixBallStyle.AllyHpIndicatorWidth,
                     modifier = modifier
                         .fillMaxSize()

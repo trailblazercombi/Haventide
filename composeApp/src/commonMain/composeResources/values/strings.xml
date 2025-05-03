@@ -116,8 +116,9 @@ Blessing gets dispelled on the next hit from an enemy.
     <string name="phoenix_ayumi_ability_ultimate_name">Dispel Station</string>
     <string name="phoenix_ayumi_ability_ultimate_description">
 Construct a Dispel Station.
-When an ally steps onto the station, dispel all debuffs from the ally.
-The Dispel Station can be attacked and destroyed by enemies.
+Stepping onto the station dispels all debuffs from the Phoenix.
+The Dispel Station can also be used by enemies.
+The Dispel Station can be destroyed by attacking it.
     </string>
 
 

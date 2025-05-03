@@ -109,20 +109,16 @@ open class PlayerInGame(val profile: PlayerProfile, protected val turnTable: Tur
     /**
      * Called automatically upon every start of the turn.
      */
-    open fun onTurnStart() {
-        team.forEach {
-            if (it is ModificatorHandler) it.updateModificators(ModificatorFireType.ON_TURN_STARTED)
-        }
-    }
+    open fun onTurnStart() {}
 
-    /**
-     * Called automatically upon every end of the turn.
-     */
-    open fun onTurnEnd() {
-        team.forEach {
-            if (it is ModificatorHandler) it.updateModificators(ModificatorFireType.ON_TURN_FINISHED)
-        }
-    }
+//    /**
+//     * Called automatically upon every end of the turn.
+//     */
+//    open fun onTurnEnd() {
+//        team.forEach {
+//            if (it is ModificatorHandler) it.updateModificators(ModificatorFireType.ON_TURN_FINISHED)
+//        }
+//    }
 
     /**
      * Called automatically upon the game over, regardless of the result.

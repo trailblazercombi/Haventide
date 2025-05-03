@@ -1,6 +1,8 @@
 package app.trailblazercombi.haventide.game2.data.tilemap
 
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.PhoenixMechanism
 import app.trailblazercombi.haventide.resources.MechanismTemplate
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.jetbrains.compose.resources.DrawableResource
 
 /**
@@ -10,20 +12,22 @@ sealed class TileViewInfo {
     class Empty : TileViewInfo()
 
     class Ally(
-        template: MechanismTemplate.Phoenix,
-        val currentHp: Int,
-        val maxHp: Int,
-    ): TileViewInfoThatHoldsMechanismTemplateForPhoenix(template)
+        val phoenix: PhoenixMechanism
+    ): TileViewInfoThatHoldsMechanismTemplateForPhoenix(phoenix.template)
+//        template: MechanismTemplate.Phoenix,
+//        currentHp: Int,
+//        val maxHp: Int,
+//    ): TileViewInfoThatHoldsMechanismTemplateForPhoenix(template) {
+//        val currentHp = MutableStateFlow(currentHp)
+//    }
 
     class Enemy(
         template: MechanismTemplate.Phoenix
     ): TileViewInfoThatHoldsMechanismTemplateForPhoenix(template)
 
     class Mechanism(
-        val icon: DrawableResource,
-        val name: String,
-        val decayIn: Int
-    )
+        mechanism: Mechanism
+    ): TileViewInfo()
 
     abstract class TileViewInfoThatHoldsMechanismTemplateForPhoenix(
         val template: MechanismTemplate.Phoenix,

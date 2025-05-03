@@ -92,8 +92,15 @@ enum class TargetType(
     ENEMY(
         icon = Res.drawable.enemy,
         typeCheck = { doer, target ->
-            (target.findTeams() - doer.teamAffiliation).isNotEmpty()
+            ((target.findTeams() - doer.teamAffiliation).isNotEmpty())
                 && target.canAddMechanism(DummyImmediateEffecter(target))
+        }
+    ),
+    ENEMY_OR_NEUTRAL(
+        icon = Res.drawable.enemy,
+        typeCheck = { doer, target ->
+            ((target.findTeams() - doer.teamAffiliation).isNotEmpty() || target.findNeutralFaction())
+                    && target.canAddMechanism(DummyImmediateEffecter(target))
         }
     ),
     EMPTY_TILE(
@@ -120,7 +127,6 @@ enum class DieHighlightState(val fillColor: Color, val outlineColor: Color, val 
 }
 
 enum class ModificatorFireType {
-    ON_TURN_STARTED,
     ON_TURN_FINISHED,
     ON_ROUND_FINISHED
 }

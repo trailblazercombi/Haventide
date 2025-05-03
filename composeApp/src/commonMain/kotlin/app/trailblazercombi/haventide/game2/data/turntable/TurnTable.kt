@@ -78,7 +78,7 @@ class TurnTable(private val gameLoop: GameLoop) {
      * @return The [PlayerInGame] whose turn is next.
      */
     fun nextPlayerTurn(): PlayerInGame {
-        try { currentPlayer().onTurnEnd() } catch (_: IndexOutOfBoundsException) {}
+//        try { currentPlayer().onTurnEnd() } catch (_: IndexOutOfBoundsException) {}
         var result: PlayerInGame
         do {
             currentPlayerIndex = (currentPlayerIndex + 1) % thisTurnArray.size
@@ -90,6 +90,7 @@ class TurnTable(private val gameLoop: GameLoop) {
                 else if (this.thisTurnArray.size == 1) gameLoop.declareWinner(this.thisTurnArray[0])
             }
         } while (!result.isValidForTurn())
+        updateAllModificators(ModificatorFireType.ON_TURN_FINISHED)
         result.onTurnStart()
         return result
     }
@@ -129,6 +130,14 @@ class TurnTable(private val gameLoop: GameLoop) {
         return "TurnTable for $gameLoop: " +
             if (isInitialized) "$thisTurnArray -> $nextTurnArray, current player ${currentPlayer()}"
             else "Not initialized"
+    }
+
+    private fun updateAllModificators(updateType: ModificatorFireType = ModificatorFireType.ON_TURN_FINISHED) {
+        allPlayers().forEach {
+            it.team.forEach {
+                (it as? ModificatorHandler)?.updateModificators(updateType)
+            }
+        }
     }
 
 //    fun pushLocalPlayerDiceStackToViewModel(list: List<Die>) {

@@ -2,21 +2,20 @@ package app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.a
 
 import app.trailblazercombi.haventide.game2.data.tilemap.TileData
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.Mechanism
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.PhoenixMechanism
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.mfei.HitPointsHandler
-import app.trailblazercombi.haventide.game2.data.turntable.NeutralFaction
-import app.trailblazercombi.haventide.game2.data.turntable.Team
 import app.trailblazercombi.haventide.resources.Res
 import app.trailblazercombi.haventide.resources.ultimate_ayumi
 
 class DispelStation(
     parentTile: TileData,
-    teamAffiliation: Team?,
     override val maxHitPoints: Int = 80,
     override var currentHitPoints: Int = maxHitPoints,
-) : AoEEffecter(parentTile, Res.drawable.ultimate_ayumi, teamAffiliation), HitPointsHandler {
+) : AoEEffecter(parentTile, Res.drawable.ultimate_ayumi), HitPointsHandler {
 
     override fun onStepOnto(mechanism: Mechanism) {
-        parentTile.getPhoenix()?.removeAllDebuffs()
+        println("[DISPEL] Dispelling debuffs from $mechanism!!!")
+        (mechanism as? PhoenixMechanism)?.removeAllDebuffs()
     }
 
     override fun onZeroHitPoints() {
