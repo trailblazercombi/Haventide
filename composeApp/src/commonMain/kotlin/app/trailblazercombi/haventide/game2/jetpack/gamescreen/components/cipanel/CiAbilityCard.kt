@@ -94,7 +94,7 @@ fun CiAbilityCard(
                     color = contentColor
                 )
                 if (compact < 2) { // compact is 0 or 1
-                    Spacer(modifier.width(CiStyle.GenericInternalSeparation))
+                    Spacer(modifier.height(CiStyle.GenericInternalSeparation))
                     Text(
                         text = description,
                         fontSize = CiStyle.DescriptionSize,
@@ -104,7 +104,7 @@ fun CiAbilityCard(
                     )
                 }
                 if (compact < 1) { // compact = 0
-                    Spacer(modifier.width(CiStyle.GenericInternalSeparation))
+                    Spacer(modifier.height(CiStyle.GenericInternalSeparation))
                     Row {
                         Text(
                             text = """
@@ -119,7 +119,7 @@ fun CiAbilityCard(
                             textAlign = TextAlign.Start,
                             color = contentColor
                         )
-                        Spacer(modifier.width(CiStyle.GenericInternalSeparation))
+                        Spacer(modifier.height(CiStyle.GenericInternalSeparation))
                         Text(
                             text = """
                                 $range

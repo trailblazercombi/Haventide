@@ -27,6 +27,7 @@ class LocalPlayerInGame(profile: PlayerProfile, turnTable: TurnTable) : PlayerIn
         super.startRound()
         println("[LocalPIG] Start Round!")
         Global.gameLoop.value!!.pushDiceChanges(getDice())
+        Global.gameLoop.value!!.viewModel.showStartRoundDialog()
     }
 
     //    /**

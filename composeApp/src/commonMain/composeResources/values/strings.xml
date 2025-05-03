@@ -42,6 +42,8 @@ Please wait...</string>
     <string name="game_turn_state_over">Your round is finished</string>
     <string name="game_turn_state_round_counter">Round %1$d</string>
 
+    <string name="game_turn_state_round_start">Round %1$d starts now!</string>
+    <string name="game_turn_state_round_start_dice">Your dice for this round:</string>
     <string name="game_button_end_round">End Round</string>
     <string name="game_button_confirm_move">Confirm!</string>
 

@@ -15,6 +15,7 @@ import app.trailblazercombi.haventide.game2.jetpack.gamescreen.dialogs.ForfeitCo
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.dialogs.GameOverDialog
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.dialogs.OfferDrawDialog
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.dialogs.PauseMenuDialog
+import app.trailblazercombi.haventide.game2.jetpack.gamescreen.dialogs.StartRoundDialog
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.panels.BottomPanel
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.panels.CiPanel
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.panels.DiceInfoPanel
@@ -59,7 +60,7 @@ fun GameScreen(
     // The dialogs
     PauseMenuDialog(viewModel)
     EndRoundDialog(viewModel)
-//    StartRoundDialog(viewModel)
+    StartRoundDialog(viewModel)
     ForfeitConfirmationDialog(viewModel)
     OfferDrawDialog(viewModel)
     AcceptDrawDialog(viewModel)
