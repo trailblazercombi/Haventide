@@ -48,8 +48,8 @@ class PhoenixMechanism(
         return listOf(
             template.abilityBasic1,
             template.abilityBasic2,
-//            template.abilityInnate,
-//            template.abilityUltimate // TODO
+            template.abilityInnate,
+            template.abilityUltimate
         )
     }
 

@@ -1,6 +1,7 @@
 package app.trailblazercombi.haventide.game2.data.tilemap.modificators
 
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.mfei.ModificatorHandler
+import app.trailblazercombi.haventide.resources.ModificatorFireType
 import app.trailblazercombi.haventide.resources.ModificatorType
 
 /**
@@ -12,7 +13,7 @@ import app.trailblazercombi.haventide.resources.ModificatorType
  * condition checks ([1][fireCondition], [2][destructCondition]) and ALREADY HANDLED by [ModificatorHandler].
  * Do NOT implement additional checks!
  */
-abstract class Modificator(val modificatorType: ModificatorType, private val parent: ModificatorHandler) {
+abstract class Modificator(val modificatorType: ModificatorType, protected val parent: ModificatorHandler) {
     /**
      * Fire the modificator.
      * This is a self-contained action, meaning the modificator
@@ -43,7 +44,7 @@ abstract class Modificator(val modificatorType: ModificatorType, private val par
      *
      * @return `false` by default. Override the method in subclasses to change this behaviour.
      */
-    open fun fireCondition(): Boolean = false
+    open fun fireCondition(fireType: ModificatorFireType): Boolean = false
 
     /**
      * The conditions needing to be fulfilled

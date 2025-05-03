@@ -1,6 +1,10 @@
 package app.trailblazercombi.haventide.game2.data.turntable
 
 import app.trailblazercombi.haventide.game2.data.GameLoop
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.aoe.AoEEffecter
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.mfei.ModificatorHandler
+import app.trailblazercombi.haventide.resources.ModificatorFireType
+import app.trailblazercombi.haventide.resources.Modificators
 import kotlin.math.round
 
 /**
@@ -74,6 +78,7 @@ class TurnTable(private val gameLoop: GameLoop) {
      * @return The [PlayerInGame] whose turn is next.
      */
     fun nextPlayerTurn(): PlayerInGame {
+        try { currentPlayer().onTurnEnd() } catch (_: IndexOutOfBoundsException) {}
         var result: PlayerInGame
         do {
             currentPlayerIndex = (currentPlayerIndex + 1) % thisTurnArray.size
@@ -107,6 +112,10 @@ class TurnTable(private val gameLoop: GameLoop) {
     }
 
     private fun nextRound() {
+        NeutralFaction.getMembers().forEach {
+            if (it is ModificatorHandler) it.updateModificators(ModificatorFireType.ON_ROUND_FINISHED)
+            if (it is AoEEffecter) it.onEndOfRound()
+        }
         roundCount++
         thisTurnArray.clear()
         thisTurnArray.addAll(nextTurnArray)

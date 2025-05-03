@@ -1,11 +1,15 @@
 package app.trailblazercombi.haventide.resources
 
+import androidx.compose.animation.core.TargetBasedAnimation
 import androidx.compose.ui.graphics.Color
 import app.trailblazercombi.haventide.game2.data.tilemap.Position
 import app.trailblazercombi.haventide.game2.data.tilemap.TileData
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.Mechanism
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.MechanismSummonPattern
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.PhoenixMechanism
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.aoe.Barrier
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.aoe.DispelStation
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.immediate.DummyImmediateEffecter
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.immediate.ImmediateDamageInvoker
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.immediate.ImmediateHealingInvoker
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.immediate.ImmediateMechanismSummoner
@@ -27,7 +31,9 @@ enum class PhoenixTemplates(val template: MechanismTemplate.Phoenix) {
             shortName = Res.string.phoenix_ayuna_short_name,
             accentColor = Color(0xFFD91410),
             profilePhoto = Res.drawable.Ayuna,
-            phoenixType = DieType.VANGUARD
+            phoenixType = DieType.VANGUARD,
+            abilityInnate = AbilityTemplates.SHATTER.template,
+            abilityUltimate = AbilityTemplates.BURDEN.template
         )
     ),
     AYUMI(
@@ -36,54 +42,60 @@ enum class PhoenixTemplates(val template: MechanismTemplate.Phoenix) {
             shortName = Res.string.phoenix_ayumi_short_name,
             accentColor = Color(0xFF098432),
             profilePhoto = Res.drawable.Ayumi,
-            phoenixType = DieType.MEDIC
+            phoenixType = DieType.MEDIC,
+            abilityInnate = AbilityTemplates.BLESSING.template,
+            abilityUltimate = AbilityTemplates.DISPEL_STATION.template
         )
     ),
-    SYLVIA(
-        MechanismTemplate.Phoenix("SYLVIA",
-            fullName = Res.string.phoenix_sylvia_long_name,
-            shortName = Res.string.phoenix_sylvia_short_name,
-            accentColor = Color(0xFF67406D),
-            profilePhoto = Res.drawable.Sylvia,
-            phoenixType = DieType.SENTINEL
-        )
-    ),
-    MALACHAI(
-        MechanismTemplate.Phoenix("MALACHAI",
-            fullName = Res.string.phoenix_malachai_long_name,
-            shortName = Res.string.phoenix_malachai_short_name,
-            accentColor = Color(0xFF3B3B93),
-            profilePhoto = Res.drawable.Malachai,
-            phoenixType = DieType.MEDIC
-        )
-    ),
+//    SYLVIA(
+//        MechanismTemplate.Phoenix("SYLVIA",
+//            fullName = Res.string.phoenix_sylvia_long_name,
+//            shortName = Res.string.phoenix_sylvia_short_name,
+//            accentColor = Color(0xFF67406D),
+//            profilePhoto = Res.drawable.Sylvia,
+//            phoenixType = DieType.SENTINEL
+//        )
+//    ),
+//    MALACHAI(
+//        MechanismTemplate.Phoenix("MALACHAI",
+//            fullName = Res.string.phoenix_malachai_long_name,
+//            shortName = Res.string.phoenix_malachai_short_name,
+//            accentColor = Color(0xFF3B3B93),
+//            profilePhoto = Res.drawable.Malachai,
+//            phoenixType = DieType.MEDIC
+//        )
+//    ),
     FINNIAN(
         MechanismTemplate.Phoenix("FINNIAN",
             fullName = Res.string.phoenix_finnian_long_name,
             shortName = Res.string.phoenix_finnian_short_name,
             accentColor = Color(0xFF25B97F),
             profilePhoto = Res.drawable.Finnian,
-            phoenixType = DieType.SENTINEL
+            phoenixType = DieType.SENTINEL,
+            abilityInnate = AbilityTemplates.TITAN_SHIELD.template,
+            abilityUltimate = AbilityTemplates.BARRIER.template,
         )
     ),
-    YUMIO(
-        MechanismTemplate.Phoenix("YUMIO",
-            fullName = Res.string.phoenix_yumio_long_name,
-            shortName = Res.string.phoenix_yumio_short_name,
-            accentColor = Color(0xFF2169AD),
-            profilePhoto = Res.drawable.Yumio,
-            phoenixType = DieType.VANGUARD
-        )
-    ),
-    TORRENT(
-        MechanismTemplate.Phoenix("TORRENT",
-            fullName = Res.string.phoenix_torrent_long_name,
-            shortName = Res.string.phoenix_torrent_short_name,
-            accentColor = Color(0xFF465376),
-            profilePhoto = Res.drawable.Torrent,
-            phoenixType = DieType.VANGUARD
-        )
-    );
+//    YUMIO(
+//        MechanismTemplate.Phoenix("YUMIO",
+//            fullName = Res.string.phoenix_yumio_long_name,
+//            shortName = Res.string.phoenix_yumio_short_name,
+//            accentColor = Color(0xFF2169AD),
+//            profilePhoto = Res.drawable.Yumio,
+//            phoenixType = DieType.VANGUARD
+//        )
+//    ),
+//    TORRENT(
+//        MechanismTemplate.Phoenix("TORRENT",
+//            fullName = Res.string.phoenix_torrent_long_name,
+//            shortName = Res.string.phoenix_torrent_short_name,
+//            accentColor = Color(0xFF465376),
+//            profilePhoto = Res.drawable.Torrent,
+//            phoenixType = DieType.VANGUARD
+//        )
+//    )
+
+    ;
 
     /**
      * @see [MechanismTemplate.build].
@@ -99,7 +111,8 @@ enum class PhoenixTemplates(val template: MechanismTemplate.Phoenix) {
 @Suppress("MemberVisibilityCanBePrivate")
 object ImmediateEffecterTemplates {
     enum class DamageInvokerTemplates(val template: MechanismTemplate.ImmediateEffecter.DamageInvoker) {
-        BASIC_STRIKE(MechanismTemplate.ImmediateEffecter.DamageInvoker(20))
+        BASIC_STRIKE(MechanismTemplate.ImmediateEffecter.DamageInvoker(20)),
+        SHATTER(MechanismTemplate.ImmediateEffecter.DamageInvoker(40)),
     }
 
     enum class HealingInvokerTemplates(val template: MechanismTemplate.ImmediateEffecter.HealingInvoker) {
@@ -107,7 +120,9 @@ object ImmediateEffecterTemplates {
     }
 
     enum class ModificatorInvokerTemplates(val template: MechanismTemplate.ImmediateEffecter.ModificatorInvoker) {
-        TITAN_SHIELD(MechanismTemplate.ImmediateEffecter.ModificatorInvoker(Modificators.TITAN_SHIELD))
+        TITAN_SHIELD(MechanismTemplate.ImmediateEffecter.ModificatorInvoker(Modificators.TITAN_SHIELD)),
+        BURDEN(MechanismTemplate.ImmediateEffecter.ModificatorInvoker(Modificators.BURDEN)),
+        BLESSING( MechanismTemplate.ImmediateEffecter.ModificatorInvoker(Modificators.BLESSING) )
     }
 
     enum class MechanismSummonerTemplates(val template: MechanismTemplate.ImmediateEffecter.MechanismSummoner) {
@@ -115,6 +130,12 @@ object ImmediateEffecterTemplates {
             MechanismTemplate.ImmediateEffecter.MechanismSummoner(
                 mechanism = AoEEffecterTemplates.BARRIER_SINGLE.template,
                 pattern = MechanismSummonPattern::Filled3x3
+            )
+        ),
+        DISPEL_STATION(
+            MechanismTemplate.ImmediateEffecter.MechanismSummoner(
+                mechanism = AoEEffecterTemplates.DISPEL_STATION.template,
+                pattern = MechanismSummonPattern::Itself
             )
         )
     }
@@ -126,9 +147,10 @@ object ImmediateEffecterTemplates {
  * [app.trailblazercombi.haventide.game.modificators.Modificators] builds Modificators.
  */
 enum class AoEEffecterTemplates(val template: MechanismTemplate) {
-    BARRIER_SINGLE(MechanismTemplate.Custom { parentTile, _ ->
-        app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.aoe.Barrier(parentTile)
-    });
+    BARRIER_SINGLE(MechanismTemplate.Custom { parentTile, _ -> Barrier(parentTile) }),
+    DISPEL_STATION(MechanismTemplate.Custom { parentTile, teamAffiliation -> DispelStation(parentTile, teamAffiliation) }),
+
+    ;
 
     /**
      * @see [MechanismTemplate.build]
@@ -164,8 +186,8 @@ sealed class MechanismTemplate {
 //        val energyForUltimate: Int = 50,
         val abilityBasic1: AbilityTemplate = AbilityTemplates.BASIC_MOVE.template,
         val abilityBasic2: AbilityTemplate = AbilityTemplates.BASIC_STRIKE.template,
-        // val abilityInnate: AbilityTemplate,
-        // val abilityUltimate: AbilityTemplate,
+        val abilityInnate: AbilityTemplate,
+        val abilityUltimate: AbilityTemplate,
     ) : MechanismTemplate() {
         override fun build(parentTile: TileData, teamAffiliation: Team?): Mechanism {
             return PhoenixMechanism(parentTile, this,
@@ -238,9 +260,10 @@ enum class AbilityTemplates(val template: AbilityTemplate) {
             alignedCost = 0,
             scatteredCost = 1,
             range = sqrt(2.toDouble()),
+            targetType = TargetType.EMPTY_TILE,
+            abilityVerb = AbilityVerb.MOVE,
             executionCheck = { doer, target -> doer.canMove(target) },
-            execution = { doer, target -> doer.move(target) },
-            abilityVerb = AbilityVerb.MOVE
+            execution = { doer, target -> doer.move(target) }
         )
     ),
     BASIC_STRIKE(
@@ -252,30 +275,114 @@ enum class AbilityTemplates(val template: AbilityTemplate) {
             alignedCost = 0,
             scatteredCost = 2,
             range = 2.65,
-            executionCheck = { doer, target -> (target.findTeams() - doer.teamAffiliation).isNotEmpty() },
+            targetType = TargetType.ENEMY,
+            abilityVerb = AbilityVerb.ATTACK,
             execution = { doer, target ->
-                ImmediateEffecterTemplates.DamageInvokerTemplates.BASIC_STRIKE.template.build(target, doer.teamAffiliation) },
-            abilityVerb = AbilityVerb.ATTACK
+                ImmediateEffecterTemplates.DamageInvokerTemplates.BASIC_STRIKE.template.build(target, doer.teamAffiliation)
+            }
         )
     ),
     // FINNIAN
+    TITAN_SHIELD(
+        AbilityTemplate(
+            systemName = "TITAN_SHIELD",
+            friendlyName = Res.string.phoenix_finnian_ability_innate_name,
+            friendlyDescription = Res.string.phoenix_finnian_ability_innate_description,
+            friendlyIcon = Res.drawable.ability_finnian,
+            alignedCost = 1,
+            scatteredCost = 2,
+            range = 5.43,
+            targetType = TargetType.ALLY,
+            abilityVerb = AbilityVerb.BUFF,
+            execution = { doer, target ->
+                ImmediateEffecterTemplates.ModificatorInvokerTemplates.TITAN_SHIELD.template.build(target, doer.teamAffiliation)
+            }
+        )
+    ),
     BARRIER(
         AbilityTemplate(
             systemName = "BARRIER",
             friendlyName = Res.string.phoenix_finnian_ability_ultimate_name,
             friendlyDescription = Res.string.phoenix_finnian_ability_ultimate_description,
-            friendlyIcon = Res.drawable.ability_finnian,
+            friendlyIcon = Res.drawable.ultimate_finnian,
             alignedCost = 2,
             scatteredCost = 2,
             range = 3.27,
-            executionCheck = { _, target -> target.canAddMechanism(
-                app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.immediate.DummyImmediateEffecter(
-                    target
-                )
-            ) },
+            targetType = TargetType.EMPTY_TILE,
+            abilityVerb = AbilityVerb.BUILD,
             execution = { doer, target ->
-                ImmediateEffecterTemplates.MechanismSummonerTemplates.BARRIER_MAKER.template.build(target, doer.teamAffiliation) },
-            abilityVerb = AbilityVerb.BUILD
+                ImmediateEffecterTemplates.MechanismSummonerTemplates.BARRIER_MAKER.template.build(target, doer.teamAffiliation)
+            },
+            executionCheck = { _, target ->
+                target.canAddMechanism(DummyImmediateEffecter(target))
+            }
+        )
+    ),
+    // AYUNA
+    SHATTER(
+        AbilityTemplate(
+            systemName = "SHATTER",
+            friendlyName = Res.string.phoenix_ayuna_ability_innate_name,
+            friendlyDescription = Res.string.phoenix_ayuna_ability_innate_description,
+            friendlyIcon = Res.drawable.ability_ayuna,
+            alignedCost = 3,
+            scatteredCost = 0,
+            range = 2.65,
+            targetType = TargetType.ENEMY,
+            abilityVerb = AbilityVerb.ATTACK,
+            execution = { doer, target ->
+                ImmediateEffecterTemplates.DamageInvokerTemplates.SHATTER.template.build(target, doer.teamAffiliation)
+            }
+        )
+    ),
+    BURDEN(
+        AbilityTemplate(
+            systemName = "BURDEN",
+            friendlyName = Res.string.phoenix_ayuna_ability_ultimate_name,
+            friendlyDescription = Res.string.phoenix_ayuna_ability_ultimate_description,
+            friendlyIcon = Res.drawable.ultimate_ayuna,
+            alignedCost = 4,
+            scatteredCost = 0,
+            range = 3.80,
+            targetType = TargetType.ENEMY,
+            abilityVerb = AbilityVerb.IMPAIR,
+            execution = { doer, target ->
+                ImmediateEffecterTemplates.ModificatorInvokerTemplates.BURDEN.template.build(target, doer.teamAffiliation)
+            }
+        )
+    ),
+    // AYUMI
+    BLESSING(
+        AbilityTemplate(
+            systemName = "BLESSING",
+            friendlyName = Res.string.phoenix_ayumi_ability_innate_name,
+            friendlyDescription = Res.string.phoenix_ayumi_ability_innate_description,
+            friendlyIcon = Res.drawable.ability_ayumi,
+            alignedCost = 2,
+            scatteredCost = 1,
+            range = 4.76,
+            targetType = TargetType.ALLY,
+            abilityVerb = AbilityVerb.BUFF,
+            execution = { doer, target ->
+                ImmediateEffecterTemplates.ModificatorInvokerTemplates.BLESSING.template.build(target, doer.teamAffiliation)
+            }
+        )
+    ),
+    DISPEL_STATION(
+        AbilityTemplate(
+            systemName = "DISPEL_STATION",
+            friendlyName = Res.string.phoenix_ayumi_ability_ultimate_name,
+            friendlyDescription = Res.string.phoenix_ayumi_ability_ultimate_description,
+            friendlyIcon = Res.drawable.ultimate_ayumi,
+            alignedCost = 3,
+            scatteredCost = 1,
+            range = 2.83,
+            targetType = TargetType.EMPTY_TILE,
+            abilityVerb = AbilityVerb.BUILD,
+            execution = { doer, target ->
+                ImmediateEffecterTemplates.MechanismSummonerTemplates.DISPEL_STATION.template.build(target, doer.teamAffiliation)
+            },
+            executionCheck = { _, target -> target.isEmpty() }
         )
     )
 }
@@ -289,9 +396,10 @@ data class AbilityTemplate(
     val scatteredCost: Int,
     val energyCost: Int = 0,
     val range: Double,
-    val executionCheck: (Mechanism, TileData) -> Boolean,
+    val targetType: TargetType,
+    val abilityVerb: AbilityVerb,
     val execution: (Mechanism, TileData) -> Unit,
-    val abilityVerb: AbilityVerb
+    val executionCheck: (Mechanism, TileData) -> Boolean = { doer, target -> targetType.typeCheck(doer, target) }
 )
 
 enum class AbilityVerb(val string: StringResource) {

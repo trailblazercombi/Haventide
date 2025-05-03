@@ -2,13 +2,15 @@ package app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.a
 
 import app.trailblazercombi.haventide.game2.data.tilemap.TileData
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.Mechanism
+import app.trailblazercombi.haventide.game2.data.turntable.Team
+import org.jetbrains.compose.resources.DrawableResource
 
 /**
  * This class represents an Effecter ([Mechanism]) that's placed on a [tile][TileData],
  * sits there and does something to its known scope (the [tile][TileData]).
  */
-abstract class AoEEffecter(parentTile: TileData) : Mechanism(parentTile, null) {
-    open override fun vetoTilemateAddition(tilemate: Mechanism): Boolean {
+abstract class AoEEffecter(parentTile: TileData, val drawable: DrawableResource, teamAffiliation: Team? = null) : Mechanism(parentTile, teamAffiliation) {
+    override fun vetoTilemateAddition(tilemate: Mechanism): Boolean {
         return false
     }
 
@@ -19,13 +21,15 @@ abstract class AoEEffecter(parentTile: TileData) : Mechanism(parentTile, null) {
 
     /**
      * Called when another [Mechanism] steps onto the same tile as this Effecter.
+     * @param mechanism The [Mechanism] that just stepped onto the tile.
      */
-    open fun onStepOnto() {}
+    open fun onStepOnto(mechanism: Mechanism) {}
 
     /**
      * Called when another [Mechanism] leaves the same tile as this Effecter.
+     * @param mechanism The [Mechanism] that just left.
      */
-    open fun onLeave() {}
+    open fun onLeave(mechanism: Mechanism) {}
 
     /**
      * Called by [TileMapData] when the round ends.

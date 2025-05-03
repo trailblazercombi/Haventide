@@ -100,14 +100,14 @@ Deal large amount of damage to an enemy.
     <string name="phoenix_ayuna_ability_ultimate_name">Burden</string>
     <string name="phoenix_ayuna_ability_ultimate_description">
 Mark an enemy with Burden.
-While Burden lasts, all damage to the enemy is doubled.
+While Burden lasts, all damage to the enemy is doubled and all healing to the enemy is halved.
 Burden can be dispelled by abilities that dispel debuffs.
     </string>
 
 
     <string name="phoenix_ayumi_short_name">Ayumi</string>
     <string name="phoenix_ayumi_long_name">Kaminami Ayumi</string>
-    <string name="phoenix_ayumi_ability_innate_name">Mend</string>
+    <string name="phoenix_ayumi_ability_innate_name">Blessing</string>
     <string name="phoenix_ayumi_ability_innate_description">
 Apply Blessing to an ally.
 While Blessing lasts, heal the ally on every turn.

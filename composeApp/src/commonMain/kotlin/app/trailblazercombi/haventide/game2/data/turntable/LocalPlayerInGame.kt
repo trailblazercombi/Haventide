@@ -5,11 +5,12 @@ import app.trailblazercombi.haventide.game2.data.tilemap.TileData
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.Mechanism
 import app.trailblazercombi.haventide.playerdata.PlayerProfile
 import app.trailblazercombi.haventide.resources.AbilityTemplate
+import app.trailblazercombi.haventide.resources.Palette
 import app.trailblazercombi.haventide.resources.Res
 import app.trailblazercombi.haventide.resources.ally
 
 class LocalPlayerInGame(profile: PlayerProfile, turnTable: TurnTable) : PlayerInGame(profile, turnTable) {
-    override val team = Team(icon = Res.drawable.ally)
+    override val team = Team(icon = Res.drawable.ally, color = Palette.FillGreen)
 
     override fun executeAbility(ability: AbilityTemplate, doer: Mechanism, target: TileData, consume: List<Die>) {
         super.executeAbility(ability, doer, target, consume)

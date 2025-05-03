@@ -7,7 +7,10 @@ import app.trailblazercombi.haventide.playerdata.PlayerProfile
 import app.trailblazercombi.haventide.resources.AbilityTemplate
 import app.trailblazercombi.haventide.resources.MechanismTemplate
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.PhoenixMechanism
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.aoe.AoEEffecter
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.mfei.ModificatorHandler
 import app.trailblazercombi.haventide.game2.viewModel.AbilityPreview
+import app.trailblazercombi.haventide.resources.ModificatorFireType
 
 /**
  * Defines a Player that's playing within the game.
@@ -88,6 +91,10 @@ open class PlayerInGame(val profile: PlayerProfile, protected val turnTable: Tur
      */
     fun finishRound() {
         isActive = false
+        team.forEach {
+            if (it is ModificatorHandler) it.updateModificators(ModificatorFireType.ON_ROUND_FINISHED)
+            if (it is AoEEffecter) it.onEndOfRound()
+        }
         dice.discardAllDice()
     }
 
@@ -102,7 +109,20 @@ open class PlayerInGame(val profile: PlayerProfile, protected val turnTable: Tur
     /**
      * Called automatically upon every start of the turn.
      */
-    open fun onTurnStart() {}
+    open fun onTurnStart() {
+        team.forEach {
+            if (it is ModificatorHandler) it.updateModificators(ModificatorFireType.ON_TURN_STARTED)
+        }
+    }
+
+    /**
+     * Called automatically upon every end of the turn.
+     */
+    open fun onTurnEnd() {
+        team.forEach {
+            if (it is ModificatorHandler) it.updateModificators(ModificatorFireType.ON_TURN_FINISHED)
+        }
+    }
 
     /**
      * Called automatically upon the game over, regardless of the result.

@@ -3,6 +3,7 @@ package app.trailblazercombi.haventide.game2.data.tilemap
 import app.trailblazercombi.haventide.Global
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.Mechanism
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.PhoenixMechanism
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.aoe.AoEEffecter
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.immediate.ImmediateEffecter
 import app.trailblazercombi.haventide.game2.data.turntable.Team
 import app.trailblazercombi.haventide.resources.MechanismTemplate
@@ -41,7 +42,11 @@ class TileData(
      */
     fun addMechanism(mechanism: Mechanism) {
         if (canAddMechanism(mechanism)) {
+            mechanismStack.forEach {
+                if (it is AoEEffecter) it.onStepOnto(mechanism)
+            }
             mechanismStack.add(mechanism)
+            if (mechanism is AoEEffecter) mechanism.onPlacement()
             updateStackStack()
         }
     }
@@ -54,7 +59,11 @@ class TileData(
      */
     fun removeMechanism(mechanism: Mechanism) {
         if (canRemoveMechanism(mechanism)) {
+            if (mechanism is AoEEffecter) mechanism.onDestruct()
             mechanismStack.remove(mechanism)
+            mechanismStack.forEach {
+                if (it is AoEEffecter) it.onLeave(mechanism)
+            }
             updateStackStack()
         }
     }
@@ -68,12 +77,6 @@ class TileData(
      */
     @Suppress("MemberVisibilityCanBePrivate")
     fun canAddMechanism(mechanism: Mechanism): Boolean {
-//        // 0: Do not check ImmediateEffecters, thank you :)
-//        if (mechanism is ImmediateEffecter && mechanism !is DummyImmediateEffecter) throw IllegalArgumentException(
-//            "Cannot check for ImmediateEffecters. " +
-//                    "It would immediately explode and leave behind consequences. " +
-//                    "Even if the check failed."
-//        )
         // 1: Check if it's duplicate
         if (mechanismStack.contains(mechanism)) return false
         // 2: Check if it's compatible with the current mechanism stack
@@ -176,4 +179,9 @@ class TileData(
             else TileViewInfo.Enemy(phoenix.template)
         } else TileViewInfo.Empty()
     }
+
+    /**
+     * Exposes mechanismStack.isEmpty.
+     */
+    fun isEmpty() = mechanismStack.isEmpty()
 }

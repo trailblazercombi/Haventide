@@ -2,10 +2,14 @@ package app.trailblazercombi.haventide.resources
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.compositeOver
+import app.trailblazercombi.haventide.game2.data.tilemap.TileData
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.Mechanism
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.immediate.DummyImmediateEffecter
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.mfei.ModificatorHandler
+import app.trailblazercombi.haventide.game2.data.tilemap.modificators.Blessing
+import app.trailblazercombi.haventide.game2.data.tilemap.modificators.Burden
 import app.trailblazercombi.haventide.game2.data.tilemap.modificators.Modificator
 import app.trailblazercombi.haventide.game2.data.tilemap.modificators.TitanShield
-import app.trailblazercombi.haventide.game2.data.turntable.PlayerInGame
 import app.trailblazercombi.haventide.playerdata.PlayerProfile
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.StringResource
@@ -40,14 +44,6 @@ enum class PlayerTurnStates(val string: StringResource) {
     LOCAL_PLAYER_TURN(Res.string.game_turn_state_good),
     REMOTE_PLAYER_TURN(Res.string.game_turn_state_bad),
     LOCAL_PLAYER_ROUND_DONE(Res.string.game_turn_state_over);
-
-    private var player: String = "Unnamed"
-
-    fun consume(player: PlayerInGame) {
-        this.player = player.profile.name
-    }
-
-    fun retrieve(): String = this.player
 }
 
 /**
@@ -62,33 +58,49 @@ enum class ModificatorType {
 
 enum class Modificators(val build: (ModificatorHandler) -> Modificator) {
     TITAN_SHIELD( { parent -> TitanShield(parent) } ),
+    BURDEN({ parent -> Burden(parent) } ),
+    BLESSING( { parent -> Blessing(parent) } )
 }
 
-// [MENUS] TODO Replace with an actual player profile.
-//  This will do for testing purposes though.
-enum class PlaceholderPlayers(
+enum class InitialPlayerConfiguration(
     private val playerName: String,
     private val member1: MechanismTemplate.Phoenix,
     private val member2: MechanismTemplate.Phoenix,
     private val member3: MechanismTemplate.Phoenix
 ) {
-    PLAYER_TWO(
-        "Player",
-        PhoenixTemplates.FINNIAN.template,
-        PhoenixTemplates.YUMIO.template,
-        PhoenixTemplates.MALACHAI.template
-    ),
     PLAYER_ONE(
-        "Spieler",
+        "Local Player",
         PhoenixTemplates.AYUNA.template,
         PhoenixTemplates.AYUMI.template,
-        PhoenixTemplates.SYLVIA.template
+        PhoenixTemplates.FINNIAN.template
     );
 
     fun toProfile() = PlayerProfile(playerName, listOf(member1, member2, member3))
 }
 
-enum class TargetType { ALLY, ENEMY, EMPTY_TILE }
+enum class TargetType(
+    val icon: DrawableResource,
+    val typeCheck: (Mechanism, TileData) -> Boolean
+) {
+    ALLY(
+        icon = Res.drawable.ally,
+        typeCheck = { doer, target ->
+            target.findTeams().contains(doer.teamAffiliation)
+                && target.canAddMechanism(DummyImmediateEffecter(target))
+        }
+    ),
+    ENEMY(
+        icon = Res.drawable.enemy,
+        typeCheck = { doer, target ->
+            (target.findTeams() - doer.teamAffiliation).isNotEmpty()
+                && target.canAddMechanism(DummyImmediateEffecter(target))
+        }
+    ),
+    EMPTY_TILE(
+        icon = Res.drawable.emptytile,
+        typeCheck = { _, _ -> false } // OVERRIDE THIS SO HARD!!!
+    ),
+}
 
 enum class DieType(val icon: DrawableResource, val title: StringResource, val order: Int) {
     VANGUARD(Res.drawable.vanguard, Res.string.die_type_vanguard, 0),
@@ -105,4 +117,10 @@ enum class DieHighlightState(val fillColor: Color, val outlineColor: Color, val 
         Palette.Abyss40.compositeOver(Palette.FillYellow)
     ),
     POTENTIAL_SELECTED(Palette.Abyss70.compositeOver(Palette.FillYellow), Palette.FillYellow, Palette.FillYellow);
+}
+
+enum class ModificatorFireType {
+    ON_TURN_STARTED,
+    ON_TURN_FINISHED,
+    ON_ROUND_FINISHED
 }

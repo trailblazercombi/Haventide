@@ -2,14 +2,20 @@ package app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.a
 
 import app.trailblazercombi.haventide.game2.data.tilemap.TileData
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.Mechanism
+import app.trailblazercombi.haventide.resources.Res
+import app.trailblazercombi.haventide.resources.ultimate_finnian
 
-class Barrier(parentTile: TileData) : AoEEffecter(parentTile) {
+class Barrier(parentTile: TileData) : AoEEffecter(parentTile, Res.drawable.ultimate_finnian) {
     override fun vetoTilemateAddition(tilemate: Mechanism): Boolean {
         return true
     }
 
     override fun vetoTraversal(mechanism: Mechanism): Boolean {
         return true
+    }
+
+    override fun onEndOfRound() {
+        if (this.canDestruct()) this.destruct()
     }
 
     // There is no conflict when placing this upon Phoenixes.

@@ -2,6 +2,8 @@ package app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.mfei
 
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.Mechanism
 import app.trailblazercombi.haventide.game2.data.tilemap.modificators.Modificator
+import app.trailblazercombi.haventide.resources.ModificatorFireType
+import app.trailblazercombi.haventide.resources.ModificatorType
 
 /**
  * Designates that a [Mechanism] can recieve [modificators][Modificator].
@@ -37,13 +39,12 @@ interface ModificatorHandler {
      * and [Modificator.destructCondition]. If the latter check returns `true`, also handles
      * removal from the [MutableList] of [modificators].
      */
-    // [GAME LOOP] TODO Call this in the Game Loop... literally all the time
-    fun updateModificators() {
+    fun updateModificators(fireType: ModificatorFireType) {
         // 0. This will be used in step 2
         val junkModificators = mutableSetOf<Modificator>()
         // 1. Update modificators and collect junk
         modificators.forEach {
-            if (it.fireCondition()) it.onFire()
+            if (it.fireCondition(fireType)) it.onFire()
             if (it.destructCondition()) {
                 it.onDestruct()
                 junkModificators.add(it)
@@ -65,4 +66,12 @@ interface ModificatorHandler {
      * and denying this right to [modificators][Modificator] is very encouraged :)
      */
     fun canAddModificator(modificator: Modificator): Boolean = true
+
+    /**
+     * Removes all debuffs from the selected Mechanism.
+     * This is useful for abilities that dispels debuffs!!!
+     */
+    fun removeAllDebuffs() {
+        modificators.removeAll { it.modificatorType == ModificatorType.DEBUFF }
+    }
 }

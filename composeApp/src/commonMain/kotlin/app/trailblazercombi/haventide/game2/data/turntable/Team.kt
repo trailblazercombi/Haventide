@@ -1,7 +1,9 @@
 package app.trailblazercombi.haventide.game2.data.turntable
 
+import androidx.compose.ui.graphics.Color
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.Mechanism
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.PhoenixMechanism
+import app.trailblazercombi.haventide.resources.Palette
 import app.trailblazercombi.haventide.resources.Res
 import app.trailblazercombi.haventide.resources.enemy
 import org.jetbrains.compose.resources.DrawableResource
@@ -21,7 +23,8 @@ import org.jetbrains.compose.resources.DrawableResource
  */
 data class Team(
     private val members: MutableSet<Mechanism> = mutableSetOf(),
-    val icon: DrawableResource = Res.drawable.enemy
+    val icon: DrawableResource = Res.drawable.enemy,
+    val color: Color = Palette.FillRed
 ) : Iterable<Mechanism> {
 
     /**
