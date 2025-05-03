@@ -93,6 +93,7 @@ object TcpClient {
 
     fun sendToRemoteServer(message: String) {
         socketScope.launch(Dispatchers.IO) {
+            println("Sending $message to remote server...")
             try {
                 writer?.println(message) ?: println("[TCP] Writer does not exist")
                 val response = reader?.readLine() ?: println("[TCP] Reader does not exist")

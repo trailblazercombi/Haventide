@@ -121,8 +121,8 @@ GameLoop(
      */
     fun forfeitMatch(player: PlayerInGame) {
         if (player === localPlayer) {
-            declareWinner(remotePlayer, true)
             TcpClient.sendToRemoteServer("YATTA_BOSSHU")
+            declareWinner(remotePlayer, true)
         } else {
             declareWinner(localPlayer, true)
         }
@@ -177,7 +177,7 @@ GameLoop(
 
     fun remotePlayerForfeited() {
         declareWinner(localPlayer, true)
-        // FIXME Sometimes doesn't work...???
+        println("[G.LOOP] Remote player forfeited the match!")
     }
 
     /**
@@ -185,7 +185,7 @@ GameLoop(
      */
     fun processForfeitMatchEvent() {
         forfeitMatch(localPlayer)
-        TcpClient.sendToRemoteServer("YATTA_BOSSHU")
+        println("[G.LOOP] Processing forfeit match event...")
     }
 
     /**
