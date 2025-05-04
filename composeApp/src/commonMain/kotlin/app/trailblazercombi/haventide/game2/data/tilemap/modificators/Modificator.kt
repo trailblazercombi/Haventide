@@ -4,6 +4,7 @@ import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.mfei.Modific
 import app.trailblazercombi.haventide.resources.ModificatorFireType
 import app.trailblazercombi.haventide.resources.ModificatorType
 import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.StringResource
 
 /**
  * Modificator is a buff or debuff applied to a [Mechanism].
@@ -101,4 +102,7 @@ abstract class Modificator(val icon: DrawableResource, val modificatorType: Modi
      * By default, always returns the [input][healing].
      */
     open fun onHealingRecieved(healing: Int): Int = healing
+
+    abstract val name: StringResource
+    abstract val description: StringResource
 }

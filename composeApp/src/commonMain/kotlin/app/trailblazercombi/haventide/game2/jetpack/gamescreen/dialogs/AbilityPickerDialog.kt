@@ -42,8 +42,8 @@ fun AbilityPickerDialog(viewModel: GameLoopViewModel, modifier: Modifier = Modif
 
     AnimatedVisibility(
         visible = openDialog && activePhoenix != null,
-        enter = slideInVertically(initialOffsetY = { it / 2 }),
-        exit = slideOutVertically(targetOffsetY = { it / 2 }),
+        enter = slideInVertically(initialOffsetY = { it }),
+        exit = slideOutVertically(targetOffsetY = { it }),
     ) {
         Box(
             contentAlignment = Alignment.Center,

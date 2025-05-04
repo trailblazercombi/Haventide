@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import app.trailblazercombi.haventide.game2.viewModel.GameLoopViewModel
 import app.trailblazercombi.haventide.resources.AbilityTemplate
@@ -22,7 +23,6 @@ import org.jetbrains.compose.resources.stringResource
 
 /**
  * This will be a represenatation of a single selected Ability.
- * - In [CiAbilitySelectDropdown], clicking it will select the ability in [GameLoopViewModel].
  * - In [CiPanel][app.trailblazercombi.haventide.game2.jetpack.gamescreen.panels.CiPanel],
  * it is the accessor to the dropdown.
  *
@@ -93,8 +93,20 @@ fun CiAbilityCard(
                     textAlign = TextAlign.Start,
                     color = contentColor
                 )
-                if (compact < 2) { // compact is 0 or 1
-                    Spacer(modifier.height(CiStyle.GenericInternalSeparation))
+//                if (compact < 1) {
+//                    Spacer(modifier.height(CiStyle.GenericInternalSeparation))
+//                }
+                if (compact == 1) { // compact is 0 or 1
+                    Text(
+                        text = description,
+                        fontSize = CiStyle.DescriptionSize,
+                        lineHeight = CiStyle.DescriptionLineHeightCompact,
+                        textAlign = TextAlign.Start,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        color = contentColor
+                    )
+                } else if (compact < 1) {
                     Text(
                         text = description,
                         fontSize = CiStyle.DescriptionSize,
@@ -119,7 +131,7 @@ fun CiAbilityCard(
                             textAlign = TextAlign.Start,
                             color = contentColor
                         )
-                        Spacer(modifier.height(CiStyle.GenericInternalSeparation))
+                        Spacer(modifier.width(CiStyle.GenericInternalSeparation))
                         Text(
                             text = """
                                 $range

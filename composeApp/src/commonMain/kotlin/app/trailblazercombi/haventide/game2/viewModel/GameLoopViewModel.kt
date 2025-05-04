@@ -66,6 +66,14 @@ class GameLoopViewModel(
     fun showAbilityPickerDialog() { abilityPickerDialog.value = true }
     fun hideAbilityPickerDialog() { abilityPickerDialog.value = false }
 
+    val leftModificatorsDialog = MutableStateFlow(false)
+    fun showLeftModificatorsDialog() { leftModificatorsDialog.value = true }
+    fun hideLeftModificatorsDialog() { leftModificatorsDialog.value = false }
+
+    val rightModificatorsDialog = MutableStateFlow(false)
+    fun showRightModificatorsDialog() { rightModificatorsDialog.value = true }
+    fun hideRightModificatorsDialog() { rightModificatorsDialog.value = false }
+
 ///////////////////////////////////////////////////////////////////////
 // THE GAME'S RESULT -- pulled direct from GameLoop...
     val gameResult = MutableStateFlow(gameLoop.gameResult)

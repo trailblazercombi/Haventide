@@ -187,7 +187,17 @@ class TileData(
             if (phoenix.teamAffiliation == Global.gameLoop.value?.localPlayer?.team)
                 TileViewInfo.Ally(phoenix)
             else TileViewInfo.Enemy(phoenix.template)
-        } else TileViewInfo.Empty()
+        } else if (mechanismStack.isEmpty()) {
+            TileViewInfo.Empty()
+        } else {
+            mechanismStack.first().let {
+                TileViewInfo.Mechanism(
+                    it.icon,
+                    it.name,
+                    it.description
+                )
+            }
+        }
     }
 
     /**

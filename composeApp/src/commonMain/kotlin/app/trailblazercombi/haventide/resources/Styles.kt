@@ -108,6 +108,30 @@ object AbilityPickerStyle {
     val MinAbilityCardWidth = 380.dp
 }
 
+object ModificatorViewStyle {
+    val IconSize = 40.dp
+    val HorizontalSpacing = 8.dp
+    val VerticalSpacing = 8.dp
+}
+
+object MainMenuStyle {
+    val StartGameButtonWidth = 280.dp
+    val StartGameButtonHeight = 48.dp
+    val StartGameButtonOutlineThickness = 0.dp
+    val StartGameButtonRounding = 36.dp
+    val StartGameButtonTextSize = 28.sp
+    val StartGameButtonOffsetFromEdge = 48.dp
+    val PhoenixCardOuterRounding = 16.dp
+    val PhoenixCardInnerRounding = 8.dp
+    val PhoenixCardInnerPadding = 8.dp
+    val PhoenixCardPhotoSize = 96.dp
+    val PhoenixCardMinimumSize = 380.dp
+    val PhoenixCardSeparation = 16.dp
+    val PhoenixCardOutlineThickness = 0.dp
+    val PhoenixCardTextSizeName = 26.sp
+    val PhoenixCardTextSizeDescription = 16.sp
+}
+
 object ScreenSizeThresholds {
     // NOTE: The description always matches the behaviour of value > field.
     val SpreadDiceStackOnSingleLine = 549.dp

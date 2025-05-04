@@ -62,7 +62,7 @@ enum class Modificators(val build: (ModificatorHandler) -> Modificator) {
     BLESSING( { parent -> Blessing(parent) } )
 }
 
-enum class InitialPlayerConfiguration(
+enum class PlaceholderPlayerConfiguration(
     private val playerName: String,
     private val member1: MechanismTemplate.Phoenix,
     private val member2: MechanismTemplate.Phoenix,

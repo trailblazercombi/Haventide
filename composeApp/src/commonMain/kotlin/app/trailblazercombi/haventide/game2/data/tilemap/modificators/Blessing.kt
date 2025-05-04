@@ -7,6 +7,8 @@ import app.trailblazercombi.haventide.resources.ModificatorFireType
 import app.trailblazercombi.haventide.resources.ModificatorType
 import app.trailblazercombi.haventide.resources.Res
 import app.trailblazercombi.haventide.resources.ability_ayumi
+import app.trailblazercombi.haventide.resources.modificator_blessing_description
+import app.trailblazercombi.haventide.resources.modificator_blessing_name
 
 class Blessing(parent: ModificatorHandler) : Modificator(Res.drawable.ability_ayumi, ModificatorType.BUFF, parent) {
     var destroyMe: Boolean = false
@@ -25,4 +27,7 @@ class Blessing(parent: ModificatorHandler) : Modificator(Res.drawable.ability_ay
     override fun fireCondition(fireType: ModificatorFireType): Boolean {
         return fireType == ModificatorFireType.ON_ROUND_FINISHED
     }
+
+    override val name = Res.string.modificator_blessing_name
+    override val description = Res.string.modificator_blessing_description
 }

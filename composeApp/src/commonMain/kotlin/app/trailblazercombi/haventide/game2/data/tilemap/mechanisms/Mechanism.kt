@@ -6,6 +6,8 @@ import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.im
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.mfei.MovementEnabled
 import app.trailblazercombi.haventide.game2.data.turntable.NeutralFaction
 import app.trailblazercombi.haventide.game2.data.turntable.Team
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.StringResource
 
 /**
  * A Mechanism that resides on [a Tile][TileData].
@@ -134,4 +136,8 @@ abstract class Mechanism(parentTile: TileData, val teamAffiliation: Team?) {
         teamAffiliation?.add(this) ?: NeutralFaction.add(this)
         parentTile.addMechanism(this)
     }
+
+    abstract val icon: DrawableResource
+    abstract val name: StringResource
+    abstract val description: StringResource
 }

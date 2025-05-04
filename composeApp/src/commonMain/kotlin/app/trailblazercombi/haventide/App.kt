@@ -10,6 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import app.trailblazercombi.haventide.matchLoad.jetpack.MainMenuScreen
 import app.trailblazercombi.haventide.matchLoad.jetpack.MatchBeginScreen
 import app.trailblazercombi.haventide.matchLoad.jetpack.MatchResultScreen
 import app.trailblazercombi.haventide.resources.*
@@ -24,18 +25,18 @@ fun App(
 
     NavHost(
         navController = navController,
-        startDestination = AppScreens.MatchStart.name,
+        startDestination = AppScreens.MainMenu.name,
         modifier = modifier.fillMaxSize(),
     ) {
+        composable (route = AppScreens.MainMenu.name) {
+            MainMenuScreen(navController)
+        }
         composable (route = AppScreens.MatchStart.name) {
             MatchBeginScreen(navController)
         }
         composable (route = AppScreens.GameScreen.name) {
             val viewModel = gameLoop?.viewModel ?: return@composable
-            GameScreen(
-                viewModel,
-                navController
-            )
+            GameScreen(viewModel, navController)
         }
         composable (route = AppScreens.MatchResult.name) {
             MatchResultScreen(

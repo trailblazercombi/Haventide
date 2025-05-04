@@ -2,8 +2,9 @@ package app.trailblazercombi.haventide.game2.data.tilemap
 
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.PhoenixMechanism
 import app.trailblazercombi.haventide.resources.MechanismTemplate
-import kotlinx.coroutines.flow.MutableStateFlow
 import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.StringResource
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.Mechanism as classname_game2_Mechanism
 
 /**
  * The info package for left Ci Display.
@@ -26,7 +27,9 @@ sealed class TileViewInfo {
     ): TileViewInfoThatHoldsMechanismTemplateForPhoenix(template)
 
     class Mechanism(
-        mechanism: Mechanism
+        val icon: DrawableResource,
+        val name: StringResource,
+        val description: StringResource
     ): TileViewInfo()
 
     abstract class TileViewInfoThatHoldsMechanismTemplateForPhoenix(

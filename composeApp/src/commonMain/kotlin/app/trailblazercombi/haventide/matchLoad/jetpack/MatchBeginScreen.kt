@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.*
@@ -54,7 +55,7 @@ fun MatchBeginScreen(navController: NavHostController, modifier: Modifier = Modi
     var diagnosticMessage: StringResource? by remember { mutableStateOf(null) }
 
     Column (modifier.padding(32.dp)) {
-        TextField(
+        OutlinedTextField(
             enabled = !paired,
             value = inputCode.value,
             onValueChange = { inputCode.value = it },
@@ -62,8 +63,8 @@ fun MatchBeginScreen(navController: NavHostController, modifier: Modifier = Modi
             modifier = Modifier.fillMaxWidth()
         )
 
-        TextField(
-            enabled = !paired,
+        OutlinedTextField(
+            enabled = false,
             value = NetPairing.inetToCode(NetPairing.localInet()),
             onValueChange = {},
             label = { Text("Your pairing code") },

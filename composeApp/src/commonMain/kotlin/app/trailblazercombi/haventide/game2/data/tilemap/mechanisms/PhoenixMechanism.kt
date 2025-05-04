@@ -8,6 +8,8 @@ import app.trailblazercombi.haventide.game2.data.tilemap.modificators.Modificato
 import app.trailblazercombi.haventide.game2.data.turntable.Team
 import app.trailblazercombi.haventide.resources.*
 import kotlinx.coroutines.flow.MutableStateFlow
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.StringResource
 
 class PhoenixMechanism(
     parentTile: TileData,
@@ -96,4 +98,8 @@ class PhoenixMechanism(
     override fun toString(): String {
         return template.gameId.uppercase()
     }
+
+    override val icon: DrawableResource = template.profilePhoto
+    override val name: StringResource = template.fullName
+    override val description: StringResource = Res.string.its_a_phoenix
 }

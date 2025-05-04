@@ -31,6 +31,8 @@ fun CiPanel(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
             toRoundTopRight = { abilityPreview == null },
             fillColor = GameScreenTopBubbleStyle.FillColorModifier,
             outlineColor = GameScreenTopBubbleStyle.OutlineColorModifier,
+            enableClick = leftCiInfo is TileViewInfo.Ally,
+            onClick = viewModel::showLeftModificatorsDialog,
             contentColor = Palette.FullWhite,
             modifier = modifier
         ) {
@@ -47,6 +49,7 @@ fun CiPanel(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
             fillColor = Palette.FillLightPrimary,
             outlineColor = Palette.FillLightPrimary,
             contentColor = Palette.FullBlack,
+            enableClick = true,
             onClick = { viewModel.showAbilityPickerDialog() },
             modifier = modifier
         ) {
@@ -65,6 +68,8 @@ fun CiPanel(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
             toRoundTopRight = { screenWidth > ScreenSizeThresholds.FloatBottomBarAsBubble },
             fillColor = GameScreenTopBubbleStyle.FillColorModifier,
             outlineColor = GameScreenTopBubbleStyle.OutlineColorModifier,
+            enableClick = rightCiInfo is TileViewInfo.Ally,
+            onClick = viewModel::showRightModificatorsDialog,
             contentColor = Palette.FullWhite,
             modifier = modifier
         ) {

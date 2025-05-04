@@ -108,7 +108,7 @@ fun CiTileView(
                 currentHp.toFloat() / tile.phoenix.maxHitPoints > 0.25 -> Palette.FillYellow
                 else -> Palette.FillRed
             }
-            Row (verticalAlignment = Alignment.CenterVertically) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
                     painter = painterResource(tile.template.profilePhoto),
                     contentDescription = null,
@@ -126,18 +126,20 @@ fun CiTileView(
                             start = CiStyle.AbilityCardPadding
                         )
                     ) {
-                        Row (modifier.fillMaxWidth()) {
+                        Row(modifier.fillMaxWidth()) {
                             CiPhoenixName(tile)
                             CiCompactModificatorRow(tile.phoenix)
                         }
-                        Row (
+                        Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Start,
                         ) {
                             Text(
                                 text = "${stringResource(Res.string.ci_label_hp)} ${
-                                    stringResource(Res.string.ci_label_hp_values, 
-                                        currentHp, tile.phoenix.maxHitPoints)
+                                    stringResource(
+                                        Res.string.ci_label_hp_values,
+                                        currentHp, tile.phoenix.maxHitPoints
+                                    )
                                 }",
                                 fontSize = CiStyle.DescriptionSize,
                                 lineHeight = CiStyle.DescriptionSize,
@@ -157,12 +159,47 @@ fun CiTileView(
                     Spacer(modifier.padding(start = CiStyle.AbilityCardPadding))
                     Text(
                         text = "${stringResource(Res.string.ci_label_hp)}\n" +
-                                stringResource(Res.string.ci_label_hp_values,
-                                    currentHp, tile.phoenix.maxHitPoints),
+                                stringResource(
+                                    Res.string.ci_label_hp_values,
+                                    currentHp, tile.phoenix.maxHitPoints
+                                ),
                         fontSize = CiStyle.DescriptionSize,
                         lineHeight = CiStyle.DescriptionSize,
                         color = hpColor
                     )
+                }
+            }
+        } else if (tile is TileViewInfo.Mechanism) {
+            Row {
+                Image(
+                    painter = painterResource(tile.icon),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    colorFilter = ColorFilter.tint(contentColor),
+                    modifier = modifier
+                        .fillMaxHeight()
+                        .aspectRatio(1f)
+                )
+                if (!compact()) {
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        modifier = modifier.padding(
+                            start = CiStyle.AbilityCardPadding
+                        )
+                    ) {
+                        Text(
+                            text = stringResource(tile.name),
+                            fontSize = CiStyle.TitleSize,
+                            lineHeight = CiStyle.DescriptionSize,
+                            textAlign = TextAlign.Start,
+                        )
+                        Text(
+                            text = stringResource(tile.description),
+                            fontSize = CiStyle.DescriptionSize,
+                            lineHeight = CiStyle.DescriptionSize,
+                            textAlign = TextAlign.Start,
+                        )
+                    }
                 }
             }
         } else {

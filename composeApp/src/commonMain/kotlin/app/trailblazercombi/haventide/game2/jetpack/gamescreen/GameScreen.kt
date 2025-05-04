@@ -10,6 +10,7 @@ import androidx.navigation.NavHostController
 import app.trailblazercombi.haventide.game2.data.GameLoop
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.dialogs.AbilityPickerDialog
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.dialogs.AcceptDrawDialog
+import app.trailblazercombi.haventide.game2.jetpack.gamescreen.dialogs.DetailedCiInfoDialog
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.dialogs.EndRoundDialog
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.dialogs.ForfeitConfirmationDialog
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.dialogs.GameOverDialog
@@ -66,6 +67,17 @@ fun GameScreen(
     AcceptDrawDialog(viewModel)
     GameOverDialog(viewModel, navController)
     AbilityPickerDialog(viewModel)
+
+    DetailedCiInfoDialog(
+        openDialogState = viewModel.leftModificatorsDialog,
+        hideDialog = viewModel::hideLeftModificatorsDialog,
+        ciInfo = viewModel.leftCiInfo
+    )
+    DetailedCiInfoDialog(
+        openDialogState = viewModel.rightModificatorsDialog,
+        hideDialog = viewModel::hideRightModificatorsDialog,
+        ciInfo = viewModel.rightCiInfo
+    )
 
     LaunchedEffect(Unit) {
         viewModel.updateTileHighlights()

@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">Haventide</string>
 
+    <string name="start">Let's go!</string>
+
+    <string name="its_a_phoenix">Phoenix</string>
+    <string name="its_an_effecter">Effecter</string>
+
     <string name="nav_main_menu">Main Menu</string>
     <string name="nav_match_start">Match Start</string>
     <string name="nav_match_playing">Playing</string>
@@ -10,6 +15,8 @@
     <string name="game_over_dialog_result_neutral">MATCH DRAWN</string>
     <string name="game_over_dialog_result_bad">DEFEAT</string>
     <string name="game_over_dialog_result_error">MATCH OVER</string>
+
+    <string name="select_and_start">Select your Phoenixes</string>
 
     <string name="game_over_dialog_result_forfeit">MATCH FORFEITED</string>
     <string name="game_over_dialog_result_contumation">VICTORY BY FORFEIT</string>
@@ -164,4 +171,18 @@ The enemy can choose to remain in place or take large amount of damage upon leav
 Anyone (allies, enemies and mechanisms) in this Permieter at the end of the round gets Zapped.
 Zapped characters and mechanisms take damage and also zap anyone in a 5x5 Perimeter around them.</string>
 
+    <string name="mechanism_aoeeffecter_barrier_name">Barrier</string>
+    <string name="mechanism_aoeeffecter_barrier_description">Blocks all movement and abilities.</string>
+
+    <string name="mechanism_aoeeffecter_dispelstation_name">Dispel Station</string>
+    <string name="mechanism_aoeeffecter_dispelstation_description">Dispels all debuffs.</string>
+
+    <string name="modificator_blessing_name">Blessing</string>
+    <string name="modificator_blessing_description">Phoenix heals at the end of Round.</string>
+
+    <string name="modificator_burden_name">Burden</string>
+    <string name="modificator_burden_description">Incoming damage is doubled. Incoming healing is halved.</string>
+
+    <string name="modificator_titanshield_name">Titan Shield</string>
+    <string name="modificator_titanshield_description">Fully blocks the next incoming attack.</string>
 </resources>

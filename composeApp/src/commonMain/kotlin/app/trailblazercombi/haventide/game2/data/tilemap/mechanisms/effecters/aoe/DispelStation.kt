@@ -5,7 +5,9 @@ import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.Mechanism
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.PhoenixMechanism
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.mfei.HitPointsHandler
 import app.trailblazercombi.haventide.resources.Res
-import app.trailblazercombi.haventide.resources.ultimate_ayumi
+import app.trailblazercombi.haventide.resources.*
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.StringResource
 
 class DispelStation(
     parentTile: TileData,
@@ -21,4 +23,8 @@ class DispelStation(
     override fun onZeroHitPoints() {
         if (this.canDestruct()) this.destruct()
     }
+
+    override val icon: DrawableResource = Res.drawable.ultimate_ayumi
+    override val name: StringResource = Res.string.mechanism_aoeeffecter_dispelstation_name
+    override val description: StringResource = Res.string.mechanism_aoeeffecter_dispelstation_description
 }
