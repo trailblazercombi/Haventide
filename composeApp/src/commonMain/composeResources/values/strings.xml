@@ -138,10 +138,7 @@ The Dispel Station can be destroyed by attacking it.</string>
     <string name="phoenix_yumio_long_name">Tanaka Yumio</string>
     <string name="phoenix_yumio_ability_innate_name">Frostbite</string>
     <string name="phoenix_yumio_ability_innate_description">Apply Frostbite to an enemy.
-While Frostbite lasts, the enemy takes damage on every turn.
-The enemy also takes more damage from attacks and less healing.
-Frostbite lasts until the end of next round (this round + 1).
-Frostbite can also be dispelled by abilities that dispel debuffs.</string>
+While Frostbite lasts, the enemy takes damage on every turn. The enemy also takes more damage from attacks and less healing. Frostbite lasts until the end of next round (this round + 1). Frostbite can also be dispelled by abilities that dispel debuffs.</string>
     <string name="phoenix_yumio_ability_ultimate_name">It's Raining Icebergs</string>
     <string name="phoenix_yumio_ability_ultimate_description">Apply Frostbite to all enemies in a 5x5 Permieter of the targeted tile.</string>
 
@@ -151,21 +148,16 @@ Frostbite can also be dispelled by abilities that dispel debuffs.</string>
     <string name="phoenix_malachai_ability_innate_description">Dispel all debuffs from oneself and all allies in a 5x5 Permieter.</string>
     <string name="phoenix_malachai_ability_ultimate_name">Hourglass of Lifetime</string>
     <string name="phoenix_malachai_ability_ultimate_description">Construct Life in a 7x7 Permieter.
-At the end of round, heal all allies in the perimeter.
-The perimeter gets dispelled at the end of the round.</string>
+At the end of round, heal all allies in the perimeter. The perimeter gets dispelled at the end of the round.</string>
 
     <string name="phoenix_sylvia_short_name">Sylvia</string>
     <string name="phoenix_sylvia_long_name">Sylvia</string>
     <string name="phoenix_sylvia_ability_innate_name">A (Thorny) Flower For You</string>
     <string name="phoenix_sylvia_ability_innate_description">Apply Thorny Petals to an enemy.
-While Thorny Petals is active, the enemy takes damage upon every ability executed by the enemy.
-This damage scales with every ability executed, up to 80 damage. This damage stacks with other modifiers.
-Thorny Petals gets dispelled at the end of round.</string>
+While Thorny Petals is active, the enemy takes damage upon every ability executed by the enemy. This damage scales with every ability executed, up to 80 damage. This damage stacks with other modifiers. Thorny Petals gets dispelled at the end of round.</string>
     <string name="phoenix_sylvia_ability_ultimate_name">Say Hello To Spike</string>
     <string name="phoenix_sylvia_ability_ultimate_description">Construct Spike.
-Spike will be displayed to the opponent.
-When an enemy wanders onto Spike, summons Thorns in a 3x3 Permieter around the enemy.
-The enemy can choose to remain in place or take large amount of damage upon leaving.</string>
+Spike will be displayed to the opponent. When an enemy steps onto Spike, summons Thorns in a 3x3 Permieter around the enemy. The enemy can choose to remain in place or take large amount of damage upon leaving.</string>
 
     <string name="phoenix_torrent_short_name">"Torrent"</string>
     <string name="phoenix_torrent_long_name">"Torrent"</string>
