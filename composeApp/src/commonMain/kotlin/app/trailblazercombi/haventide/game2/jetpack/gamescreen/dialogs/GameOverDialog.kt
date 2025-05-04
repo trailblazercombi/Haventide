@@ -21,6 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import app.trailblazercombi.haventide.AppScreens
+import app.trailblazercombi.haventide.Global
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.components.misc.TapToDismissLabel
 import app.trailblazercombi.haventide.game2.jetpack.universal.DialogGenerics
 import app.trailblazercombi.haventide.game2.viewModel.GameLoopViewModel
@@ -42,7 +43,8 @@ fun GameOverDialog(
         openDialogState = viewModel.gameOverDialog,
         onDismissRequest = {
             if (openDialog) {
-                navController.navigate(AppScreens.MatchResult.name) {
+                Global.gameLoop.value = null
+                navController.navigate(AppScreens.MainMenu.name) {
                     popUpTo(AppScreens.GameScreen.name) { inclusive = true }
                     // TODO Make the back button on Android work
                     //  and the Escape key on Windows too...

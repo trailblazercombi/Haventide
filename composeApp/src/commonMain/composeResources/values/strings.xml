@@ -17,6 +17,11 @@
     <string name="game_over_dialog_result_error">MATCH OVER</string>
 
     <string name="select_and_start">Select your Phoenixes</string>
+    <string name="start_pair_local">Your pairing code</string>
+    <string name="start_pair_foreign">Enter pairing code</string>
+    <string name="start_button_pair">Connect!</string>
+    <string name="start_button_start">Start Game!</string>
+    <string name="start_button_cancel">Cancel</string>
 
     <string name="game_over_dialog_result_forfeit">MATCH FORFEITED</string>
     <string name="game_over_dialog_result_contumation">VICTORY BY FORFEIT</string>

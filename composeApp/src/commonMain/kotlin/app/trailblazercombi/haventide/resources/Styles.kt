@@ -132,6 +132,13 @@ object MainMenuStyle {
     val PhoenixCardTextSizeDescription = 16.sp
 }
 
+object MatchBeginStyle {
+    val PaddingFromScreenEdge = 32.dp
+    val PairingInputTextSize = 60.sp
+    val PairingInputLabelSize = 16.sp
+    val InnerPadding = 8.dp
+}
+
 object ScreenSizeThresholds {
     // NOTE: The description always matches the behaviour of value > field.
     val SpreadDiceStackOnSingleLine = 549.dp

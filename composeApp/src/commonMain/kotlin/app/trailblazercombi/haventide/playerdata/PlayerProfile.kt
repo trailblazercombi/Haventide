@@ -13,7 +13,7 @@ import app.trailblazercombi.haventide.resources.PhoenixTemplates
  * This denotes a player outside the game and is also a component
  * of creating [PlayerInGame].
  */
-data class PlayerProfile(val name: String, val activeRoster: List<MechanismTemplate.Phoenix>) {
+data class PlayerProfile(val name: String, var activeRoster: List<MechanismTemplate.Phoenix>) {
 
     /**
      * Returns a new [PlayerInGame] with this [PlayerProfile].

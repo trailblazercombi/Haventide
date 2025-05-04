@@ -12,7 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import app.trailblazercombi.haventide.matchLoad.jetpack.MainMenuScreen
 import app.trailblazercombi.haventide.matchLoad.jetpack.MatchBeginScreen
-import app.trailblazercombi.haventide.matchLoad.jetpack.MatchResultScreen
+//import app.trailblazercombi.haventide.matchLoad.jetpack.MatchResultScreen
 import app.trailblazercombi.haventide.resources.*
 
 @Composable
@@ -38,12 +38,12 @@ fun App(
             val viewModel = gameLoop?.viewModel ?: return@composable
             GameScreen(viewModel, navController)
         }
-        composable (route = AppScreens.MatchResult.name) {
-            MatchResultScreen(
-                gameLoop?.gameResult
-                    ?: throw IllegalStateException("Cannot create a MatchResult screen while the match is ongoing"),
-            )
-        }
+//        composable (route = AppScreens.MatchResult.name) {
+//            MatchResultScreen(
+//                gameLoop?.gameResult
+//                    ?: throw IllegalStateException("Cannot create a MatchResult screen while the match is ongoing"),
+//            )
+//        }
     }
 }
 
@@ -51,5 +51,5 @@ enum class AppScreens(val title: StringResource) {
     MainMenu(Res.string.nav_main_menu),
     MatchStart(Res.string.nav_match_start),
     GameScreen(Res.string.nav_match_playing),
-    MatchResult(Res.string.nav_match_result)
+//    MatchResult(Res.string.nav_match_result)
 }

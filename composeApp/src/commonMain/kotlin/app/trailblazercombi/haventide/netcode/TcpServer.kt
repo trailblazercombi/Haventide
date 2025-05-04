@@ -3,6 +3,7 @@ package app.trailblazercombi.haventide.netcode
 import androidx.lifecycle.viewmodel.compose.viewModel
 import app.trailblazercombi.haventide.Global
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.GameScreen
+import app.trailblazercombi.haventide.matchLoad.jetpack.activeRoster
 import app.trailblazercombi.haventide.playerdata.PlayerProfile
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -139,8 +140,10 @@ object TcpServer {
                     remotePlayer = PlayerProfile(args = args[2]),
                     playerStarts = args[3].toBoolean()
                 )
-                TcpClient.sendToRemoteServer(message = "GEEMU_WEMOVE ${Global.localPlayer.rosterAsPacket()}")
-                Handshaker.finishRemoteGameRequest(Global.localPlayer)
+                val mePlayer = Global.localPlayer
+                mePlayer.activeRoster = activeRoster.value
+                TcpClient.sendToRemoteServer(message = "GEEMU_WEMOVE ${mePlayer.rosterAsPacket()}")
+                Handshaker.finishRemoteGameRequest(mePlayer)
 //                waitingJob!!.invokeOnCompletion {
 //                    Global.navController!!.navigate(AppScreens.GameScreen.name)
 //                }
