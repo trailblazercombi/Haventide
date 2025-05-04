@@ -42,10 +42,10 @@ class TileData(
      */
     fun addMechanism(mechanism: Mechanism) {
         if (canAddMechanism(mechanism)) {
-            mechanismStack.forEach {
+            mechanismStack.add(mechanism)
+            (mechanismStack.toList() - mechanism).forEach {
                 if (it is AoEEffecter) it.onStepOnto(mechanism)
             }
-            mechanismStack.add(mechanism)
             if (mechanism is AoEEffecter) mechanism.onPlacement()
             updateStackStack()
         }
@@ -113,11 +113,15 @@ class TileData(
         if (mechanism is ImmediateEffecter) return true // Special case, these need to be always destructed
         if (!mechanismStack.contains(mechanism)) return false
 
+        println("[CRM] $this contains $mechanism")
+
         // 2: Check if it's not necessary for another mechanism to exist
         for (mechie in mechanismStack) {
             if (mechie === mechanism) continue
             if (mechie.vetoTilemateRemoval(mechanism)) return false
         }
+
+        println("[CRM] $this didn't veto $mechanism's removal")
 
         // All checks passed: Can remove mechanism
         return true

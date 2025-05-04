@@ -32,7 +32,7 @@ class PhoenixMechanism(
     val teamIcon = teamAffiliation.icon
 
     override fun onZeroHitPoints() {
-        this.destruct()
+        if (canDestruct()) this.destruct()
     }
 
     override fun vetoTraversal(mechanism: Mechanism): Boolean {

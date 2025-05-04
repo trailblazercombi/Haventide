@@ -80,7 +80,7 @@ abstract class Mechanism(parentTile: TileData, val teamAffiliation: Team?) {
         if (!canDestruct())
             throw UnsupportedOperationException("Cannot destruct Mechanism: canDestruct() check returned false")
 
-        if (this is AoEEffecter) onDestruct()
+//        if (this is AoEEffecter) onDestruct()
 
         this.parentTile.removeMechanism(this)
         this.teamAffiliation?.remove(this) ?: NeutralFaction.remove(this)
