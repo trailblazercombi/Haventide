@@ -76,7 +76,7 @@ object TcpClient {
 
         } catch (e: IOException) {
             println("[TCP] Stopping client due to ${e.printStackTrace()}")
-            stop()
+            stopTcpClient()
         }
     }
 
@@ -101,7 +101,7 @@ object TcpClient {
                 latestMessage.value = response.toString()
             } catch (se: SocketException) {
                 System.err.println("[TCP] Stopping client due to ${se.printStackTrace()}")
-                stop()
+                stopTcpClient()
             }
         }
     }

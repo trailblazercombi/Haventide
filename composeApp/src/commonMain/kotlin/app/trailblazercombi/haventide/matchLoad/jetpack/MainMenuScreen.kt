@@ -20,6 +20,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -29,8 +30,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import app.trailblazercombi.haventide.AppScreens
+import app.trailblazercombi.haventide.Global
 import app.trailblazercombi.haventide.matchLoad.jetpack.components.PhoenixSelectCard
+import app.trailblazercombi.haventide.netcode.*
 import app.trailblazercombi.haventide.resources.ButtonSeverity
 import app.trailblazercombi.haventide.resources.MainMenuStyle
 import app.trailblazercombi.haventide.resources.MechanismTemplate
@@ -47,15 +51,12 @@ fun MainMenuScreen(navController: NavController, modifier: Modifier = Modifier) 
     val activeRoster by activeRoster.collectAsState()
     val scrollState = rememberLazyGridState()
 
-    Box(contentAlignment = Alignment.Center, modifier = modifier.fillMaxSize()) {
-        Image(
-            painter = painterResource(Res.drawable.background),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            alignment = Alignment.BottomCenter,
-            modifier = modifier.fillMaxSize()
-        )
+    val gameLoop by Global.gameLoop.collectAsState()
+    val serverRunning by TcpServer.serverRunning.collectAsState()
 
+    val backStackEntry by navController.currentBackStackEntryAsState()
+
+    Box(contentAlignment = Alignment.Center, modifier = modifier.fillMaxSize()) {
         Column {
             Box(
                 contentAlignment = Alignment.TopCenter,
@@ -81,40 +82,55 @@ fun MainMenuScreen(navController: NavController, modifier: Modifier = Modifier) 
                 modifier = modifier.weight(1f).padding(
                     top = MainMenuStyle.PhoenixCardInnerPadding,
                     bottom = MainMenuStyle.StartGameButtonOffsetFromEdge
-                        + MainMenuStyle.StartGameButtonHeight + MainMenuStyle.PhoenixCardInnerPadding)
+                            + MainMenuStyle.StartGameButtonHeight + MainMenuStyle.PhoenixCardInnerPadding
+                )
             ) {
                 items(PhoenixTemplates.entries) {
                     PhoenixSelectCard(it.template)
                 }
             }
         }
-            Box(
-                contentAlignment = Alignment.BottomCenter,
-                modifier = modifier.fillMaxSize().padding(bottom = MainMenuStyle.StartGameButtonOffsetFromEdge)
+        Box(
+            contentAlignment = Alignment.BottomCenter,
+            modifier = modifier.fillMaxSize().padding(bottom = MainMenuStyle.StartGameButtonOffsetFromEdge)
+        ) {
+            Button(
+                shape = RoundedCornerShape(MainMenuStyle.StartGameButtonRounding),
+                enabled = activeRoster.size == 3,
+                onClick = { navController.navigate(AppScreens.MatchStart.name) },
+                border = BorderStroke(
+                    MainMenuStyle.StartGameButtonOutlineThickness, ButtonSeverity.PREFERRED.outlineColor
+                ),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = ButtonSeverity.PREFERRED.fillColor,
+                    contentColor = ButtonSeverity.PREFERRED.contentColor,
+                ),
+                modifier = modifier.width(MainMenuStyle.StartGameButtonWidth)
+                    .height(MainMenuStyle.StartGameButtonHeight),
+                contentPadding = PaddingValues(0.dp)
             ) {
-                Button(
-                    shape = RoundedCornerShape(MainMenuStyle.StartGameButtonRounding),
-                    enabled = activeRoster.size == 3,
-                    onClick = { navController.navigate(AppScreens.MatchStart.name) },
-                    border = BorderStroke(
-                        MainMenuStyle.StartGameButtonOutlineThickness, ButtonSeverity.PREFERRED.outlineColor
-                    ),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = ButtonSeverity.PREFERRED.fillColor,
-                        contentColor = ButtonSeverity.PREFERRED.contentColor,
-                    ),
-                    modifier = modifier.width(MainMenuStyle.StartGameButtonWidth)
-                        .height(MainMenuStyle.StartGameButtonHeight),
-                    contentPadding = PaddingValues(0.dp)
-                ) {
-                    Text(
-                        text = stringResource(Res.string.start),
-                        fontSize = MainMenuStyle.StartGameButtonTextSize,
-                    )
-                }
+                Text(
+                    text = stringResource(Res.string.start),
+                    fontSize = MainMenuStyle.StartGameButtonTextSize,
+                )
             }
         }
     }
+
+    LaunchedEffect(gameLoop) {
+        if (gameLoop != null) navController.navigate(AppScreens.GameScreen.name) {
+            popUpTo(AppScreens.MainMenu.name) { inclusive = true }
+        }
+    }
+
+    LaunchedEffect(backStackEntry) {
+        if (gameLoop == null) {
+            println("[MMS] Stopping TCP everything!!! Properly, yeah!!!")
+            stopTcpClient()
+            stopTcpServer()
+        }
+    }
+}
 
 fun toggle(phoenix: MechanismTemplate.Phoenix) {
     val mutableRoster = activeRoster.value.toMutableList()

@@ -75,7 +75,8 @@ object TcpServer {
             serverSocket?.close()
         } catch (e: IOException) {
             System.err.println("[TCPS] Server error: ${e.printStackTrace()}")
-            stop()
+            stopTcpClient()
+            stopTcpServer()
         }
     }
 
@@ -88,7 +89,8 @@ object TcpServer {
                 main(arrayOf())
             } catch (_: IllegalStateException) {
                 println("[TCPS] Tried to connect to itself, oops!")
-                stop()
+                stopTcpClient()
+                stopTcpServer()
             }
             println("[TCPS] TCP Coroutine finished after @JVM Static Main.")
         }
@@ -99,7 +101,7 @@ object TcpServer {
         // Unpair the client
         println("[TCPS] Stopping TCP Server...")
         TcpClient.sendToRemoteServer("MOSHI_STOP")
-        TcpClient.stop()
+        stopTcpClient()
         println("[TCPS] Client terminated.")
 
         // Close the server socket
@@ -131,8 +133,8 @@ object TcpServer {
         when (args[0]) {
             "MOSHI_GO" -> TcpClient.launch(args[1])
             "MOSHI_STOP" -> {
-                TcpClient.stop()
-                stop()
+                stopTcpClient()
+                stopTcpServer()
             }
             "GEEMU_START" -> {
                 waitingJob = Handshaker.requestGameFromRemote(

@@ -17,11 +17,13 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import app.trailblazercombi.haventide.AppScreens
 import app.trailblazercombi.haventide.Global
 import app.trailblazercombi.haventide.matchLoad.jetpack.components.PairingField
@@ -74,6 +76,8 @@ fun MatchBeginScreen(navController: NavHostController, modifier: Modifier = Modi
 
     val thisActiveRoster by activeRoster.collectAsState()
 
+    val backStackEntry by navController.currentBackStackEntryAsState()
+
     // This just figures out the current screen size...
     BoxWithConstraints(Modifier.fillMaxSize()) {
         LaunchedEffect(maxWidth, maxHeight) {
@@ -84,14 +88,6 @@ fun MatchBeginScreen(navController: NavHostController, modifier: Modifier = Modi
     }
 
     Box(contentAlignment = Alignment.Center, modifier = modifier.fillMaxSize()) {
-        Image(
-            painter = painterResource(Res.drawable.background),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            alignment = Alignment.BottomCenter,
-            modifier = modifier.fillMaxSize()
-        )
-
         Column(modifier.padding(MatchBeginStyle.PaddingFromScreenEdge)) {
             Surface(
                 shape = RoundedCornerShape(MainMenuStyle.PhoenixCardOuterRounding),
@@ -129,8 +125,8 @@ fun MatchBeginScreen(navController: NavHostController, modifier: Modifier = Modi
         Button(
             enabled = true,
             onClick = {
-                stopTcpClient()
-                stopTcpServer()
+//                stopTcpClient()
+//                stopTcpServer()
                 navController.popBackStack()
             },
             colors = ButtonDefaults.buttonColors(
@@ -215,7 +211,7 @@ fun MatchBeginScreen(navController: NavHostController, modifier: Modifier = Modi
         diagnosticMessage = null
     }
 
-    LaunchedEffect(serverRunning) {
+    LaunchedEffect(backStackEntry) {
         if (!serverRunning) startTcpServer()
     }
 }

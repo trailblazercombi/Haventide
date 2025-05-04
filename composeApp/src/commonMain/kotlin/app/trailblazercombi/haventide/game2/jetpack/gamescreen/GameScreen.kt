@@ -3,10 +3,13 @@ package app.trailblazercombi.haventide.game2.jetpack.gamescreen
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import app.trailblazercombi.haventide.game2.data.GameLoop
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.dialogs.AbilityPickerDialog
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.dialogs.AcceptDrawDialog
@@ -24,6 +27,8 @@ import app.trailblazercombi.haventide.game2.jetpack.gamescreen.tilemap.TileMap
 import app.trailblazercombi.haventide.game2.jetpack.gamescreen.panels.GameStatusPanel
 import app.trailblazercombi.haventide.game2.jetpack.universal.YesNoDialog
 import app.trailblazercombi.haventide.game2.viewModel.GameLoopViewModel
+import app.trailblazercombi.haventide.netcode.TcpServer
+import app.trailblazercombi.haventide.netcode.startTcpServer
 import app.trailblazercombi.haventide.resources.Res
 import app.trailblazercombi.haventide.resources.yes_no_dialog_forfeit_no
 import app.trailblazercombi.haventide.resources.yes_no_dialog_forfeit_title
@@ -37,6 +42,9 @@ fun GameScreen(
     modifier: Modifier = Modifier
 ) {
     println("GAME SCREEN ONLINE!!!")
+
+    val serverRunning by TcpServer.serverRunning.collectAsState()
+    val backStackEntry by navController.currentBackStackEntryAsState()
 
     // This just figures out the current screen size...
     BoxWithConstraints(Modifier.fillMaxSize()) {
@@ -81,5 +89,9 @@ fun GameScreen(
 
     LaunchedEffect(Unit) {
         viewModel.updateTileHighlights()
+    }
+
+    LaunchedEffect(backStackEntry) {
+        if (!serverRunning) startTcpServer()
     }
 }
