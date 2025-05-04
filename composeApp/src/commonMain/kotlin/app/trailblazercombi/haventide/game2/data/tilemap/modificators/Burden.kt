@@ -20,4 +20,5 @@ class Burden(parent: ModificatorHandler) : Modificator(Res.drawable.ultimate_ayu
 
     override val name = Res.string.modificator_burden_name
     override val description = Res.string.modificator_burden_description
+    override fun equals(other: Any?) = other is Burden
 }

@@ -8,7 +8,9 @@ import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.im
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.mfei.ModificatorHandler
 import app.trailblazercombi.haventide.game2.data.tilemap.modificators.Blessing
 import app.trailblazercombi.haventide.game2.data.tilemap.modificators.Burden
+import app.trailblazercombi.haventide.game2.data.tilemap.modificators.Frostbite
 import app.trailblazercombi.haventide.game2.data.tilemap.modificators.Modificator
+import app.trailblazercombi.haventide.game2.data.tilemap.modificators.ThornyPetals
 import app.trailblazercombi.haventide.game2.data.tilemap.modificators.TitanShield
 import app.trailblazercombi.haventide.playerdata.PlayerProfile
 import org.jetbrains.compose.resources.DrawableResource
@@ -59,7 +61,9 @@ enum class ModificatorType {
 enum class Modificators(val build: (ModificatorHandler) -> Modificator) {
     TITAN_SHIELD( { parent -> TitanShield(parent) } ),
     BURDEN({ parent -> Burden(parent) } ),
-    BLESSING( { parent -> Blessing(parent) } )
+    BLESSING( { parent -> Blessing(parent) } ),
+    THORNY_PETALS( { parent -> ThornyPetals(parent) } ),
+    FROSTBITE({ parent -> Frostbite(parent) } )
 }
 
 enum class PlaceholderPlayerConfiguration(

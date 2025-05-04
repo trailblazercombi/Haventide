@@ -134,7 +134,7 @@ class TurnTable(private val gameLoop: GameLoop) {
 
     private fun updateAllModificators(updateType: ModificatorFireType = ModificatorFireType.ON_TURN_FINISHED) {
         allPlayers().forEach {
-            it.team.forEach {
+            it.team.toList().forEach {
                 (it as? ModificatorHandler)?.updateModificators(updateType)
             }
         }

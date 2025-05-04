@@ -28,6 +28,7 @@ interface ModificatorHandler {
     // canAddModificator() is checked twice: once here, and once in ModificatorInvoker.
     fun addModificator(modificator: Modificator) {
         if (canAddModificator(modificator)) {
+            modificators.toList().forEach { if (it == modificator) modificators.remove(it) }
             modificators.add(modificator)
             modificators.forEach { it.onModificatorsAdded() }
         }

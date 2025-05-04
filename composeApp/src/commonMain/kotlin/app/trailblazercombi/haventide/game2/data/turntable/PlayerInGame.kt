@@ -9,6 +9,8 @@ import app.trailblazercombi.haventide.resources.MechanismTemplate
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.PhoenixMechanism
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.aoe.AoEEffecter
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.mfei.ModificatorHandler
+import app.trailblazercombi.haventide.game2.data.tilemap.modificators.Frostbite
+import app.trailblazercombi.haventide.game2.data.tilemap.modificators.ThornyPetals
 import app.trailblazercombi.haventide.game2.viewModel.AbilityPreview
 import app.trailblazercombi.haventide.resources.ModificatorFireType
 
@@ -67,6 +69,10 @@ open class PlayerInGame(val profile: PlayerProfile, protected val turnTable: Tur
     open fun executeAbility(ability: AbilityTemplate, doer: Mechanism, target: TileData, consume: List<Die> = listOf()) {
         ability.execution.invoke(doer, target)
         dice.consume(consume)
+
+        (doer as? PhoenixMechanism)?.let {
+            (doer.modificators.find { it is ThornyPetals } as? ThornyPetals)?.hasMoved = true
+        }
     }
 
     /**
@@ -96,6 +102,11 @@ open class PlayerInGame(val profile: PlayerProfile, protected val turnTable: Tur
             if (it is AoEEffecter) it.onEndOfRound()
         }
         dice.discardAllDice()
+        team.forEach { doer ->
+            (doer as? PhoenixMechanism)?.let {
+                (doer.modificators.find { it is Frostbite } as? Frostbite)?.itsSoOver = true
+            }
+        }
     }
 
     /**

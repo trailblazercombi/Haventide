@@ -105,4 +105,6 @@ abstract class Modificator(val icon: DrawableResource, val modificatorType: Modi
 
     abstract val name: StringResource
     abstract val description: StringResource
+
+    abstract override fun equals(other: Any?): Boolean
 }

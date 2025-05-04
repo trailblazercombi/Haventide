@@ -138,7 +138,8 @@ The Dispel Station can be destroyed by attacking it.</string>
     <string name="phoenix_yumio_long_name">Tanaka Yumio</string>
     <string name="phoenix_yumio_ability_innate_name">Frostbite</string>
     <string name="phoenix_yumio_ability_innate_description">Apply Frostbite to an enemy.
-While Frostbite lasts, the enemy takes minor damage on every turn.
+While Frostbite lasts, the enemy takes damage on every turn.
+The enemy also takes more damage from attacks and less healing.
 Frostbite lasts until the end of next round (this round + 1).
 Frostbite can also be dispelled by abilities that dispel debuffs.</string>
     <string name="phoenix_yumio_ability_ultimate_name">It's Raining Icebergs</string>
@@ -161,9 +162,9 @@ While Thorny Petals is active, the enemy takes damage upon every ability execute
 This damage scales with every ability executed, up to 80 damage. This damage stacks with other modifiers.
 Thorny Petals gets dispelled at the end of round.</string>
     <string name="phoenix_sylvia_ability_ultimate_name">Say Hello To Spike</string>
-    <string name="phoenix_sylvia_ability_ultimate_description">Construct a trap.
-This trap won't be displayed to the opponent.
-When an enemy wanders into the trap, summons Spike in a 3x3 Permieter around the enemy.
+    <string name="phoenix_sylvia_ability_ultimate_description">Construct Spike.
+Spike will be displayed to the opponent.
+When an enemy wanders onto Spike, summons Thorns in a 3x3 Permieter around the enemy.
 The enemy can choose to remain in place or take large amount of damage upon leaving.</string>
 
     <string name="phoenix_torrent_short_name">"Torrent"</string>
@@ -182,6 +183,12 @@ Zapped characters and mechanisms take damage and also zap anyone in a 5x5 Perime
     <string name="mechanism_aoeeffecter_dispelstation_name">Dispel Station</string>
     <string name="mechanism_aoeeffecter_dispelstation_description">Dispels all debuffs.</string>
 
+    <string name="mechanism_aoeeffecter_spike_name">Spike</string>
+    <string name="mechanism_aoeeffecter_spike_description">A trap put down for the enemy.</string>
+
+    <string name="mechanism_aoeeffecter_thorns_name">Thorns</string>
+    <string name="mechanism_aoeeffecter_thorns_description">Deals damage to Phoenixes. Ouchie!</string>
+
     <string name="modificator_blessing_name">Blessing</string>
     <string name="modificator_blessing_description">Phoenix heals at the end of Round.</string>
 
@@ -190,4 +197,10 @@ Zapped characters and mechanisms take damage and also zap anyone in a 5x5 Perime
 
     <string name="modificator_titanshield_name">Titan Shield</string>
     <string name="modificator_titanshield_description">Fully blocks the next incoming attack.</string>
+
+    <string name="modificator_thornypetals_name">Thorny Petals</string>
+    <string name="modificator_thornypetals_description">Phoenix takes damage on every ability executed.</string>
+
+    <string name="modificator_frostbite_name">Frostbite</string>
+    <string name="modificator_frostbite_description">Deals damage to Phoenixes.</string>
 </resources>

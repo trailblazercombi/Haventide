@@ -25,4 +25,5 @@ class TitanShield(parent: ModificatorHandler) : Modificator(Res.drawable.ability
 
     override val name = Res.string.modificator_titanshield_name
     override val description = Res.string.modificator_titanshield_description
+    override fun equals(other: Any?) = other is TitanShield
 }

@@ -30,4 +30,5 @@ class Blessing(parent: ModificatorHandler) : Modificator(Res.drawable.ability_ay
 
     override val name = Res.string.modificator_blessing_name
     override val description = Res.string.modificator_blessing_description
+    override fun equals(other: Any?) = other is Blessing
 }
