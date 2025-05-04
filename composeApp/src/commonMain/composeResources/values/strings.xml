@@ -13,7 +13,7 @@
 
     <string name="game_over_dialog_result_forfeit">MATCH FORFEITED</string>
     <string name="game_over_dialog_result_contumation">VICTORY BY FORFEIT</string>
-    <string name="game_over_dialog_confirm_button">Tap or click anywhere on the blank area to continue</string>
+    <string name="game_over_dialog_confirm_button">Tap or click anywhere in the blank area to continue</string>
 
     <string name="yes_no_dialog_forfeit_title">You haven't lost the match yet.</string>
     <string name="yes_no_dialog_forfeit_yes">Yes, forfeit the match</string>
@@ -51,7 +51,7 @@ Please wait...</string>
     <string name="diagnostic_pairing">Pairing...</string>
 
     <string name="ability_move">Move</string>
-    <string name="ability_construct">Construct</string>
+    <string name="ability_construct">Build</string>
     <string name="ability_attack">Attack</string>
     <string name="ability_restore">Heal</string>
     <string name="ability_impair">Impair</string>
@@ -87,16 +87,18 @@ Please wait...</string>
     <string name="generic_move_ability_name">Move</string>
     <string name="generic_move_ability_description">Move the Phoenix to the target tile.</string>
     <string name="generic_strike_ability_name">Attack</string>
-    <string name="generic_strike_ability_description">Deal minor damage to an enemy Phoenix.</string>
+    <string name="generic_strike_ability_description">Deal minor damage to the target.</string>
+
+    <string name="yay_no_modificators">This Phoenix does not have any modificators applied right now.</string>
 
     <string name="phoenix_finnian_short_name">Finnian</string>
     <string name="phoenix_finnian_long_name">Finnian</string>
     <string name="phoenix_finnian_ability_innate_name">Titan Shield</string>
     <string name="phoenix_finnian_ability_innate_description">Apply Titan Shield to an ally.
-This shield blocks all damage from attacks targeting that ally.
-The shield dispels upon blocking damage.</string>
+This shield blocks all damage from the next attack targeting this ally</string>
     <string name="phoenix_finnian_ability_ultimate_name">Barrier</string>
-    <string name="phoenix_finnian_ability_ultimate_description">Construct a 3x3 barrier that cannot be traversed.
+    <string name="phoenix_finnian_ability_ultimate_description">Construct a 3x3 barrier.
+This barrier blocks all movement and abilities.
 This barrier dispels at the end of the round.</string>
 
     <string name="phoenix_ayuna_short_name">Ayuna</string>
