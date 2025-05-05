@@ -6,12 +6,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import app.trailblazercombi.haventide.resources.MainMenuStyle
 import app.trailblazercombi.haventide.resources.MatchBeginStyle
@@ -49,7 +52,11 @@ fun PairingField(
                     textAlign = TextAlign.Center,
                     lineHeight = MatchBeginStyle.PairingInputTextSize,
                 ),
-                modifier = modifier.fillMaxWidth()
+                modifier = modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done
+                ),
             )
         }
     }

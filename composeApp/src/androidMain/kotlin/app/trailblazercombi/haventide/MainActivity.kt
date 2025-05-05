@@ -23,24 +23,4 @@ class MainActivity : ComponentActivity() {
             App()
         }
     }
-
-    override fun onPause() {
-        super.onPause()
-        // Send a notification that the game is still running
-        // (if in game)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        // Dismiss the notification
-        // (if there is one)
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-//        TcpServer.stop()
-        // FIXME Prevent the game from ending upon device going to sleep
-        // TODO This is where all clean-up goes!!!
-    }
 }

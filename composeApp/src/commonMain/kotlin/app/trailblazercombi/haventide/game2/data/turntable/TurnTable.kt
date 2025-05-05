@@ -132,7 +132,7 @@ class TurnTable(private val gameLoop: GameLoop) {
             else "Not initialized"
     }
 
-    private fun updateAllModificators(updateType: ModificatorFireType = ModificatorFireType.ON_TURN_FINISHED) {
+    private fun updateAllModificators(@Suppress("SameParameterValue") updateType: ModificatorFireType = ModificatorFireType.ON_TURN_FINISHED) {
         allPlayers().forEach {
             it.team.toList().forEach {
                 (it as? ModificatorHandler)?.updateModificators(updateType)

@@ -144,15 +144,15 @@ While Frostbite lasts, the enemy takes damage on every turn. The enemy also take
 
     <string name="phoenix_malachai_short_name">Malachai</string>
     <string name="phoenix_malachai_long_name">Malachai Vakuumin</string>
-    <string name="phoenix_malachai_ability_innate_name">Marklines of The Now</string>
+    <string name="phoenix_malachai_ability_innate_name">Dispel</string>
     <string name="phoenix_malachai_ability_innate_description">Dispel all debuffs from oneself and all allies in a 5x5 Permieter.</string>
-    <string name="phoenix_malachai_ability_ultimate_name">Hourglass of Lifetime</string>
+    <string name="phoenix_malachai_ability_ultimate_name">Life</string>
     <string name="phoenix_malachai_ability_ultimate_description">Construct Life in a 7x7 Permieter.
 At the end of round, heal all allies in the perimeter. The perimeter gets dispelled at the end of the round.</string>
 
     <string name="phoenix_sylvia_short_name">Sylvia</string>
     <string name="phoenix_sylvia_long_name">Sylvia</string>
-    <string name="phoenix_sylvia_ability_innate_name">A (Thorny) Flower For You</string>
+    <string name="phoenix_sylvia_ability_innate_name">Thorny Petals</string>
     <string name="phoenix_sylvia_ability_innate_description">Apply Thorny Petals to an enemy.
 While Thorny Petals is active, the enemy takes damage upon every ability executed by the enemy. This damage scales with every ability executed, up to 80 damage. This damage stacks with other modifiers. Thorny Petals gets dispelled at the end of round.</string>
     <string name="phoenix_sylvia_ability_ultimate_name">Say Hello To Spike</string>
@@ -177,6 +177,9 @@ Zapped characters and mechanisms take damage and also zap anyone in a 5x5 Perime
 
     <string name="mechanism_aoeeffecter_spike_name">Spike</string>
     <string name="mechanism_aoeeffecter_spike_description">A trap put down for the enemy.</string>
+
+    <string name="mechanism_aoeeffecter_life_name">Life</string>
+    <string name="mechanism_aoeeffecter_life_description">At end of round, heals Phoenixes.</string>
 
     <string name="mechanism_aoeeffecter_thorns_name">Thorns</string>
     <string name="mechanism_aoeeffecter_thorns_description">Deals damage to Phoenixes. Ouchie!</string>

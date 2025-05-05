@@ -17,27 +17,27 @@ abstract class AoEEffecter(parentTile: TileData, val drawable: DrawableResource,
     /**
      * Called when the Effecter is placed.
      */
-    open fun onPlacement() {}
+    open fun onPlacement() = Unit
 
     /**
      * Called when another [Mechanism] steps onto the same tile as this Effecter.
      * @param mechanism The [Mechanism] that just stepped onto the tile.
      */
-    open fun onStepOnto(mechanism: Mechanism) {}
+    open fun onStepOnto(mechanism: Mechanism) = Unit
 
     /**
      * Called when another [Mechanism] leaves the same tile as this Effecter.
      * @param mechanism The [Mechanism] that just left.
      */
-    open fun onLeave(mechanism: Mechanism) {}
+    open fun onLeave(mechanism: Mechanism) = Unit
 
     /**
      * Called by [TileMapData] when the round ends.
      */
-    open fun onEndOfRound() {}
+    open fun onEndOfRound() = Unit
 
     /**
      * Called just before the Effecter is destructed.
      */
-    open fun onDestruct() {}
+    open fun onDestruct() = Unit
 }

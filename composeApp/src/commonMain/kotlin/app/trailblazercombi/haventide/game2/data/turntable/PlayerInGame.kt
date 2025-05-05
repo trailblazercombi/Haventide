@@ -134,7 +134,7 @@ open class PlayerInGame(val profile: PlayerProfile, protected val turnTable: Tur
     /**
      * Called automatically upon the game over, regardless of the result.
      */
-    open fun onGameOver() {} // TODO Make sure this is actually called...
+    open fun onGameOver() = Unit
 
 
     // EXPOSURE FUNCTIONS

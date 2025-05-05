@@ -22,7 +22,6 @@ import app.trailblazercombi.haventide.resources.offer_draw_dialog_refused
 import app.trailblazercombi.haventide.resources.offer_draw_dialog_accepted
 import org.jetbrains.compose.resources.stringResource
 
-@Suppress("KotlinConstantConditions")
 @Composable
 fun OfferDrawDialog(viewModel: GameLoopViewModel, modifier: Modifier = Modifier) {
 

@@ -137,9 +137,5 @@ object TcpClient {
     private fun onMessageRecieved(message: String) {
         println("Server responded: $message")
         val args = message.split(' ')
-//        assert(args[0] == "ACK")
-//        when (args[1]) {
-//            else -> println("[TCP-OMR] Message received: $message")
-//        }
     }
 }

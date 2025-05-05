@@ -3,11 +3,13 @@ package app.trailblazercombi.haventide.resources
 import androidx.compose.ui.graphics.Color
 import app.trailblazercombi.haventide.game2.data.tilemap.Position
 import app.trailblazercombi.haventide.game2.data.tilemap.TileData
+import app.trailblazercombi.haventide.game2.data.tilemap.TileViewInfo
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.Mechanism
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.MechanismSummonPattern
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.PhoenixMechanism
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.aoe.Barrier
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.aoe.DispelStation
+import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.aoe.Life
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.aoe.SpikePrimary
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.aoe.Thorns
 import app.trailblazercombi.haventide.game2.data.tilemap.mechanisms.effecters.immediate.*
@@ -55,15 +57,17 @@ enum class PhoenixTemplates(val template: MechanismTemplate.Phoenix) {
             abilityUltimate = AbilityTemplates.SPIKE.template,
         )
     ),
-//    MALACHAI(
-//        MechanismTemplate.Phoenix("MALACHAI",
-//            fullName = Res.string.phoenix_malachai_long_name,
-//            shortName = Res.string.phoenix_malachai_short_name,
-//            accentColor = Color(0xFF3B3B93),
-//            profilePhoto = Res.drawable.Malachai,
-//            phoenixType = DieType.MEDIC
-//        )
-//    ),
+    MALACHAI(
+        MechanismTemplate.Phoenix("MALACHAI",
+            fullName = Res.string.phoenix_malachai_long_name,
+            shortName = Res.string.phoenix_malachai_short_name,
+            accentColor = Color(0xFF3B3B93),
+            profilePhoto = Res.drawable.Malachai,
+            phoenixType = DieType.MEDIC,
+            abilityInnate = AbilityTemplates.DISPEL.template,
+            abilityUltimate = AbilityTemplates.LIFE.template
+        )
+    ),
     FINNIAN(
         MechanismTemplate.Phoenix("FINNIAN",
             fullName = Res.string.phoenix_finnian_long_name,
@@ -117,7 +121,7 @@ object ImmediateEffecterTemplates {
     }
 
     enum class HealingInvokerTemplates(val template: MechanismTemplate.ImmediateEffecter.HealingInvoker) {
-
+        LIFE(MechanismTemplate.ImmediateEffecter.HealingInvoker(80)),
     }
 
     enum class ModificatorInvokerTemplates(val template: MechanismTemplate.ImmediateEffecter.ModificatorInvoker) {
@@ -126,6 +130,10 @@ object ImmediateEffecterTemplates {
         BLESSING( MechanismTemplate.ImmediateEffecter.ModificatorInvoker(Modificators.BLESSING)),
         THORNY_PETALS(MechanismTemplate.ImmediateEffecter.ModificatorInvoker(Modificators.THORNY_PETALS)),
         FROSTBITE(MechanismTemplate.ImmediateEffecter.ModificatorInvoker(Modificators.FROSTBITE)),
+    }
+
+    enum class ModificatorRemoverTemplates(val template: MechanismTemplate.ImmediateEffecter.DispelDebuffsInvoker) {
+        REMOVE_ALL_DEBUFFS(MechanismTemplate.ImmediateEffecter.DispelDebuffsInvoker())
     }
 
     enum class MechanismSummonerTemplates(val template: MechanismTemplate.ImmediateEffecter.MechanismSummoner) {
@@ -158,6 +166,18 @@ object ImmediateEffecterTemplates {
                 mechanism = ModificatorInvokerTemplates.FROSTBITE.template,
                 pattern = MechanismSummonPattern::Filled5x5
             )
+        ),
+        DISPEL(
+            MechanismTemplate.ImmediateEffecter.MechanismSummoner(
+                mechanism = ModificatorRemoverTemplates.REMOVE_ALL_DEBUFFS.template,
+                pattern = MechanismSummonPattern::Filled5x5
+            )
+        ),
+        LIFE_MASTER(
+            MechanismTemplate.ImmediateEffecter.MechanismSummoner(
+                mechanism = HealingInvokerTemplates.LIFE.template,
+                pattern = MechanismSummonPattern::Filled7x7
+            )
         )
     }
 }
@@ -171,7 +191,8 @@ enum class AoEEffecterTemplates(val template: MechanismTemplate) {
     BARRIER_SINGLE(MechanismTemplate.Custom { parentTile, _ -> Barrier(parentTile) }),
     DISPEL_STATION(MechanismTemplate.Custom { parentTile, _ -> DispelStation(parentTile) }),
     SPIKE_PRIMARY(MechanismTemplate.Custom { parentTile, team -> SpikePrimary(parentTile, team!!) }),
-    THORNS(MechanismTemplate.Custom {parentTile, _ -> Thorns(parentTile) })
+    THORNS(MechanismTemplate.Custom {parentTile, _ -> Thorns(parentTile) }),
+    LIFE(MechanismTemplate.Custom {parentTile, team -> Life(parentTile, team!!) }),
 
     ;
 
@@ -244,6 +265,11 @@ sealed class MechanismTemplate {
         data class ModificatorInvoker(val modificator: Modificators): MechanismTemplate() {
             override fun build(parentTile: TileData, teamAffiliation: Team?): Mechanism
             = ImmediateModificatorInvoker(this.modificator, parentTile)
+        }
+
+        class DispelDebuffsInvoker(): MechanismTemplate() {
+            override fun build(parentTile: TileData, teamAffiliation: Team?): Mechanism
+            = ImmediateModificatorRemover(parentTile)
         }
 
         /**
@@ -475,6 +501,40 @@ enum class AbilityTemplates(val template: AbilityTemplate) {
                 ImmediateEffecterTemplates.MechanismSummonerTemplates.ICEBERGS.template.build(target, doer.teamAffiliation)
             },
             executionCheck = { _, _ -> true }
+        )
+    ),
+    // MALACHAI
+    DISPEL(
+        AbilityTemplate(
+            systemName = "DISPEL_5x5",
+            friendlyName = Res.string.phoenix_malachai_ability_innate_name,
+            friendlyDescription = Res.string.phoenix_malachai_ability_innate_description,
+            friendlyIcon = Res.drawable.ability_malachai,
+            alignedCost = 2,
+            scatteredCost = 1,
+            range = 2.50,
+            targetType = TargetType.EMPTY_TILE,
+            abilityVerb = AbilityVerb.HEAL,
+            execution = { doer, target ->
+                ImmediateEffecterTemplates.MechanismSummonerTemplates.DISPEL.template.build(target, doer.teamAffiliation)
+            },
+            executionCheck = { _, _ -> true }
+        )
+    ),
+    LIFE(
+        AbilityTemplate(
+            systemName = "LIFE",
+            friendlyName = Res.string.phoenix_malachai_ability_ultimate_name,
+            friendlyDescription = Res.string.phoenix_malachai_ability_ultimate_description,
+            friendlyIcon = Res.drawable.ultimate_malachai,
+            alignedCost = 2,
+            scatteredCost = 2,
+            range = 2.50,
+            targetType = TargetType.EMPTY_TILE,
+            abilityVerb = AbilityVerb.HEAL,
+            execution = { doer, target ->
+                ImmediateEffecterTemplates.MechanismSummonerTemplates.LIFE_MASTER.template.build(target, doer.teamAffiliation)
+            }
         )
     )
 }
