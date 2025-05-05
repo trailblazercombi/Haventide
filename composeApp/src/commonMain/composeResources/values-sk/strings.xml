@@ -1,0 +1,198 @@
+<resources>
+    <string name="app_name">Haventide</string>
+
+    <string name="start">Poďme na to!</string>
+
+    <string name="its_a_phoenix">Fénix</string>
+    <string name="its_an_effecter">Efekter</string>
+
+    <string name="nav_main_menu">Hlavné menu</string>
+    <string name="nav_match_start">Spustiť hru</string>
+    <string name="nav_match_playing">Hra</string>
+    <string name="nav_match_result">Koniec hry</string>
+
+    <string name="game_over_dialog_result_good">VYHRAL SI</string>
+    <string name="game_over_dialog_result_neutral">REMÍZA</string>
+    <string name="game_over_dialog_result_bad">PREHRA</string>
+    <string name="game_over_dialog_result_error">KONIEC HRY</string>
+
+    <string name="select_and_start">Vyber si Fénixy</string>
+    <string name="start_pair_local">Tvoj párovací kód</string>
+    <string name="start_pair_foreign">Sem zadaj kód súpera</string>
+    <string name="start_button_pair">Pripojiť!</string>
+    <string name="start_button_start">Spustiť hru!</string>
+    <string name="start_button_cancel">Späť</string>
+
+    <string name="game_over_dialog_result_forfeit">VZDAL SI SA</string>
+    <string name="game_over_dialog_result_contumation">KONTUMAČNÉ VÍŤAZSTVO</string>
+    <string name="game_over_dialog_confirm_button">Klikni kamkoľvek na prázdne miesto</string>
+
+    <string name="yes_no_dialog_forfeit_title">Hodláš prísť o šancu vyhrať?</string>
+    <string name="yes_no_dialog_forfeit_yes">Áno, vzdať sa</string>
+    <string name="yes_no_dialog_forfeit_no">Späť, idem to dobojovať</string>
+
+    <string name="end_round_dialog_title">Zopár kociek ti ostalo na ruke.</string>
+    <string name="end_round_dialog_confirm_button">Áno, odhodiť kocky a ukončiť kolo</string>
+    <string name="end_round_dialog_cancel_button">Späť, idem ich minúť</string>
+
+    <string name="pause_dialog_return_button">Späť do hry</string>
+    <string name="pause_dialog_offer_draw_button">Ponúknuť remízu</string>
+    <string name="pause_dialog_settings_shortcut_button">Nastavenia</string>
+    <string name="pause_dialog_forfeit_button">Vzdať sa</string>
+
+    <string name="offer_draw_dialog_offered">Súperovi si ponúkol remízu.
+Teraz čakaj na odpoveď...</string>
+    <string name="offer_draw_dialog_refused">Tvoj súper ponuku odmietol.</string>
+    <string name="offer_draw_dialog_accepted">Tvoj súper ponuku prijal.</string>
+
+    <string name="accept_draw_dialog_title">Tvoj súper ti ponúka remízu.</string>
+    <string name="accept_draw_dialog_yes">Prijať, je to remíza</string>
+    <string name="accept_draw_dialog_no">Späť, ponuku odmietam</string>
+
+    <string name="game_turn_state_good">Na ťahu si ty</string>
+    <string name="game_turn_state_bad">Na ťahu je tvoj súper</string>
+    <string name="game_turn_state_over">Tvoje kolo je ukončené</string>
+    <string name="game_turn_state_round_counter">%1$d. kolo</string>
+
+    <string name="game_turn_state_round_start">Začína sa %1$d. kolo!</string>
+    <string name="game_turn_state_round_start_dice">Dostal si tieto kocky:</string>
+    <string name="game_button_end_round">Ukončiť kolo</string>
+    <string name="game_button_confirm_move">Potvrdiť!</string>
+
+    <string name="diagnostic_cannot_pair_to_itself">Sám proti sebe nemôžeš hrať!</string>
+    <string name="diagnostic_pairing">Párujem...</string>
+
+    <string name="ability_move">Choď</string>
+    <string name="ability_construct">Postav</string>
+    <string name="ability_attack">Zaútoč</string>
+    <string name="ability_restore">Uzdrav</string>
+    <string name="ability_impair">Oslab</string>
+    <string name="ability_support">Posilni</string>
+
+    <string name="tile_info_empty">Prázne políčko</string>
+    <string name="tile_info_enemy">Fénix tvojho súpera</string>
+    <string name="ci_label_hp">HP</string>
+    <string name="ci_label_hp_values">%1$d/%2$d</string>
+
+    <string name="game_button_dice_counter_wide">%1$d/%2$d+%3$d/%4$d</string>
+    <string name="game_button_dice_counter_narrow1">%1$d/%2$d</string>
+    <string name="game_button_dice_counter_narrow2">%1$d/%2$d</string>
+
+    <string name="ability_card_cost_aligned">Kocky zosúladené:</string>
+    <string name="ability_card_cost_scattered">Kocky rozvrátené:</string>
+    <string name="ability_card_range">Dosah:</string>
+    <string name="ability_card_target_type">Platné ciele:</string>
+
+    <string name="ability_card_cost_format">%1$d</string>
+    <string name="ability_card_range_format">%1$d políčok</string>
+
+    <string name="target_type_ally">Spojenci</string>
+    <string name="target_type_ally_or_neutral">Spojenci alebo mechanizmy</string>
+    <string name="target_type_enemy">Nepriatelia</string>
+    <string name="target_type_enemy_or_neutral">Nepriatelia alebo mechanizmy</string>
+    <string name="target_type_blank">Prázdne políčka</string>
+
+    <string name="die_type_vanguard">Vangard</string>
+    <string name="die_type_sentinel">Sentinel</string>
+    <string name="die_type_medic">Medik</string>
+
+    <string name="generic_move_ability_name">Choď</string>
+    <string name="generic_move_ability_description">Fénix sa presunie na cieľové políčko.</string>
+    <string name="generic_strike_ability_name">Zaútoč</string>
+    <string name="generic_strike_ability_description">Spôsob cieľu malé poškodenie.</string>
+
+    <string name="yay_no_modificators">Fénix nemá žiadne modifikátory.</string>
+
+    <string name="phoenix_finnian_short_name">Finnian</string>
+    <string name="phoenix_finnian_long_name">Finnian</string>
+    <string name="phoenix_finnian_ability_innate_name">Štít titána</string>
+    <string name="phoenix_finnian_ability_innate_description">Aplikuj spojencovi štít.
+Tento štít plne zablokuje nasledujúci útok mierený na spojenca.</string>
+    <string name="phoenix_finnian_ability_ultimate_name">Steny</string>
+    <string name="phoenix_finnian_ability_ultimate_description">Postav 3x3 pole stien.
+Tieto steny blokujú všetok pohyb a schopnosti. Na konci kola budú všetky steny zbúrané.</string>
+
+    <string name="phoenix_ayuna_short_name">Ajuna</string>
+    <string name="phoenix_ayuna_long_name">Kaminami Ajuna</string>
+    <string name="phoenix_ayuna_ability_innate_name">Rozbi</string>
+    <string name="phoenix_ayuna_ability_innate_description">Spôsob cieľu veľké poškodenie.</string>
+    <string name="phoenix_ayuna_ability_ultimate_name">Ťarcha</string>
+    <string name="phoenix_ayuna_ability_ultimate_description">Aplikuj nepriateľovi Ťarchu.
+Nepriateľ bude dostávať dvojnásobné poškodenie a polovičné liečenie. Ťarchy sa možno zbaviť použitím schopnosti alebo mechanizmu, ktorý odstraňuje oslabenia.</string>
+
+    <string name="phoenix_ayumi_short_name">Ajumi</string>
+    <string name="phoenix_ayumi_long_name">Kaminami Ajumi</string>
+    <string name="phoenix_ayumi_ability_innate_name">Požehnanie</string>
+    <string name="phoenix_ayumi_ability_innate_description">Aplikuj Požehnanie na spojenca.
+Spojenec sa bude každým ťahom liečiť. Požehnanie vyprchá, akonáhle spojenec dostane poškodenie od nepriateľa.</string>
+
+    <string name="phoenix_ayumi_ability_ultimate_name">Očistná stanica</string>
+    <string name="phoenix_ayumi_ability_ultimate_description">Postav očistnú stanicu.
+Fénixy pri vstupe očistí od všetkých oslabení. Stanicu môžu použiť aj nepriatelia. Stanicu je možné zničiť útokmi.</string>
+
+    <string name="phoenix_yumio_short_name">Jumjo</string>
+    <string name="phoenix_yumio_long_name">Tanaka Jumjo</string>
+    <string name="phoenix_yumio_ability_innate_name">Omrzliny</string>
+    <string name="phoenix_yumio_ability_innate_description">Aplikuj Omrzliny na nepriateľa.
+Nepriateľ bude každým ťahom dostávať poškodenie. Okrem toho bude dostávať menej liečenia. Omrzliny vyprchajú po 1 kole alebo sa ich možno zbaviť použitím schopnosti alebo mechanizmu, ktorý odstraňuje oslabenia.</string>
+    <string name="phoenix_yumio_ability_ultimate_name">Oblačno, miestami prší ľadovce</string>
+    <string name="phoenix_yumio_ability_ultimate_description">Aplikuj Omrzliny na všetkých nepriateľov v okruhu 5x5 políčok.</string>
+
+    <string name="phoenix_malachai_short_name">Malachaj</string>
+    <string name="phoenix_malachai_long_name">Malachaj Vákumin</string>
+    <string name="phoenix_malachai_ability_innate_name">Očista</string>
+    <string name="phoenix_malachai_ability_innate_description">Očisti všetky oslabenia v okruhu 5x5 políčok.
+Tento efekt platí na všetkých spojencov, vrátane Malachaja.</string>
+    <string name="phoenix_malachai_ability_ultimate_name">Život</string>
+    <string name="phoenix_malachai_ability_ultimate_description">Postav Život v okruhu 7x7 políčok.
+Na konci kola dostanú všetci spojenci, ktorí soja v tomto okruhu, liečenie.</string>
+
+    <string name="phoenix_sylvia_short_name">Sylvia</string>
+    <string name="phoenix_sylvia_long_name">Sylvia</string>
+    <string name="phoenix_sylvia_ability_innate_name">Tŕne</string>
+    <string name="phoenix_sylvia_ability_innate_description">Aplikuj Tŕne na nepriateľa.
+Nepriateľ bude dostávať poškodenie s každým ťahom, ktorý podnikne. Toto poškodenie sa zvyšuje každým ťahom a iné oslabenia ho môžu ešte viac zintenzívniť. Tŕne vyprchajú na konci kola.</string>
+    <string name="phoenix_sylvia_ability_ultimate_name">Ahoj, Ježko</string>
+    <string name="phoenix_sylvia_ability_ultimate_description">Postav Ježka.
+Ježko sa zobrazí aj nepriateľom. Ak naň nepriateľ vstúpi, Ježko postaví Ostne v okruhu 3x3 okolo seba. Nepriateľ sa môže rozhodnúť ostať na mieste alebo dostať veľké poškodenie, keď vstúpi na Ostne.</string>
+
+    <string name="phoenix_torrent_short_name">"Torrent"</string>
+    <string name="phoenix_torrent_long_name">"Torrent"</string>
+    <string name="phoenix_torrent_ability_innate_name">Data Phantom</string>
+    <string name="phoenix_torrent_ability_innate_description">Teleport to any place that you can see.
+    </string>
+    <string name="phoenix_torrent_ability_ultimate_name">Pulse Surge</string>
+    <string name="phoenix_torrent_ability_ultimate_description">Construct Pulse in a 7x7 Permieter.
+Anyone (allies, enemies and mechanisms) in this Permieter at the end of the round gets Zapped.
+Zapped characters and mechanisms take damage and also zap anyone in a 5x5 Perimeter around them.</string>
+
+    <string name="mechanism_aoeeffecter_barrier_name">Stena</string>
+    <string name="mechanism_aoeeffecter_barrier_description">Blokuje pohyb a schopnosti.</string>
+
+    <string name="mechanism_aoeeffecter_dispelstation_name">Očistná stanica</string>
+    <string name="mechanism_aoeeffecter_dispelstation_description">Očistí Fénix od oslabení.</string>
+
+    <string name="mechanism_aoeeffecter_spike_name">Ježko</string>
+    <string name="mechanism_aoeeffecter_spike_description">Pasca nastražená pre nepriateľov.</string>
+
+    <string name="mechanism_aoeeffecter_life_name">Život</string>
+    <string name="mechanism_aoeeffecter_life_description">Na konci kola vylieči spojencov.</string>
+
+    <string name="mechanism_aoeeffecter_thorns_name">Ostne</string>
+    <string name="mechanism_aoeeffecter_thorns_description">Škodí Fénixom. Au!</string>
+
+    <string name="modificator_blessing_name">Požehnanie</string>
+    <string name="modificator_blessing_description">Na konci kola vylieči Fénix.</string>
+
+    <string name="modificator_burden_name">Ťarcha</string>
+    <string name="modificator_burden_description">Fénix dostáva dvojnásobok poškodenia a polovicu liečenia.</string>
+
+    <string name="modificator_titanshield_name">Štít titána</string>
+    <string name="modificator_titanshield_description">Plne zablokuje nasledúci útok.</string>
+
+    <string name="modificator_thornypetals_name">Tŕne</string>
+    <string name="modificator_thornypetals_description">Fénix dostáva poškodenie za každý vykonaný ťah.</string>
+
+    <string name="modificator_frostbite_name">Omrzliny</string>
+    <string name="modificator_frostbite_description">Fénix mzrne, a tým dostáva poškodenie.</string>
+</resources>

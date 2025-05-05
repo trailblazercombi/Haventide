@@ -145,7 +145,8 @@ While Frostbite lasts, the enemy takes damage on every turn. The enemy also take
     <string name="phoenix_malachai_short_name">Malachai</string>
     <string name="phoenix_malachai_long_name">Malachai Vakuumin</string>
     <string name="phoenix_malachai_ability_innate_name">Dispel</string>
-    <string name="phoenix_malachai_ability_innate_description">Dispel all debuffs from oneself and all allies in a 5x5 Permieter.</string>
+    <string name="phoenix_malachai_ability_innate_description">Dispel all debuffs in a 5x5 Permieter.
+This effect applies to all allies, including Malachai.</string>
     <string name="phoenix_malachai_ability_ultimate_name">Life</string>
     <string name="phoenix_malachai_ability_ultimate_description">Construct Life in a 7x7 Permieter.
 At the end of round, heal all allies in the perimeter. The perimeter gets dispelled at the end of the round.</string>
